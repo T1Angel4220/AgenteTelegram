@@ -1,0 +1,3 @@
+[DÍA 08/04/2026]
+El proyecto está muy atrasado. Quedaban 15 tareas en To Do y nadie hizo commits hoy.
+[DÍA 10/4/2026] "Analizando el cierre del día, veo que hemos avanzado un poco desde el día 8 de abril, donde quedaban 15 tareas pendientes y no hubo commits. Hoy, Sebastián Ortiz ha realizado 21 commits, lo que es un esfuerzo notable, pero RanMd apenas ha contribuido con 2 commits. Debo destacar que la tarea crítica "Motor de Reservas" en Fase 3 sigue pendiente y es URGENTE. "
