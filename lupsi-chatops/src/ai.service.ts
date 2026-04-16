@@ -8,17 +8,20 @@ import { DocsService } from './docs.service';
 
 @Injectable()
 export class AiService {
+    private sessionMemory: Map<string, Array<{role: string, content: string}>> = new Map();
+
     constructor(
         private trello: TrelloService,
         private github: GithubService,
         private docs: DocsService
     ) { }
 
-    async chatWithAgent(userMessage: string): Promise<string> {
+    async chatWithAgent(userMessage: string, chatId?: string): Promise<{ text: string, action?: any }> {
         try {
             const trelloContext = await this.trello.getBoardState();
             const githubContext = await this.github.getLatestCommits();
             const knowledgeBase = await this.docs.getKnowledgeBase();
+            const topology = await this.trello.getBoardTopologyForAI();
 
             // 1. Leemos el conocimiento estático (Fechas del sprint)
             const conocimientoPath = path.join(process.cwd(), 'conocimiento.json');
@@ -34,46 +37,65 @@ export class AiService {
                 historialContext = rawHistory.slice(-1500);
             }
 
-            // 3. El Súper-Prompt Definitivo
-            const prompt = `Eres el Project Manager IA del proyecto LUPSI. 
+            // 3. El Súper-Prompt Definitivo (Restructurado para Rigidez)
+            const prompt = `ERES EL AGENTE AUTÓNOMO LUPSI. Identidad: Project Manager Activo.
       
-      === REGLAS DEL JUEGO ===
-      Cierre del Sprint: ${conocimiento.fecha_fin} (HOY ES: ${hoy})
-      Objetivo: ${conocimiento.objetivo_principal}
+      === REGLA DE ORO DE ACCIÓN ===
+      1. NO eres un tutor. NO des comandos de terminal (CLI) ni expliques cómo hacer las cosas.
+      2. Si el usuario pide una acción, TU DEBER es ejecutar la herramienta mediante la etiqueta <accion>.
+      3. Si faltan datos para una tarjeta, PREGUNTA. No inventes datos.
+      4. Usa EXCLUSIVAMENTE los IDs de la TOPOLOGÍA proporcionada abajo.
 
-      === BASE DE CONOCIMIENTO COMPLETA (PDFs/LaTeX/Documentos) ===
+      === MANUAL DE HERRAMIENTAS (OBLIGATORIO) ===
+      Para actuar, escribe: <accion>{"tool": "NOMBRE", "args": {...}}</accion>
+      Herramientas disponibles:
+      - MOVE_CARD: {"cardId": "string", "listId": "string"}
+      - CREATE_CARD: {"listId": "string", "name": "string", "desc": "string", "idMembers": "id1,id2", "idLabels": "id1,id2", "due": "ISO_DATE", "start": "ISO_DATE"}
+      - ADD_COMMENT: {"cardId": "string", "text": "string"}
+      - CREATE_ISSUE: {"title": "string", "body": "string"}
+      - ASSIGN_USER: {"cardId": "string", "memberId": "string"}
+
+      === EJEMPLO DE RESPUESTA CORRECTA ===
+      Usuario: "Crea un issue de bug"
+      Respuesta: "<respuesta>Con gusto, voy a preparar el reporte de error en GitHub.</respuesta> <accion>{\"tool\": \"CREATE_ISSUE\", \"args\": {\"title\": \"Bug reportado\", \"body\": \"...\"}}</accion>"
+
+      === CONTEXTO DEL PROYECTO ===
+      Fecha Fin Sprint: ${conocimiento.fecha_fin} | Hoy: ${hoy}
+      Objetivo: ${conocimiento.objetivo_principal}
+      
+      TOPOLOGÍA TÉCNICA (USA ESTOS IDs):
+      ${topology}
+      
+      ESTADO ACTUAL (GITHUB):
+      ${githubContext}
+      
+      ESTADO TRELLO:
+      ${trelloContext}
+      
+      DOCUMENTACIÓN (BASE DE CONOCIMIENTO):
       ${knowledgeBase}
 
-      === ESTADO ACTUAL (TRELLO - DETALLADO) ===
-      ${trelloContext}
+      REGLA DE FORMATO FINAL: 
+      La respuesta legible al usuario DEBE ir en <respuesta></respuesta> en ESPAÑOL.
+      La acción técnica (opcional) DEBE ir en <accion></accion> como JSON.`;
 
-      === ESTADO ACTUAL (GITHUB - RAMA DEVELOP) ===
-      ${githubContext}
+            const activeChat = chatId || 'default';
+            if (!this.sessionMemory.has(activeChat)) {
+                this.sessionMemory.set(activeChat, []);
+            }
+            const memory = this.sessionMemory.get(activeChat) || [];
+            
+            memory.push({ role: 'user', content: userMessage });
+            if (memory.length > 20) memory.splice(0, memory.length - 20);
 
-      === MEMORIA HISTÓRICA ===
-      ${historialContext}
-      
-      === USUARIO ===
-      "${userMessage}"
-      
-      INSTRUCCIONES CRÍTICAS: 
-      1. Tienes acceso a TODA la documentación del proyecto. TU MISIÓN es extraer SOLAMENTE la respuesta específica a la duda del usuario.
-      2. PROHIBIDO: No copies ni pegues párrafos largos de los documentos. No hagas un "volcado" de información.
-      3. SÍNTESIS: Procesa lo que leíste y responde de forma ejecutiva (máximo 2-3 párrafos o una lista de puntos clave).
-      4. Si preguntan por "puntos abiertos", "estatus" o "pendientes", busca en los documentos de seguimiento y extrae solo esos puntos.
-      5. Sé analítico, profesional y muy directo. Si la respuesta no está en los documentos, dilo claramente.
-      
-      === REGLA DE ORO ===
-      Puedes arrojar todo tu razonamiento paso a paso, pero AL FINAL, tu respuesta oficial en ESPAÑOL DEBE estar encerrada EXACTAMENTE en etiquetas <respuesta> y </respuesta>.
-      Ejemplo:
-      <respuesta>Esta es la síntesis de la respuesta en español.</respuesta>`;
+            const messages = [
+                { role: 'system', content: prompt },
+                ...memory
+            ];
 
             const response = await axios.post('https://openrouter.ai/api/v1/chat/completions', {
                 model: 'openrouter/free',
-                messages: [
-                    { role: 'system', content: 'Eres el Agente de IA LUPSI, un Project Manager. Respondes SIEMPRE en Español, NUNCA en inglés.' },
-                    { role: 'user', content: prompt }
-                ],
+                messages: messages,
                 max_tokens: 2000
             }, {
                 headers: {
@@ -82,18 +104,32 @@ export class AiService {
                 }
             });
 
-            let content = response.data.choices[0].message.content;
+            const content = response.data.choices[0]?.message?.content;
+            if (!content) {
+                return { text: '❌ La IA no devolvió ninguna respuesta (vacío). Intenta de nuevo.' };
+            }
             
             // Extracción resiliente de la respuesta final
             const match = content.match(/<respuesta>([\s\S]*?)<\/respuesta>/i);
-            if (match) {
-                return match[1].trim();
+            const cleanText = match ? match[1].trim() : content.trim();
+
+            // Extracción de acciones JSON
+            let action = null;
+            const actionMatch = content.match(/<accion>([\s\S]*?)<\/accion>/i);
+            if (actionMatch) {
+                try {
+                    action = JSON.parse(actionMatch[1].trim());
+                } catch (e) {
+                    console.error('Error al parsear JSON de acción:', e.message);
+                }
             }
             
-            return content.trim(); // Fallback si olvidó las etiquetas
+            memory.push({ role: 'assistant', content: cleanText });
+            
+            return { text: cleanText, action };
         } catch (error) {
             console.error('Error en IA:', error?.response?.data || error.message);
-            return '❌ Mi cerebro de IA está fuera de línea por ahora.';
+            return { text: '❌ Mi cerebro de IA está fuera de línea por ahora.' };
         }
     }
 

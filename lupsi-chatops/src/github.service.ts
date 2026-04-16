@@ -46,4 +46,28 @@ export class GithubService {
       return '❌ No pude conectar con GitHub.';
     }
   }
+
+  // NUEVA FUNCIÓN: Crear un Issue en GitHub
+  async createIssue(title: string, body: string): Promise<boolean> {
+    try {
+      const { GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO } = process.env;
+      const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues`;
+      
+      await axios.post(url, {
+        title,
+        body
+      }, {
+        headers: { Authorization: `token ${GITHUB_TOKEN}` }
+      });
+
+      return true;
+    } catch (error) {
+      if (error.response) {
+        console.error('Error detallado de GitHub:', error.response.data);
+      } else {
+        console.error('Error al crear issue en GitHub:', error.message);
+      }
+      return false;
+    }
+  }
 }

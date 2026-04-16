@@ -59,7 +59,8 @@ export class BotService implements OnModuleInit {
 
       try {
         const prompt = "Actúa como Project Manager. Escribe un reporte ejecutivo formal y detallado del proyecto LUPSI basándote en los datos actuales de Trello y GitHub. No uses emojis, usa un tono estrictamente profesional.";
-        const textoReporte = await this.aiService.chatWithAgent(prompt);
+        const result = await this.aiService.chatWithAgent(prompt);
+        const textoReporte = result.text;
 
         const pdfBuffer = await this.pdfService.generateReport(textoReporte);
 
@@ -136,18 +137,36 @@ export class BotService implements OnModuleInit {
 
       let success = false;
       if (decision.tipo === 'MOVE_CARD') {
-         success = await this.trelloService.moveCard(decision.cardId, decision.targetListId);
-      } else if (decision.tipo === 'REASSIGN_CARD') {
-         success = await this.trelloService.assignUser(decision.cardId, decision.memberId);
+         success = await this.trelloService.moveCard(decision.cardId, decision.targetListId || decision.args?.listId);
+      } else if (decision.tipo === 'REASSIGN_CARD' || decision.tool === 'ASSIGN_USER') {
+         success = await this.trelloService.assignUser(decision.cardId || decision.args?.cardId, decision.memberId || decision.args?.memberId);
+      } else if (decision.tool === 'CREATE_CARD') {
+         success = await this.trelloService.createCard(
+           decision.args.listId, 
+           decision.args.name, 
+           decision.args.desc,
+           decision.args.idMembers,
+           decision.args.idLabels,
+           decision.args.due,
+           decision.args.start
+         );
+      } else if (decision.tool === 'ADD_COMMENT') {
+         success = await this.trelloService.addComment(decision.args.cardId, decision.args.text);
+      } else if (decision.tool === 'CREATE_ISSUE') {
+         success = await this.githubService.createIssue(decision.args.title, decision.args.body);
+      } else if (decision.tool === 'MOVE_CARD') {
+         success = await this.trelloService.moveCard(decision.args.cardId, decision.args.listId);
       }
+
+      const rationale = decision.rationale || `Ejecución de herramienta ${decision.tool || decision.tipo}`;
 
       if (success) {
          this.pendingActions.delete(actionId);
          await ctx.editMessageText(this.escapeMarkdown(`✅ *Aprobado y Ejecutado.*\n` +
-                                   `*Acción:* ${decision.tipo}\n` +
-                                   `*Justificación:* ${decision.rationale}`), { parse_mode: 'Markdown' });
+                                   `*Acción:* ${decision.tool || decision.tipo}\n` +
+                                   `*Detalle:* ${rationale}`), { parse_mode: 'Markdown' });
       } else {
-         await ctx.editMessageText(`⚠️ Error al intentar ejecutar la acción en Trello. Por favor verifica los permisos del bot o actualiza los datos.`);
+         await ctx.editMessageText(`⚠️ Error al intentar ejecutar la acción. Por favor verifica los permisos o los datos.`);
       }
     });
 
@@ -161,13 +180,34 @@ export class BotService implements OnModuleInit {
     this.bot.on('text', async (ctx) => {
       if (ctx.message.text.startsWith('/')) return;
       const thinkingMsg = await ctx.reply('🧠 Analizando datos del proyecto...');
-      const reply = await this.aiService.chatWithAgent(ctx.message.text);
+      const result = await this.aiService.chatWithAgent(ctx.message.text, ctx.chat.id.toString());
+      const reply = result.text;
+      const action = result.action;
 
       try {
         await ctx.telegram.deleteMessage(ctx.chat.id, thinkingMsg.message_id);
       } catch (e) { }
 
-      ctx.reply(this.escapeMarkdown(reply), { parse_mode: 'Markdown' });
+      await ctx.reply(this.escapeMarkdown(reply), { parse_mode: 'Markdown' });
+
+      // Si la IA solicitó una acción, mostramos el botón de confirmación
+      if (action) {
+        const actionId = Math.random().toString(36).substring(2, 10);
+        this.pendingActions.set(actionId, action);
+
+        const toolName = action.tool || action.tipo;
+        const textoConfirmacion = `🤖 *ACCION REQUERIDA*\n` +
+                                  `El agente desea ejecutar: *${toolName}*\n` +
+                                  `¿Autorizas esta operación?`;
+
+        await ctx.reply(this.escapeMarkdown(textoConfirmacion), {
+          parse_mode: 'Markdown',
+          ...Markup.inlineKeyboard([
+            [Markup.button.callback('✅ Confirmar', `approve_${actionId}`)],
+            [Markup.button.callback('❌ Cancelar', `reject_${actionId}`)]
+          ])
+        });
+      }
     });
 
     // --- EL LAUNCH VA ESTRICTAMENTE AL FINAL ---

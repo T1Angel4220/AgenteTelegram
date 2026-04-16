@@ -18,7 +18,7 @@ export class TrelloService {
       cardsAttRes.data.forEach(c => { attachMap[c.id] = c.attachments || []; });
 
       // 2. Obtenemos las listas y tarjetas (idMembers siempre viene con los IDs)
-      const url = `https://api.trello.com/1/boards/${process.env.BOARD_ID}/lists?cards=open&card_fields=name,desc,due,labels,idMembers,badges,dueComplete&card_attachments=true&key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`;
+      const url = `https://api.trello.com/1/boards/${process.env.BOARD_ID}/lists?cards=open&card_fields=name,desc,due,start,labels,idMembers,badges,dueComplete&card_attachments=true&key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`;
       const response = await axios.get(url);
 
       let report = '📊 *ESTADO DETALLADO DEL PROYECTO LUPSI*\n\n';
@@ -37,7 +37,9 @@ export class TrelloService {
 
         let taskIndex = 1;
         branchCards.forEach((card) => {
-          const due = card.due ? new Date(card.due).toLocaleDateString('es-ES') : 'Sin fecha';
+          const dueStr = card.due ? new Date(card.due).toLocaleDateString('es-ES') : '?';
+          const startStr = card.start ? new Date(card.start).toLocaleDateString('es-ES') : '?';
+          const due = (card.due || card.start) ? `Inicio: ${startStr} - Fin: ${dueStr}` : 'Sin fechas';
           
           // Mapeamos los IDs reales usando nuestro diccionario seguro
           const memNames = (card.idMembers || []).map(id => membersMap[id]).filter(Boolean);
@@ -110,10 +112,39 @@ export class TrelloService {
     }
   }
 
+  async createCard(idList: string, name: string, desc: string, idMembers?: string, idLabels?: string, due?: string, start?: string): Promise<boolean> {
+    try {
+      let url = `https://api.trello.com/1/cards?idList=${idList}&name=${encodeURIComponent(name)}&desc=${encodeURIComponent(desc)}&key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`;
+      
+      if (idMembers) url += `&idMembers=${idMembers}`;
+      if (idLabels) url += `&idLabels=${idLabels}`;
+      if (due) url += `&due=${due}`;
+      if (start) url += `&start=${start}`;
+
+      await axios.post(url);
+      return true;
+    } catch (error) {
+      console.error('Error al crear tarjeta en Trello:', error);
+      return false;
+    }
+  }
+
+  // NUEVA FUNCIÓN: Añadir un comentario a una tarjeta
+  async addComment(cardId: string, text: string): Promise<boolean> {
+    try {
+      const url = `https://api.trello.com/1/cards/${cardId}/actions/comments?text=${encodeURIComponent(text)}&key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`;
+      await axios.post(url);
+      return true;
+    } catch (error) {
+      console.error('Error al añadir comentario en Trello:', error);
+      return false;
+    }
+  }
+
   // Obtiene topología cruda para la toma de decisiones de la IA
   async getBoardTopologyForAI(): Promise<string> {
     try {
-      const urlBoard = `https://api.trello.com/1/boards/${process.env.BOARD_ID}?lists=open&members=all&key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`;
+      const urlBoard = `https://api.trello.com/1/boards/${process.env.BOARD_ID}?lists=open&members=all&labels=all&key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`;
       const boardRes = await axios.get(urlBoard);
       
       const urlCards = `https://api.trello.com/1/boards/${process.env.BOARD_ID}/cards?key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`;
@@ -122,6 +153,7 @@ export class TrelloService {
       const topology = {
         listas: boardRes.data.lists.map(l => ({ id: l.id, name: l.name })),
         miembros: boardRes.data.members.map(m => ({ id: m.id, fullName: m.fullName })),
+        labels: boardRes.data.labels.map(l => ({ id: l.id, name: l.name })),
         tarjetas: cardsRes.data.map(c => ({
           id: c.id,
           name: c.name,
