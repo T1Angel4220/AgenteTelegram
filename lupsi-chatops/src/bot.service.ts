@@ -5,6 +5,7 @@ import { ManagerService } from './manager.service';
 import { AiService } from './ai.service';
 import { PdfService } from './pdf.service';
 import { DocsService } from './docs.service';
+import { AutonomyService } from './autonomy.service';
 
 
 @Injectable()
@@ -20,7 +21,8 @@ export class BotService implements OnModuleInit {
     private readonly managerService: ManagerService,
     private readonly aiService: AiService,
     private readonly pdfService: PdfService,
-    private readonly docsService: DocsService
+    private readonly docsService: DocsService,
+    private readonly autonomyService: AutonomyService
   ) {
     this.bot = new Telegraf(process.env.TELEGRAM_TOKEN as string);
   }
@@ -133,41 +135,55 @@ export class BotService implements OnModuleInit {
          return ctx.editMessageText('❌ _Esta acción ya expiró o no existe._', { parse_mode: 'Markdown' });
       }
 
-      await ctx.answerCbQuery('Ejecutando en Trello...');
+      await ctx.answerCbQuery('Ejecutando...');
 
-      let success = false;
-      if (decision.tipo === 'MOVE_CARD') {
-         success = await this.trelloService.moveCard(decision.cardId, decision.targetListId || decision.args?.listId);
-      } else if (decision.tipo === 'REASSIGN_CARD' || decision.tool === 'ASSIGN_USER') {
-         success = await this.trelloService.assignUser(decision.cardId || decision.args?.cardId, decision.memberId || decision.args?.memberId);
-      } else if (decision.tool === 'CREATE_CARD') {
-         success = await this.trelloService.createCard(
-           decision.args.listId, 
-           decision.args.name, 
-           decision.args.desc,
-           decision.args.idMembers,
-           decision.args.idLabels,
-           decision.args.due,
-           decision.args.start
-         );
-      } else if (decision.tool === 'ADD_COMMENT') {
-         success = await this.trelloService.addComment(decision.args.cardId, decision.args.text);
-      } else if (decision.tool === 'CREATE_ISSUE') {
-         success = await this.githubService.createIssue(decision.args.title, decision.args.body);
-      } else if (decision.tool === 'MOVE_CARD') {
-         success = await this.trelloService.moveCard(decision.args.cardId, decision.args.listId);
-      }
+      const success = await this.executeDecision(decision, false);
 
       const rationale = decision.rationale || `Ejecución de herramienta ${decision.tool || decision.tipo}`;
 
       if (success) {
          this.pendingActions.delete(actionId);
+         // Si estaba en la lista de autonomía, lo quitamos
+         const pending = this.autonomyService.getPendingDecisions();
+         const autoDecision = pending.find(d => 
+           (d.args?.cardId && d.args.cardId === decision.args?.cardId) || 
+           (d.cardId && d.cardId === decision.cardId)
+         );
+         if (autoDecision) {
+           this.autonomyService.deleteDecision(autoDecision.id);
+         }
+
          await ctx.editMessageText(this.escapeMarkdown(`✅ *Aprobado y Ejecutado.*\n` +
                                    `*Acción:* ${decision.tool || decision.tipo}\n` +
                                    `*Detalle:* ${rationale}`), { parse_mode: 'Markdown' });
       } else {
          await ctx.editMessageText(`⚠️ Error al intentar ejecutar la acción. Por favor verifica los permisos o los datos.`);
       }
+    });
+
+    this.bot.action(/^approve_auto_(.+)$/, async (ctx) => {
+      const id = ctx.match[1];
+      const pending = this.autonomyService.getPendingDecisions();
+      const decision = pending.find(d => d.id === id);
+
+      if (!decision) {
+        return ctx.answerCbQuery('Esta decisión ya no está pendiente.');
+      }
+
+      await ctx.answerCbQuery('Ejecutando decisión autónoma de forma manual...');
+      const success = await this.executeDecision(decision, false);
+      
+      if (success) {
+        this.autonomyService.deleteDecision(id);
+        await ctx.editMessageText('✅ *Decisión aprobada manualmente.* Periodo de gracia cancelado.', { parse_mode: 'Markdown' });
+      }
+    });
+
+    this.bot.action(/^reject_auto_(.+)$/, async (ctx) => {
+      const id = ctx.match[1];
+      this.autonomyService.deleteDecision(id);
+      await ctx.answerCbQuery('Acción cancelada.');
+      await ctx.editMessageText('❌ *Acción autónoma rechazada.* Se ha eliminado de la cola de gestión.', { parse_mode: 'Markdown' });
     });
 
     this.bot.action(/^reject_(.+)$/, async (ctx) => {
@@ -216,6 +232,31 @@ export class BotService implements OnModuleInit {
   }
 
   // Método para limpiar el texto y evitar errores de Telegram Markdown
+  // MÉTODO COMPARTIDO DE EJECUCIÓN (USADO POR BOT Y CRON)
+  async executeDecision(decision: any, isAutonomous: boolean = false): Promise<boolean> {
+    let success = false;
+    const { tool, args, cardId, memberId, targetListId } = decision;
+
+    if (decision.tipo === 'MOVE_CARD' || tool === 'MOVE_CARD') {
+      success = await this.trelloService.moveCard(cardId || args?.cardId, targetListId || args?.listId);
+    } else if (decision.tipo === 'REASSIGN_CARD' || tool === 'ASSIGN_USER') {
+      success = await this.trelloService.assignUser(cardId || args?.cardId, memberId || args?.memberId);
+    } else if (tool === 'CREATE_CARD') {
+      success = await this.trelloService.createCard(args.listId, args.name, args.desc, args.idMembers, args.idLabels, args.due, args.start);
+    } else if (tool === 'ADD_COMMENT') {
+      success = await this.trelloService.addComment(args.cardId, args.text);
+    } else if (tool === 'CREATE_ISSUE') {
+      success = await this.githubService.createIssue(args.title, args.body);
+    }
+
+    // SI ES AUTÓNOMO, DEJAMOS HUELLA EN TRELLO
+    if (success && isAutonomous && (cardId || args?.cardId)) {
+      await this.trelloService.addComment(cardId || args?.cardId, "🤖 ACCIÓN AUTÓNOMA DE LUPSI: Periodo de gracia para supervisión humana expirado. Acción ejecutada para mantener el flujo del proyecto.");
+    }
+
+    return success;
+  }
+
   private escapeMarkdown(text: string): string {
     let safeText = text;
     if (safeText.length > 3900) {

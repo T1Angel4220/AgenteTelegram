@@ -11,12 +11,13 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { CronService } from './cron.service';
 import { PdfService } from './pdf.service';
 import { DocsService } from './docs.service';
+import { AutonomyService } from './autonomy.service';
 
 @Module({
   imports: [ConfigModule.forRoot(),
     ScheduleModule.forRoot() 
   ],
   controllers: [AppController],
-  providers: [AppService, BotService, TrelloService, GithubService, ManagerService,AiService,CronService,PdfService, DocsService],
+  providers: [AppService, BotService, TrelloService, GithubService, ManagerService,AiService,CronService,PdfService, DocsService, AutonomyService],
 })  
 export class AppModule { }
