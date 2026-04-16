@@ -1,0 +1,131 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{amssymb}
+
+\geometry{a4paper, margin=2.5cm}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.8ex}
+
+\begin{document}
+
+\begin{center}
+    {\Huge \textbf{INFORME DE AVANCE DEL PROYECTO}}
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{tabular}{p{2.5cm}p{5.5cm}p{3cm}p{4cm}}
+    \textbf{PROYECTO:} & Sistema Web PWA LUPSI & \textbf{REFERENCIA:}  & Avance Sprint 3 \\
+    \textbf{CLIENTE:} & Centro Médico LUPSI & \textbf{REVISIÓN:} & 1.0 \\
+    \textbf{AUTOR:} & Angel Ayuquina (PM) & \textbf{FECHA:} & 30/04/2026 \\
+\end{tabular}
+
+\vspace{0.5cm}
+
+\textbf{DISTRIBUCIÓN:}
+\begin{longtable}{|p{0.95\textwidth}|}
+    \hline
+    1. Patrocinador Académico: Ing. Paulo Torres, Mg. \\
+    2. Directorio y Administración del Centro Médico LUPSI (Dra. Saenz Díaz Luz Marina de Jesús) \\
+    3. Equipo de Desarrollo SKT Software Solution (S. Ortiz, D. Luisa, A. Guachi) \\
+    \hline
+    \caption{Distribución del informe}
+\end{longtable}
+
+\section*{SITUACIÓN CRONOGRAMA}
+
+\textbf{Atraso:} \hspace{0.5cm} Sí [ ] \hspace{1cm} No [\textbf{X}] \hspace{1cm} \textbf{Plazo:} \underline{30/04/2026}
+
+\textbf{COMENTARIOS}
+
+\begin{longtable}{|p{0.95\textwidth}|}
+    \hline
+    El progreso hasta la fecha de corte (30/04/2026) reporta la finalización exitosa del Sprint 3, cumpliendo con la línea base del proyecto. Se logró resolver el núcleo (core) del negocio mediante la implementación del Motor de Reservas Síncrono en el backend. Adicionalmente, se saldó la deuda técnica integrando la autenticación JWT con el frontend, lo que permitió conectar de forma segura las nuevas interfaces PWA del Portal del Paciente y el Panel Administrativo. \\
+    \hline
+    \caption{Comentarios sobre el cronograma}
+\end{longtable}
+
+% --- INICIO IMÁGENES ANCLADAS ---
+\begin{figure}[H]
+    \centering
+    % Recuerda subir la imagen de tu Gantt actualizada a Overleaf con el nombre SP3.png
+    \includegraphics[width=0.95\linewidth]{Project2.png} 
+    \caption{Vista de Gantt MS Project - Fase 3 (Motor de Reservas y PWA)}
+    \label{fig:proj1}
+\end{figure}
+% --- FIN IMÁGENES ANCLADAS ---
+
+\section*{SITUACIÓN FINANZAS}
+
+\begin{longtable}{|p{3.5cm}|p{2cm}|p{2.5cm}|p{0.5cm}|p{0.5cm}|p{0.5cm}|p{1cm}|p{1.5cm}|}
+    \hline
+    \textbf{COSTE ACTUAL} & \$2,650.40 & \textbf{Sobrecoste:} & Sí & & No & \textbf{X} & \textbf{Valor:} \$0.00 \\
+    \hline
+    \textbf{Cantidad facturada} & \$0.00 & \textbf{Pagos pendientes:} & Sí & & No & \textbf{X} & \\
+    \hline
+    \caption{Resumen de situación financiera}
+\end{longtable}
+
+\textbf{COMENTARIOS}
+
+\begin{longtable}{|p{0.95\textwidth}|}
+    \hline
+    El Coste Actual de \textbf{\$2,650.40 USD} refleja el costo valorizado ACUMULADO de las horas de ingeniería invertidas por el equipo de desarrollo hasta el cierre del Sprint 3. Se reitera que este rubro es una estimación del valor del desarrollo y no representa un desembolso en efectivo. En cuanto a infraestructura en la nube, el gasto real se mantiene en \$0.00 al operar dentro de los límites de la capa gratuita. \\
+    \hline
+    \caption{Comentarios sobre las finanzas}
+\end{longtable}
+
+\section*{SITUACIÓN ALCANCE}
+
+\begin{longtable}{|p{7.5cm}|p{3cm}|p{3cm}|}
+    \hline
+    \textbf{ENTREGABLE (Artefacto de Software)} & \textbf{FECHA} & \textbf{ACEPTADO} \\
+    \hline
+    1. Integración Auth-Frontend (Deuda Técnica S2). & 15/04/2026 &  \\
+    \hline
+    2. Backend: Motor de Reservas y control de Concurrencia. & 21/04/2026 &  \\
+    \hline
+    3. Frontend: Portal del Paciente (PWA). & 30/04/2026 &  \\
+    \hline
+    4. Frontend: Panel Administrativo web. & 30/04/2026 & \\
+    \hline
+    \caption{Entregables formales del Sprint 3}
+    \label{tab:entregables}
+\end{longtable}
+
+\section*{PRINCIPALES PUNTOS ABIERTOS}
+
+\begin{longtable}{|p{7cm}|p{3.5cm}|p{3.5cm}|}
+    \hline
+    \textbf{DESCRIPCIÓN (Hacia el Sprint 4)} & \textbf{FECHA ESPERADA} & \textbf{RESPONSABLE} \\
+    \hline
+    Backend: Repositorio RBAC y manejo de indicaciones médicas post-consulta. & 10/05/2026 & Sebastián Ortiz \\
+    \hline
+    Integración Cloud: Conexión con Cloudinary para almacenamiento de recetas PDF. & 15/05/2026 & Daniel / Alex \\
+    \hline
+    QA: Inicio de planificación para pruebas de estrés y validación piloto. & 11/05/2026 & Angel Ayuquina \\
+    \hline
+    \caption{Puntos abiertos hacia el Sprint 4}
+    \label{tab:puntos_abiertos}
+\end{longtable}
+
+\section*{OTROS}
+
+\begin{longtable}{|p{0.95\textwidth}|}
+    \hline
+    El progreso del Sprint 3 ha sido un hito crítico. El sistema ahora permite el flujo principal de valor: los pacientes pueden autenticarse, revisar la disponibilidad de horarios y realizar reservas validadas estrictamente por el backend. Además, el equipo Frontend logró solventar la integración del Login a tiempo. El equipo se encuentra listo para iniciar el Sprint 4, enfocado en la Historia Clínica Digital y el almacenamiento en la nube. \\
+    \hline
+    \caption{Otros aspectos a considerar}
+    \label{tab:otros}
+\end{longtable}
+
+\end{document}

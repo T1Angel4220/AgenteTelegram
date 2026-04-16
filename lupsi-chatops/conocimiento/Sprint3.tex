@@ -1,0 +1,274 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage{tabularx}
+
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+
+\definecolor{SKTPrimary}{HTML}{3F4A4F}
+\definecolor{SKTDark}{HTML}{242B2E}
+\definecolor{SKTAccent}{HTML}{979C9D}
+\definecolor{SKTLight}{HTML}{CDCFD2}
+\definecolor{SKTMid}{HTML}{6E7375}
+
+\geometry{
+top=2.5cm,
+bottom=2.5cm,
+left=3cm,
+right=3cm,
+includehead,
+headheight=130pt,
+headsep=1cm
+}
+
+% ---------------- ENCABEZADO ----------------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+
+\fancyhead[C]{%
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{|m{3cm}|m{7.5cm}|m{3.8cm}|}
+\hline
+\multirow{5}{*}{
+\parbox[c][3.5cm][c]{2.5cm}{
+\centering
+\includegraphics[width=2.2cm]{SKTLogo.png}
+}
+}
+& \centering\textbf{SKT Software Solution}
+& \parbox[c]{\linewidth}{\centering
+\textbf{CÓDIGO:}\\
+MI-DES-PLA-004
+\vspace{3pt}
+} \\ \cline{2-3}
+
+& \centering\textbf{PROCESO: Desarrollo de Software}
+& \parbox[c]{\linewidth}{\centering
+\textbf{VERSIÓN:}\\
+1.0
+\vspace{3pt}
+} \\ \cline{2-3}
+
+& \centering Planificación Sprint 3
+& \parbox[c]{\linewidth}{\centering
+\textbf{ELABORACIÓN:}\\
+11/04/2026
+\vspace{3pt}
+} \\ \cline{2-3}
+
+& \centering Motor de Agendamiento e Interfaces Frontend
+& \parbox[c]{\linewidth}{\centering
+\textbf{ÚLTIMA REVISIÓN:}\\
+11/04/2026
+} \\ \hline
+\end{tabular}%
+}
+
+\begin{document}
+\raggedbottom
+
+\section{Título}
+Planificación del Sprint 3: Motor de Agendamiento, Concurrencia e Interfaces Frontend - LUPSI
+
+\section{Introducción}
+El presente documento formaliza la planificación del tercer sprint del proyecto LUPSI. Su propósito es dejar claramente definidos el objetivo del sprint, el alcance técnico, las actividades prioritarias, los entregables esperados y su alineación con el cronograma general.
+
+Tras haber consolidado la base de datos, la seguridad (RLS) y la autenticación en el Sprint 2, el Sprint 3 aborda el núcleo operativo del negocio: la gestión de citas médicas. Esta etapa materializa las historias de usuario US-02 y US-03, garantizando un agendamiento síncrono sin conflictos y proveyendo las interfaces gráficas (PWA) tanto para los pacientes como para el personal administrativo.
+
+\section{Objetivo}
+Desarrollar e integrar el Motor de Reservas en el backend para prevenir el cruce de horarios, y construir los portales web progresivos (Frontend) que permitan a los pacientes agendar citas y al personal de recepción visualizar la carga diaria de forma segura y en tiempo real.
+
+\section{Alcance del Sprint 3}
+El Sprint 3 se centra exclusivamente en la lógica de negocio de agendamiento y en las vistas operativas de los usuarios.
+
+\subsection{Incluye}
+\begin{itemize}
+    \item Lógica backend de agendamiento síncrono (Motor de reservas).
+    \item Control de concurrencia en base de datos para prevención de cruce de horarios.
+    \item Desarrollo Frontend (PWA) del Portal del Paciente (Agendamiento e historial).
+    \item Desarrollo Frontend del Panel Administrativo (Vista de agenda diaria para recepción).
+    \item Integración del módulo de autenticación JWT del Sprint 2 con las vistas Frontend.
+\end{itemize}
+
+\subsection{No incluye (Asignado al Sprint 4)}
+\begin{itemize}
+    \item Módulo de Historia Clínica Digital.
+    \item Integración con Cloudinary para almacenamiento de recetas médicas (PDFs).
+    \item Manejo de indicaciones post-consulta (RBAC específico).
+\end{itemize}
+
+\section{Definiciones}
+\begin{itemize}
+    \item \textbf{Sprint:} periodo de trabajo definido dentro de Scrum para entregar un conjunto acotado de tareas.
+    \item \textbf{PWA (Progressive Web App):} Aplicación web que ofrece una experiencia similar a una app nativa en dispositivos móviles.
+    \item \textbf{Concurrencia:} Capacidad del sistema para manejar múltiples solicitudes de agendamiento al mismo tiempo sin colisionar datos.
+    \item \textbf{JWT (JSON Web Token):} Estándar para la transmisión segura de información de autenticación entre el cliente y el servidor.
+\end{itemize}
+
+\section{Planificación del Sprint 3}
+
+\subsection{Objetivo específico del sprint}
+Implementar el ciclo completo de agendamiento, asegurando que un paciente pueda reservar una cita desde la interfaz visual y el backend la valide y persista sin permitir que dos personas ocupen el mismo horario.
+
+\subsection{Entregables del Sprint}
+
+\footnotesize
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|>{\centering\arraybackslash}p{2.5cm}|>{\centering\arraybackslash}p{2.0cm}|>{\centering\arraybackslash}p{1.5cm}|}
+\hline
+\textbf{Entregable} & \textbf{Responsable} & \textbf{Fecha} & \textbf{Aceptado} \\
+\hline
+1. Backend: Motor de Reservas y control de Concurrencia & Sebastián Ortiz & 21/04/2026 &  \\
+\hline
+2. Frontend: Portal del Paciente (PWA) & Daniel Luisa & 30/04/2026 &  \\
+\hline
+3. Frontend: Panel Administrativo & Alex Guachi & 30/04/2026 &  \\
+\hline
+4. Integración Auth-Frontend (Deuda Técnica S2) & Alex Guachi & 15/04/2026 &  \\
+\hline
+\end{tabularx}
+\normalsize
+
+\subsection{Backlog del Sprint 3 (Desglose de Tareas)}
+La siguiente tabla detalla las tareas operativas específicas (T-XX) a ejecutar durante este sprint y su trazabilidad directa con los requerimientos aprobados en el Product Backlog (PB-XX).
+
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{|p{0.08\textwidth}|p{0.12\textwidth}|X|p{0.18\textwidth}|p{0.15\textwidth}|}
+\hline
+\textbf{Tarea} & \textbf{Origen} & \textbf{Actividad (Sprint Backlog)} & \textbf{Responsable} & \textbf{Estado} \\
+\hline
+T-01 & PB-11 & Desarrollar lógica de agendamiento síncrono previniendo cruce de horarios. & Sebastián & En Curso \\
+\hline
+T-02 & PB-12 & Construir interfaces PWA para reserva y consulta de citas del paciente. & Daniel & En Curso \\
+\hline
+T-03 & PB-13 & Crear vista de agenda diaria y administración para personal de recepción. & Alex & En Curso \\
+\hline
+T-04 & Deuda S2 & Integrar las interfaces web del login con la lógica del servidor API/JWT. & Alex & En Curso \\
+\hline
+\end{tabularx}
+
+\subsection{Cronograma Detallado}
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{0.7cm}|>{\centering\arraybackslash}p{0.9cm}|>{\centering\arraybackslash}p{0.9cm}|>{\centering\arraybackslash}p{0.7cm}|>{\centering\arraybackslash}p{1.2cm}|X|X|}
+\hline
+\textbf{Tarea} & \textbf{Días} & \textbf{Inicio} & \textbf{Fin} & \textbf{H} & \textbf{Hito} & \textbf{Entregable} & \textbf{Responsable} \\
+\hline
+Integración Auth & 6 & 08/04 & 15/04 & 24 & Hito 1 & Login PWA & Alex \\
+\hline
+Motor Reservas & 10 & 08/04 & 21/04 & 40 & Hito 1 & API Agendamiento & Sebastián \\
+\hline
+Portal Paciente & 16 & 08/04 & 30/04 & 64 & Hito 2 & Vistas Frontend & Daniel \\
+\hline
+Panel Admin & 16 & 08/04 & 30/04 & 64 & Hito 2 & Vistas Recepción & Alex \\
+\hline
+\end{tabularx}
+\normalsize
+
+\section{Criterios de aceptación del Sprint 3}
+El sprint se considerará aprobado cuando se cumpla lo siguiente:
+\begin{itemize}
+    \item El sistema backend rechaza estrictamente la superposición de citas médicas (US-02).
+    \item El Portal del Paciente permite visualizar horarios disponibles y confirmar reservas de forma exitosa.
+    \item La agenda administrativa refleja en tiempo de ejecución los horarios reservados sin exponer data clínica sensible (US-03).
+    \item Las interfaces frontend están conectadas de manera segura con el backend mediante los tokens JWT.
+\end{itemize}
+
+\section{Trazabilidad con las historias de usuario}
+Este sprint entrega valor directo y funcional enfocado en el core del negocio:
+\begin{itemize}
+    \item \textbf{US-02 (Agendamiento Síncrono):} Implementado a través del Motor de Reservas (PB-11) y el Portal del Paciente (PB-12).
+    \item \textbf{US-03 (Visualización de Agenda Administrativa):} Implementado a través del Panel Administrativo web (PB-13).
+\end{itemize}
+
+\section{Riesgos del Sprint 3}
+\begin{itemize}
+    \item Retrasos en el desarrollo del Motor de Reservas (PB-11) bloquearán las pruebas de integración del Frontend de Daniel y Angel.
+    \item Errores en la gestión de transacciones en la base de datos que permitan agendar dos pacientes a la misma hora (condición de carrera).
+    \item Problemas de configuración CORS (Cross-Origin Resource Sharing) al comunicar los repositorios locales de Frontend y Backend.
+\end{itemize}
+
+\section{Criterios generales de calidad}
+Para considerar el sprint como correctamente ejecutado, la solución debe cumplir con los siguientes criterios:
+\begin{itemize}
+    \item Tiempos de respuesta óptimos en las consultas de disponibilidad de horarios.
+    \item Retroalimentación visual clara en el frontend cuando un paciente reserva exitosamente o si ocurre un error.
+    \item Código fuente documentado y subido a las ramas principales correspondientes en GitHub.
+\end{itemize}
+
+\section{Conclusiones}
+El Sprint 3 constituye el hito más importante para la viabilidad operativa del proyecto LUPSI, ya que resuelve el problema central del centro médico: la gestión de citas sin conflictos. 
+
+Al finalizar este sprint, el sistema dejará de ser una estructura base para convertirse en una aplicación web progresiva funcional, permitiendo la interacción real entre pacientes y administradores, y dejando el terreno preparado para la digitalización de documentos clínicos en el Sprint 4.
+
+\section{Firmas de Responsabilidad}
+
+\renewcommand{\arraystretch}{2}
+
+\noindent
+\begin{tabular}{
+p{0.28\textwidth}
+p{0.30\textwidth}
+>{\centering\arraybackslash}p{0.22\textwidth}
+>{\centering\arraybackslash}p{0.12\textwidth}
+}
+\hline
+\textbf{Rol} &
+\textbf{Nombre / Representante} &
+\textbf{Firma (QR)} &
+\textbf{Fecha} \\
+\hline
+
+Gestor del Proyecto
+& Angel Ayuquina
+& \includegraphics[width=3.2cm]{QR_Sello_Angel_Ayuquina.png}
+& 11/04/2026 \\[0.6cm]
+
+Desarrollador Backend
+& Sebastián Ortiz
+& \includegraphics[width=3.2cm]{QR_Sello_Sebastían_Ortiz.png}
+& 11/04/2026 \\[0.6cm]
+
+Desarrollador Fullstack
+& Daniel Luisa
+& \includegraphics[width=3.2cm]{QR_Sello_Daniel_Luisa.png}
+& 11/04/2026 \\[0.6cm]
+
+Desarrollador Frontend
+& Alex Guachi
+& \includegraphics[width=3.2cm]{QR_Sello_Alex_Huachi.png}
+& 11/04/2026 \\[0.6cm]
+
+\hline
+\end{tabular}
+
+\section{Control de cambios}
+
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{|p{0.12\textwidth}|X|p{0.25\textwidth}|p{0.18\textwidth}|}
+\hline
+\textbf{Versión} & \textbf{Descripción del Cambio} & \textbf{Responsable del Cambio} & \textbf{Fecha de Aprobación} \\
+\hline
+1.0 & Elaboración de la planificación específica para el Sprint 3 (Motor de Reservas y Frontend). & Angel Ayuquina & 11/04/2026 \\
+\hline
+\end{tabularx}
+\normalsize
+
+\end{document}

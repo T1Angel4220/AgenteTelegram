@@ -11,8 +11,14 @@ export class TrelloService {
       const membersMap = {};
       membersRes.data.forEach(m => { membersMap[m.id] = m.fullName; });
 
+      // 1.5 Obtenemos mapa de todos los adjuntos (Trello no los da anidados por lista)
+      const cardsAttUrl = `https://api.trello.com/1/boards/${process.env.BOARD_ID}/cards?attachments=true&key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`;
+      const cardsAttRes = await axios.get(cardsAttUrl);
+      const attachMap = {};
+      cardsAttRes.data.forEach(c => { attachMap[c.id] = c.attachments || []; });
+
       // 2. Obtenemos las listas y tarjetas (idMembers siempre viene con los IDs)
-      const url = `https://api.trello.com/1/boards/${process.env.BOARD_ID}/lists?cards=open&card_fields=name,due,labels,idMembers&key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`;
+      const url = `https://api.trello.com/1/boards/${process.env.BOARD_ID}/lists?cards=open&card_fields=name,desc,due,labels,idMembers,badges,dueComplete&card_attachments=true&key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`;
       const response = await axios.get(url);
 
       let report = '📊 *ESTADO DETALLADO DEL PROYECTO LUPSI*\n\n';
@@ -29,6 +35,7 @@ export class TrelloService {
           report += `   _(Sin tareas)_\n`;
         }
 
+        let taskIndex = 1;
         branchCards.forEach((card) => {
           const due = card.due ? new Date(card.due).toLocaleDateString('es-ES') : 'Sin fecha';
           
@@ -40,6 +47,8 @@ export class TrelloService {
           
           // Analizamos etiquetas para prioridad
           let priority = '';
+          let isComplete = card.dueComplete ? '✅ Terminada' : '🟡 Pendiente';
+          
           if (card.labels && card.labels.length > 0) {
             card.labels.forEach((label) => {
               if (label.name.toLowerCase().includes('urgente') || label.color === 'red') {
@@ -47,11 +56,37 @@ export class TrelloService {
                 statusIcon = '🚨';
                 priority = ' [URGENTE]';
               }
+              if (label.name.toLowerCase().includes('completado') || label.color === 'green') {
+                statusIcon = '✅';
+                isComplete = '✅ Terminada';
+              }
             });
           }
 
-          report += `${statusIcon} *${card.name}*${priority}\n`;
-          report += `   👤 ${members} | 📅 ${due}\n`;
+          let extras = '';
+          if (card.badges) {
+             if (card.badges.attachments > 0) extras += ` | 📎 ${card.badges.attachments} adjuntos`;
+             if (card.badges.comments > 0) extras += ` | 💬 ${card.badges.comments} sms`;
+             if (card.badges.checkItems > 0) extras += ` | ☑️ ${card.badges.checkItemsChecked}/${card.badges.checkItems} sub`;
+          }
+          
+          let descripcion = '';
+          if (card.desc) {
+             // Limpiamos saltos de línea para que no destruya el block markdown de la lista
+             const cleanDesc = card.desc.replace(/\n/g, ' ').trim();
+             descripcion = `\n   📝 ${cleanDesc.substring(0, 150)}${cleanDesc.length > 150 ? '...' : ''}`;
+          }
+
+          let attachLinks = '';
+          const realAttachments = attachMap[card.id] || [];
+          if (realAttachments.length > 0) {
+             const links = realAttachments.map(att => `[${att.name}](${att.url})`).join(' | ');
+             attachLinks = `\n   🔗 Descargar: ${links}`;
+          }
+
+          report += `${taskIndex}. ${statusIcon} *${card.name}*${priority} (${isComplete})\n`;
+          report += `   👤 ${members} | 📅 ${due}${extras}${descripcion}${attachLinks}\n`;
+          taskIndex++;
         });
         report += `\n`;
       });
