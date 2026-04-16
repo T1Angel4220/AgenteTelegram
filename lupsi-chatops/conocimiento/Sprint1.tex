@@ -1,0 +1,264 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage{tabularx}
+
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+
+\definecolor{SKTPrimary}{HTML}{3F4A4F}
+\definecolor{SKTDark}{HTML}{242B2E}
+\definecolor{SKTAccent}{HTML}{979C9D}
+\definecolor{SKTLight}{HTML}{CDCFD2}
+\definecolor{SKTMid}{HTML}{6E7375}
+
+\geometry{
+top=2.5cm,
+bottom=2.5cm,
+left=3cm,
+right=3cm,
+includehead,
+headheight=130pt,
+headsep=1cm
+}
+
+% ---------------- ENCABEZADO ----------------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+
+\fancyhead[C]{%
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{|m{3cm}|m{7.5cm}|m{3.8cm}|}
+\hline
+\multirow{5}{*}{
+\parbox[c][3.5cm][c]{2.5cm}{
+\centering
+\includegraphics[width=2.2cm]{SKTLogo.png}
+}
+}
+& \centering\textbf{SKT Software Solution}
+& \parbox[c]{\linewidth}{\centering
+\textbf{CÓDIGO:}\\
+MI-DES-PLA-003
+\vspace{3pt}
+} \\ \cline{2-3}
+
+& \centering\textbf{PROCESO: Desarrollo de Software}
+& \parbox[c]{\linewidth}{\centering
+\textbf{VERSIÓN:}\\
+1.1
+\vspace{3pt}
+} \\ \cline{2-3}
+
+& \centering Planificación Sprint 2
+& \parbox[c]{\linewidth}{\centering
+\textbf{ELABORACIÓN:}\\
+23/03/2026
+\vspace{3pt}
+} \\ \cline{2-3}
+
+& \centering Seguridad, Autenticación y Catálogos - LUPSI
+& \parbox[c]{\linewidth}{\centering
+\textbf{ÚLTIMA REVISIÓN:}\\
+23/03/2026
+} \\ \hline
+\end{tabular}%
+}
+
+\begin{document}
+\raggedbottom
+
+\section{Título}
+Planificación del Sprint 2: Seguridad, Autenticación y Catálogos - LUPSI
+
+\section{Introducción}
+El presente documento formaliza la planificación del segundo sprint del proyecto LUPSI. Tras haber consolidado la infraestructura base, el diseño UX/UI y el modelado de datos en el Sprint 1, el equipo procede a la ejecución de la lógica central de seguridad y acceso.
+
+Este sprint marca el inicio del desarrollo del sistema físico, transformando los modelos teóricos en componentes operativos. Se enfoca en la creación de la base de datos en la nube, la implementación de políticas de seguridad a nivel de fila (RLS), la lógica de autenticación de usuarios y la validación de identidad oficial ecuatoriana.
+
+\section{Objetivo}
+Desarrollar la capa de seguridad y servicios fundamentales del sistema, garantizando un entorno de persistencia seguro en Supabase, un módulo de autenticación robusto con validación de cédula y la gestión de catálogos paramétricos que sustenten la lógica de negocio futura.
+
+\section{Alcance del Sprint 2}
+El Sprint 2 se centra en la seguridad y los servicios de soporte. Es la etapa donde el sistema comienza a gestionar identidades y permisos de acceso.
+
+\subsection{Incluye}
+\begin{itemize}
+    \item Implementación física de tablas y relaciones en el proyecto Supabase Cloud.
+    \item Configuración de políticas de seguridad Row Level Security (RLS) para aislamiento de datos.
+    \item Desarrollo del módulo de Backend para registro e inicio de sesión de usuarios.
+    \item Implementación del servicio validador de cédula ecuatoriana (Módulo 10).
+    \item Creación de servicios de catálogos paramétricos clínicos (Especialidades médicas, consultorios y tipos de cita).
+    \item Integración de tokens JWT para la gestión de sesiones seguras.
+\end{itemize}
+
+\subsection{No incluye}
+\begin{itemize}
+    \item Motor de agendamiento síncrono y lógica de reservas (Sprint 3).
+    \item Carga y visualización de expedientes médicos en PDF (Sprint 4).
+    \item Gestión de reportes estadísticos y auditorías finales (Sprint 5).
+\end{itemize}
+
+\section{Definiciones}
+\begin{itemize}
+    \item \textbf{RLS (Row Level Security):} Mecanismo de seguridad que controla el acceso a filas específicas de una tabla basado en el usuario autenticado.
+    \item \textbf{JWT (JSON Web Token):} Estándar para la transmisión segura de información de identidad entre cliente y servidor.
+    \item \textbf{Supabase Cloud:} Entorno en la nube basado en PostgreSQL utilizado para la persistencia de datos.
+    \item \textbf{Catálogos Paramétricos:} Conjunto de datos de referencia (maestros) que alimentan los formularios del sistema.
+\end{itemize}
+
+\section{Planificación del Sprint 2}
+
+\subsection{Objetivo específico del sprint}
+Establecer un entorno de datos seguro y funcional donde los usuarios puedan registrarse, autenticarse y operar bajo políticas de privacidad estrictas, dejando listos los catálogos base para el módulo de citas.
+
+\subsection{Entregables del Sprint}
+
+\footnotesize
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|>{\centering\arraybackslash}p{2.5cm}|>{\centering\arraybackslash}p{2.0cm}|>{\centering\arraybackslash}p{1.5cm}|}
+\hline
+\textbf{Entregable} & \textbf{Responsable} & \textbf{Fecha} & \textbf{Aceptado} \\
+\hline
+Informe de creación de BD física y políticas RLS & Sebastián Ortiz & 25/03/2026 &  \\
+\hline
+Backend: Módulo de Autenticación y validador de cédula & Alex Guachi & 07/04/2026 &  \\
+\hline
+Backend: Gestión de catálogos paramétricos & Daniel Luisa & 08/04/2026 &  \\
+\hline
+\end{tabularx}
+\normalsize
+
+\subsection{Backlog del Sprint 2}
+La siguiente tabla detalla las tareas operativas específicas (T-XX) a ejecutar durante este sprint y su trazabilidad directa con los requerimientos aprobados en el Product Backlog (PB-XX).
+
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{|p{0.08\textwidth}|p{0.12\textwidth}|X|p{0.18\textwidth}|p{0.15\textwidth}|}
+\hline
+\textbf{Tarea} & \textbf{Origen} & \textbf{Actividad (Sprint Backlog)} & \textbf{Responsable} & \textbf{Estado} \\
+\hline
+T-08 & PB-08 & Crear proyecto físico en Supabase y ejecutar scripts DDL iniciales. & Sebastián Ortiz & Hecho \\
+\hline
+T-09 & PB-08 & Implementar políticas RLS básicas para tablas de usuarios y pacientes. & Sebastián Ortiz & Hecho \\
+\hline
+T-10 & PB-09 & Desarrollar lógica de Login/Signup con persistencia en la base de datos. & Alex Guachi & Hecho \\
+\hline
+T-11 & PB-09 & Integrar y probar algoritmo Módulo 10 para validación de identidades. & Alex Guachi & Hecho \\
+\hline
+T-12 & PB-10 & Implementar endpoints para la gestión de catálogos clínicos (especialidades, consultorios, tipos de cita). & Daniel Luisa & Hecho \\
+\hline
+T-13 & PB-09 & Pruebas unitarias de seguridad y validación de tokens JWT. & Daniel / QA & Hecho \\
+\hline
+\end{tabularx}
+
+\subsection{Cronograma Detallado}
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{0.7cm}|>{\centering\arraybackslash}p{0.9cm}|>{\centering\arraybackslash}p{0.9cm}|>{\centering\arraybackslash}p{0.7cm}|>{\centering\arraybackslash}p{1.2cm}|X|X|}
+\hline
+\textbf{Tarea} & \textbf{Días} & \textbf{Inicio} & \textbf{Fin} & \textbf{Horas} & \textbf{Hito} & \textbf{Entregable} & \textbf{Responsable} \\
+\hline
+Creación de BD y seguridad RLS & 3 & 23/03 & 25/03 & 24 & Hito 7 & BD Segura & Sebastián \\
+\hline
+Desarrollo Autenticación y Cédula & 8 & 26/03 & 07/04 & 64 & Hito 8 & Auth Module & Alex \\
+\hline
+Gestión de Catálogos Paramétricos & 1 & 08/04 & 08/04 & 8 & Hito 9 & API Catálogos & Daniel \\
+\hline
+\end{tabularx}
+\normalsize
+
+\subsection{Criterios de aceptación del Sprint 2}
+El sprint se considerará aprobado cuando se cumpla lo siguiente:
+\begin{itemize}
+    \item La base de datos en Supabase refleja el modelo ER del Sprint 1 y bloquea accesos no autorizados mediante RLS.
+    \item El sistema permite el registro de nuevos usuarios solo si la cédula es validada exitosamente por el algoritmo Módulo 10.
+    \item El inicio de sesión genera un JWT válido que es retornado al cliente para futuras peticiones.
+    \item Los endpoints de catálogos retornan la información médica y operativa necesaria para los formularios de registro y cita.
+\end{itemize}
+
+\section{Trazabilidad con las historias de usuario}
+El Sprint 2 materializa la base de las historias de negocio:
+\begin{itemize}
+    \item \textbf{US-01: Registro y Validación Oficial} se completa funcionalmente mediante el módulo de autenticación y el validador de cédula.
+    \item \textbf{US-05: Restricción de Privacidad} se habilita técnicamente mediante la aplicación de políticas RLS y el control por roles.
+\end{itemize}
+
+\section{Riesgos del Sprint 2}
+\begin{itemize}
+    \item Vulnerabilidades en las políticas RLS que permitan acceso cruzado a datos de pacientes.
+    \item Inconsistencias en la validación de cédulas de extranjeros o casos de borde en el Módulo 10.
+    \item Retrasos en la integración entre el backend NestJS y el servicio de autenticación de Supabase.
+\end{itemize}
+
+\section{Firmas de Responsabilidad}
+
+\renewcommand{\arraystretch}{2}
+
+\noindent
+\begin{tabular}{
+p{0.28\textwidth}
+p{0.30\textwidth}
+>{\centering\arraybackslash}p{0.22\textwidth}
+>{\centering\arraybackslash}p{0.12\textwidth}
+}
+\hline
+\textbf{Rol} &
+\textbf{Nombre / Representante} &
+\textbf{Firma (QR)} &
+\textbf{Fecha} \\
+\hline
+
+Gestor del Proyecto
+& Angel Ayuquina
+& \includegraphics[width=3.2cm]{QR_Sello_Angel_Ayuquina.png}
+& 08/04/2026 \\[0.6cm]
+
+Desarrollador Backend
+& Sebastián Ortiz
+& \includegraphics[width=3.2cm]{QR_Sello_Sebastían_Ortiz.png}
+& 08/04/2026 \\[0.6cm]
+
+Desarrollador Fullstack
+& Daniel Luisa
+& \includegraphics[width=3.2cm]{QR_Sello_Daniel_Luisa.png}
+& 08/04/2026 \\[0.6cm]
+
+Desarrollador Frontend
+& Alex Guachi
+& \includegraphics[width=3.2cm]{QR_Sello_Alex_Huachi.png}
+& 08/04/2026 \\[0.6cm]
+
+\hline
+\end{tabular}
+
+\section{Control de cambios}
+
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{|p{0.12\textwidth}|X|p{0.25\textwidth}|p{0.18\textwidth}|}
+\hline
+\textbf{Versión} & \textbf{Descripción del Cambio} & \textbf{Responsable del Cambio} & \textbf{Fecha de Aprobación} \\
+\hline
+1.0 & Elaboración inicial de la planificación para el Sprint 2 centrada en seguridad y backend inicial. & Angel Ayuquina & 23/03/2026 \\
+\hline
+1.1 & Ajuste en la tarea T-12 para enfocar los catálogos en el contexto clínico real (Especialidades, Tipos de cita) en lugar de ubicaciones geográficas. & Angel Ayuquina & 07/04/2026 \\
+\hline
+\end{tabularx}
+\normalsize
+
+\end{document}

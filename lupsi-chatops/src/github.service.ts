@@ -5,8 +5,9 @@ import axios from 'axios';
 export class GithubService {
   async getLatestCommits(): Promise<string> {
     try {
-      const { GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO } = process.env;
-      const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/commits?per_page=30`; // Traemos los últimos 30
+      const { GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH } = process.env;
+      const branch = GITHUB_BRANCH || 'develop';
+      const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/commits?sha=${branch}&per_page=30`; 
       
       const response = await axios.get(url, {
         headers: { Authorization: `token ${GITHUB_TOKEN}` }
