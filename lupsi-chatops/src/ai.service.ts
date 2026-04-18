@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import * as fs from 'fs';
 import * as path from 'path';
+
+const SESIONES_PATH = path.join(process.cwd(), 'sesiones.json');
 import { TrelloService } from './trello.service';
 import { GithubService } from './github.service';
 import { DocsService } from './docs.service';
@@ -14,7 +16,35 @@ export class AiService {
         private trello: TrelloService,
         private github: GithubService,
         private docs: DocsService
-    ) { }
+    ) {
+        // Cargar sesiones persistidas al iniciar
+        this.loadSessions();
+    }
+
+    private loadSessions() {
+        try {
+            if (fs.existsSync(SESIONES_PATH)) {
+                const raw = JSON.parse(fs.readFileSync(SESIONES_PATH, 'utf-8'));
+                for (const [chatId, msgs] of Object.entries(raw)) {
+                    this.sessionMemory.set(chatId, msgs as any[]);
+                }
+                console.log(`💾 Sesiones cargadas: ${this.sessionMemory.size} conversación(es) restauradas.`);
+            }
+        } catch (e) {
+            console.warn('No se pudieron cargar sesiones previas:', e.message);
+        }
+    }
+
+    private saveSessions() {
+        try {
+            const obj: any = {};
+            this.sessionMemory.forEach((v, k) => { obj[k] = v.slice(-10); }); // Últimos 10 mensajes por sesión
+            fs.writeFileSync(SESIONES_PATH, JSON.stringify(obj));
+        } catch (e) {
+            console.warn('No se pudo guardar sesión:', e.message);
+        }
+    }
+
 
     async chatWithAgent(userMessage: string, chatId?: string): Promise<{ text: string, action?: any }> {
         try {
@@ -54,6 +84,7 @@ export class AiService {
       - ADD_COMMENT: {"cardId": "string", "text": "string"}
       - CREATE_ISSUE: {"title": "string", "body": "string"}
       - ASSIGN_USER: {"cardId": "string", "memberId": "string"}
+      - GET_CARD_DETAILS: {"searchTerm": "nombre parcial de la tarea"} → Úsala cuando el usuario pregunte por una tarea específica o pida sus adjuntos/entregables.
 
       === EJEMPLO DE RESPUESTA CORRECTA ===
       Usuario: "Crea un issue de bug"
@@ -101,7 +132,8 @@ export class AiService {
                 headers: {
                     'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
                     'Content-Type': 'application/json'
-                }
+                },
+                timeout: 60000 // Límite de 60 segundos para la IA
             });
 
             const content = response.data.choices[0]?.message?.content;
@@ -109,9 +141,17 @@ export class AiService {
                 return { text: '❌ La IA no devolvió ninguna respuesta (vacío). Intenta de nuevo.' };
             }
             
-            // Extracción resiliente de la respuesta final
+            // Extracción resiliente: intenta capturar contenido entre etiquetas <respuesta>
             const match = content.match(/<respuesta>([\s\S]*?)<\/respuesta>/i);
-            const cleanText = match ? match[1].trim() : content.trim();
+            let cleanText = match ? match[1].trim() : content.trim();
+
+            // Limpieza defensiva: eliminar cualquier etiqueta XML residual que se haya colado
+            cleanText = cleanText
+                .replace(/<\/?respuesta>/gi, '')
+                .replace(/<\/?accion>[\s\S]*?<\/accion>/gi, '')
+                .replace(/<accion>[\s\S]*/gi, '') // Si quedó etiqueta sin cerrar
+                .replace(/<[^>]+>/g, '')          // Cualquier otra etiqueta HTML/XML
+                .trim();
 
             // Extracción de acciones JSON
             let action = null;
@@ -125,6 +165,7 @@ export class AiService {
             }
             
             memory.push({ role: 'assistant', content: cleanText });
+            this.saveSessions(); // Persistir en disco para sobrevivir reinicios
             
             return { text: cleanText, action };
         } catch (error) {

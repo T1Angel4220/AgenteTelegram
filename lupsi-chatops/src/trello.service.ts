@@ -183,4 +183,185 @@ export class TrelloService {
     }
   }
 
+  // Nueva Función: Obtener métricas para los gráficos del PDF
+  async getMetrics(): Promise<any> {
+    try {
+      const url = `https://api.trello.com/1/boards/${process.env.BOARD_ID}/lists?cards=open&card_fields=idMembers&key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`;
+      const response = await axios.get(url);
+      
+      const membersUrl = `https://api.trello.com/1/boards/${process.env.BOARD_ID}/members?key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`;
+      const membersRes = await axios.get(membersUrl);
+      const membersMap = {};
+      membersRes.data.forEach(m => { membersMap[m.id] = m.fullName; });
+
+      const metrics = {
+        listas: {},
+        miembros: {}
+      };
+
+      response.data.forEach(lista => {
+        metrics.listas[lista.name] = lista.cards.length;
+        lista.cards.forEach(card => {
+          (card.idMembers || []).forEach(mId => {
+            const name = membersMap[mId] || 'Otros';
+            metrics.miembros[name] = (metrics.miembros[name] || 0) + 1;
+          });
+        });
+      });
+
+      return metrics;
+    } catch (error) {
+      console.error('Error al obtener métricas:', error);
+      return { listas: {}, miembros: {} };
+    }
+  }
+
+  // ── Detectar tarjetas realmente bloqueadas (sin actividad N días) ──────────
+  async getStuckCards(diasSinActividad: number = 2): Promise<any[]> {
+    try {
+      const { BOARD_ID, TRELLO_KEY, TRELLO_TOKEN } = process.env;
+      // Obtener miembros del tablero
+      const membersUrl = `https://api.trello.com/1/boards/${BOARD_ID}/members?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`;
+      const membersRes = await axios.get(membersUrl);
+      const membersMap: Record<string, string> = {};
+      membersRes.data.forEach(m => { membersMap[m.id] = m.fullName; });
+
+      // Obtener listas del tablero
+      const listsUrl = `https://api.trello.com/1/boards/${BOARD_ID}/lists?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`;
+      const listsRes = await axios.get(listsUrl);
+      const listsMap: Record<string, string> = {};
+      listsRes.data.forEach(l => { listsMap[l.id] = l.name; });
+
+      // Obtener todas las tarjetas abiertas
+      const cardsUrl = `https://api.trello.com/1/boards/${BOARD_ID}/cards?filter=open&fields=id,name,idList,idMembers,dateLastActivity,due&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`;
+      const cardsRes = await axios.get(cardsUrl);
+
+      const ahora = Date.now();
+      const limitMs = diasSinActividad * 24 * 60 * 60 * 1000;
+      const listasProceso = ['doing', 'en progreso', 'in progress', 'en proceso', 'wip'];
+
+      const bloqueadas = cardsRes.data.filter(card => {
+        const nombreLista = (listsMap[card.idList] || '').toLowerCase();
+        const estaEnProceso = listasProceso.some(p => nombreLista.includes(p));
+        if (!estaEnProceso) return false;
+
+        const ultimaActividad = new Date(card.dateLastActivity).getTime();
+        return (ahora - ultimaActividad) >= limitMs;
+      }).map(card => ({
+        nombre: card.name,
+        lista: listsMap[card.idList] || 'Desconocida',
+        asignados: (card.idMembers || []).map(id => membersMap[id] || id).join(', ') || 'Sin asignar',
+        diasBloqueada: Math.floor((ahora - new Date(card.dateLastActivity).getTime()) / (24 * 60 * 60 * 1000)),
+        vencimiento: card.due ? new Date(card.due).toLocaleDateString('es-ES') : 'Sin fecha',
+      }));
+
+      return bloqueadas;
+    } catch (e) {
+      console.error('Error en getStuckCards:', e.message);
+      return [];
+    }
+  }
+
+  // ── Tarjetas que vencen en las próximas N horas ──────────────────────────
+  async getCardsDueSoon(horas: number = 48): Promise<any[]> {
+    try {
+      const { BOARD_ID, TRELLO_KEY, TRELLO_TOKEN } = process.env;
+      const membersUrl = `https://api.trello.com/1/boards/${BOARD_ID}/members?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`;
+      const membersRes = await axios.get(membersUrl);
+      const membersMap: Record<string, string> = {};
+      membersRes.data.forEach(m => { membersMap[m.id] = m.fullName; });
+
+      const listsUrl = `https://api.trello.com/1/boards/${BOARD_ID}/lists?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`;
+      const listsRes = await axios.get(listsUrl);
+      const listsMap: Record<string, string> = {};
+      listsRes.data.forEach(l => { listsMap[l.id] = l.name; });
+
+      const cardsUrl = `https://api.trello.com/1/boards/${BOARD_ID}/cards?filter=open&fields=id,name,idList,idMembers,due,dueComplete&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`;
+      const cardsRes = await axios.get(cardsUrl);
+
+      const ahora = Date.now();
+      const limiteMs = horas * 60 * 60 * 1000;
+
+      return cardsRes.data
+        .filter(card => {
+          if (!card.due || card.dueComplete) return false;
+          const vence = new Date(card.due).getTime();
+          return vence > ahora && vence <= (ahora + limiteMs);
+        })
+        .map(card => ({
+          nombre: card.name,
+          lista: listsMap[card.idList] || 'Desconocida',
+          asignados: (card.idMembers || []).map(id => membersMap[id] || id).join(', ') || 'Sin asignar',
+          vencimiento: new Date(card.due).toLocaleString('es-ES'),
+          horasRestantes: Math.round((new Date(card.due).getTime() - ahora) / (60 * 60 * 1000)),
+        }));
+    } catch (e) {
+      console.error('Error en getCardsDueSoon:', e.message);
+      return [];
+    }
+  }
+
+  // ── Buscar tarjeta por nombre y devolver detalles + adjuntos ──────────────
+  async getCardDetails(searchTerm: string): Promise<{
+    found: boolean;
+    card?: any;
+    attachments?: any[];
+    url?: string;
+  }> {
+    try {
+      const { BOARD_ID, TRELLO_KEY, TRELLO_TOKEN } = process.env;
+
+      // Obtener miembros
+      const membersUrl = `https://api.trello.com/1/boards/${BOARD_ID}/members?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`;
+      const membersRes = await axios.get(membersUrl);
+      const membersMap: Record<string, string> = {};
+      membersRes.data.forEach(m => { membersMap[m.id] = m.fullName; });
+
+      // Obtener listas
+      const listsUrl = `https://api.trello.com/1/boards/${BOARD_ID}/lists?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`;
+      const listsRes = await axios.get(listsUrl);
+      const listsMap: Record<string, string> = {};
+      listsRes.data.forEach(l => { listsMap[l.id] = l.name; });
+
+      // Buscar todas las tarjetas con sus adjuntos
+      const cardsUrl = `https://api.trello.com/1/boards/${BOARD_ID}/cards?attachments=true&filter=open&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`;
+      const cardsRes = await axios.get(cardsUrl);
+
+      // Búsqueda case-insensitive por nombre parcial
+      const term = searchTerm.toLowerCase().trim();
+      const card = cardsRes.data.find(c =>
+        c.name.toLowerCase().includes(term)
+      );
+
+      if (!card) return { found: false };
+
+      const attachments = (card.attachments || []).map(att => ({
+        nombre: att.name,
+        url: att.url,
+        esArchivo: !!att.mimeType, // true si es archivo subido, false si es link
+        mimeType: att.mimeType || null,
+        bytes: att.bytes || 0,
+      }));
+
+      return {
+        found: true,
+        url: `https://trello.com/c/${card.shortLink}`,
+        card: {
+          id: card.id,
+          nombre: card.name,
+          descripcion: card.desc || 'Sin descripción.',
+          lista: listsMap[card.idList] || 'Desconocida',
+          asignados: (card.idMembers || []).map(id => membersMap[id] || id).join(', ') || 'Sin asignar',
+          vencimiento: card.due ? new Date(card.due).toLocaleDateString('es-ES') : 'Sin fecha',
+          completada: card.dueComplete ? 'Sí' : 'No',
+          labels: (card.labels || []).map(l => l.name || l.color).filter(Boolean).join(', ') || 'Sin etiquetas',
+        },
+        attachments,
+      };
+    } catch (e) {
+      console.error('Error en getCardDetails:', e.message);
+      return { found: false };
+    }
+  }
 }
+
