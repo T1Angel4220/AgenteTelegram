@@ -39,6 +39,7 @@ export class PdfService {
         // Obtener gráficos en paralelo
         let barChartBuffer: any = null;
         let pieChartBuffer: any = null;
+        let burndownChartBuffer: any = null;
 
         if (metrics && Object.keys(metrics.miembros || {}).length > 0) {
             const barConfig = {
@@ -71,11 +72,47 @@ export class PdfService {
                     title: { display: true, text: 'Estado del tablero', fontSize: 14 }
                 }
             };
-            [barChartBuffer, pieChartBuffer] = await Promise.all([
+            
+            // Burndown Chart Configuration
+            let burndownConfig: any = null;
+            if (metrics.burndown && metrics.burndown.length > 0) {
+                burndownConfig = {
+                    type: 'line',
+                    data: {
+                        labels: metrics.burndown.map((b: any) => b.fecha),
+                        datasets: [{
+                            label: 'Tareas Pendientes',
+                            data: metrics.burndown.map((b: any) => b.pendientes),
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        legend: { display: false },
+                        scales: { yAxes: [{ ticks: { beginAtZero: true } }] },
+                        title: { display: true, text: 'Burndown del Sprint', fontSize: 14 }
+                    }
+                };
+            }
+
+            const promises = [
                 this.generateChartImage(barConfig),
                 this.generateChartImage(pieConfig)
-            ]);
+            ];
+            
+            if (burndownConfig) {
+                promises.push(this.generateChartImage(burndownConfig));
+            }
+
+            const chartResults = await Promise.all(promises);
+            barChartBuffer = chartResults[0];
+            pieChartBuffer = chartResults[1];
+            if (burndownConfig) burndownChartBuffer = chartResults[2];
         }
+
 
         // Parsear el contenido estructurado de la IA
         const sections = this.parseContent(content);
@@ -115,60 +152,97 @@ export class PdfService {
             const pageW = 495;
 
             // ═══════════════════════════════════════════
-            // GRÁFICOS (si los tenemos)
+            // ESTADO GENERAL EXPLICADO
             // ═══════════════════════════════════════════
-            if (barChartBuffer || pieChartBuffer) {
-                y = this.drawSection(doc, '📊  Métricas del Proyecto', y, C.primary);
+            if (sections.estado_general) {
+                doc.fillColor(semaforoColor).fontSize(11).font('Helvetica-Bold')
+                   .text(`ESTADO: ${sections.estado_general}`, 50, y, { width: pageW });
+                y += 25;
+            }
+
+            // ═══════════════════════════════════════════
+            // RESUMEN EJECUTIVO
+            // ═══════════════════════════════════════════
+            if (sections.resumen) {
+                y = this.drawSection(doc, 'RESUMEN EJECUTIVO', y, C.accent);
+                y += 8;
+                doc.fillColor(C.primary).fontSize(10).font('Helvetica')
+                   .text(sections.resumen.trim(), 58, y, { width: pageW - 16, lineGap: 3 });
+                y += (sections.resumen.split('\n').length * 13) + 20;
+            }
+
+            // ═══════════════════════════════════════════
+            // INDICADORES CLAVE (Texto)
+            // ═══════════════════════════════════════════
+            if (sections.indicadores) {
+                y = this.drawSection(doc, 'INDICADORES CLAVE', y, C.primary);
+                y += 8;
+                doc.fillColor(C.muted).fontSize(10).font('Helvetica-Bold')
+                   .text(sections.indicadores.trim(), 58, y, { width: pageW - 16, lineGap: 4 });
+                y += sections.indicadores.split('\n').length * 14 + 18;
+            }
+
+            // ═══════════════════════════════════════════
+            // GRÁFICOS (Burndown y Métricas)
+            // ═══════════════════════════════════════════
+            if (barChartBuffer || pieChartBuffer || burndownChartBuffer) {
+                // y = this.drawSection(doc, 'ANÁLISIS GRÁFICO', y, C.primary);
                 y += 5;
-                if (barChartBuffer) doc.image(barChartBuffer, 50, y, { width: 240, height: 145 });
-                if (pieChartBuffer) doc.image(pieChartBuffer, 305, y, { width: 240, height: 145 });
-                y += 155;
+                
+                if (burndownChartBuffer) {
+                    doc.image(burndownChartBuffer, 50, y, { width: 495, height: 180 });
+                    y += 190;
+                }
+                
+                if (barChartBuffer && pieChartBuffer) {
+                    doc.image(barChartBuffer, 50, y, { width: 240, height: 145 });
+                    doc.image(pieChartBuffer, 305, y, { width: 240, height: 145 });
+                    y += 155;
+                } else if (barChartBuffer) {
+                    doc.image(barChartBuffer, 175, y, { width: 240, height: 145 });
+                    y += 155;
+                } else if (pieChartBuffer) {
+                    doc.image(pieChartBuffer, 175, y, { width: 240, height: 145 });
+                    y += 155;
+                }
+                y += 10;
             }
 
             // ═══════════════════════════════════════════
-            // ALERTAS / RIESGOS
+            // RIESGOS Y PROBLEMAS
             // ═══════════════════════════════════════════
-            if (sections.alertas) {
-                y = this.drawSection(doc, '⚠️  Alertas y Riesgos Críticos', y, C.danger);
+            if (sections.riesgos) {
+                y = this.drawSection(doc, 'RIESGOS Y PROBLEMAS CRÍTICOS', y, C.danger);
                 y += 8;
-                doc.rect(50, y - 2, pageW, sections.alertas.split('\n').length * 13 + 12).fill('#fef2f2');
-                doc.fillColor('#7f1d1d').fontSize(9).font('Helvetica')
-                   .text(sections.alertas.trim(), 58, y, { width: pageW - 16, lineGap: 2 });
-                y += sections.alertas.split('\n').length * 13 + 18;
+                const linesCount = sections.riesgos.split('\n').length;
+                doc.rect(50, y - 2, pageW, linesCount * 14 + 12).fill('#fef2f2');
+                doc.fillColor('#7f1d1d').fontSize(10).font('Helvetica')
+                   .text(sections.riesgos.trim(), 58, y, { width: pageW - 16, lineGap: 4 });
+                y += linesCount * 14 + 18;
             }
 
             // ═══════════════════════════════════════════
-            // ESTADO GENERAL
-            // ═══════════════════════════════════════════
-            if (sections.estado) {
-                y = this.drawSection(doc, '📋  Estado del Sprint', y, C.accent);
-                y += 8;
-                doc.fillColor(C.primary).fontSize(9).font('Helvetica')
-                   .text(sections.estado.trim(), 58, y, { width: pageW - 16, lineGap: 3 });
-                y += (sections.estado.split('\n').length * 13) + 16;
-            }
-
-            // ═══════════════════════════════════════════
-            // EQUIPO
+            // DESEMPEÑO DEL EQUIPO
             // ═══════════════════════════════════════════
             if (sections.equipo) {
-                y = this.drawSection(doc, '👥  Desempeño del Equipo', y, C.muted);
+                y = this.drawSection(doc, 'DESEMPEÑO DEL EQUIPO', y, C.muted);
                 y += 8;
-                doc.fillColor(C.primary).fontSize(9).font('Helvetica')
+                doc.fillColor(C.primary).fontSize(10).font('Helvetica')
                    .text(sections.equipo.trim(), 58, y, { width: pageW - 16, lineGap: 3 });
-                y += (sections.equipo.split('\n').length * 13) + 16;
+                y += (sections.equipo.split('\n').length * 13) + 20;
             }
 
             // ═══════════════════════════════════════════
-            // DECISIONES RECOMENDADAS
+            // CONCLUSIONES Y ACCIONES
             // ═══════════════════════════════════════════
-            if (sections.decisiones) {
-                y = this.drawSection(doc, '✅  Decisiones Recomendadas para Hoy', y, C.success);
+            if (sections.conclusiones) {
+                y = this.drawSection(doc, 'CONCLUSIONES Y ACCIONES ESTRATÉGICAS', y, C.success);
                 y += 8;
-                doc.rect(50, y - 2, pageW, sections.decisiones.split('\n').length * 13 + 12).fill('#f0fdf4');
-                doc.fillColor('#14532d').fontSize(9).font('Helvetica-Bold')
-                   .text(sections.decisiones.trim(), 58, y, { width: pageW - 16, lineGap: 4 });
-                y += sections.decisiones.split('\n').length * 13 + 18;
+                const linesCount = sections.conclusiones.split('\n').length;
+                doc.rect(50, y - 2, pageW, linesCount * 14 + 12).fill('#f0fdf4');
+                doc.fillColor('#14532d').fontSize(10).font('Helvetica-Bold')
+                   .text(sections.conclusiones.trim(), 58, y, { width: pageW - 16, lineGap: 4 });
+                y += linesCount * 14 + 18;
             }
 
             // PIE DE PÁGINA
@@ -182,36 +256,52 @@ export class PdfService {
     }
 
     // Parser que extrae secciones del texto de la IA
+    // Parser que extrae secciones del texto de la IA
     private parseContent(content: string): any {
-        const result: any = {};
-        
-        // Detectar semáforo
-        const upper = content.toUpperCase();
-        if (upper.includes('ROJO') || upper.includes('CRÍTICO') || upper.includes('RIESGO ALTO')) {
-            result.semaforo = 'ROJO';
-        } else if (upper.includes('VERDE') || upper.includes('TODO EN ORDEN') || upper.includes('EXCELENTE')) {
-            result.semaforo = 'VERDE';
-        } else {
-            result.semaforo = 'AMARILLO';
-        }
-
-        // Extraer secciones por etiquetas
-        const sectionMap: Record<string, RegExp> = {
-            alertas:    /(?:ALERTAS?|RIESGOS?|PROBLEMAS?)[\s:]+(.+?)(?=\n[A-ZÁÉÍÓÚ]{3,}|\n\n\n|$)/si,
-            estado:     /(?:ESTADO|SPRINT|AVANCE)[\s:]+(.+?)(?=\n[A-ZÁÉÍÓÚ]{3,}|\n\n\n|$)/si,
-            equipo:     /(?:EQUIPO|DESEMPE[NÑ]O|MIEMBROS?)[\s:]+(.+?)(?=\n[A-ZÁÉÍÓÚ]{3,}|\n\n\n|$)/si,
-            decisiones: /(?:DECISIONES?|RECOMENDACIONES?|ACCIONES?)[\s:]+(.+?)(?=\n[A-ZÁÉÍÓÚ]{3,}|\n\n\n|$)/si
+        const result: any = {
+            estado_general: '',
+            resumen: '',
+            indicadores: '',
+            riesgos: '',
+            equipo: '',
+            conclusiones: ''
         };
-
-        for (const [key, regex] of Object.entries(sectionMap)) {
-            const match = content.match(regex);
-            result[key] = match ? match[1].trim().substring(0, 500) : null;
+        
+        // Limpiar Markdown (asteriscos y hashtags)
+        const cleanContent = content.replace(/[\*#]/g, '');
+        
+        let currentSection = 'estado_general'; // Default fallback
+        const lines = cleanContent.split('\n');
+        
+        for (let line of lines) {
+            line = line.trim();
+            const upperLine = line.toUpperCase();
+            
+            // Detección exacta de títulos
+            if (upperLine.startsWith('ESTADO GENERAL')) { currentSection = 'estado_general'; continue; }
+            if (upperLine.startsWith('RESUMEN EJECUTIVO')) { currentSection = 'resumen'; continue; }
+            if (upperLine.startsWith('INDICADORES CLAVE')) { currentSection = 'indicadores'; continue; }
+            if (upperLine.startsWith('RIESGOS Y PROBLEMAS') || upperLine.startsWith('RIESGOS')) { currentSection = 'riesgos'; continue; }
+            if (upperLine.startsWith('DESEMPEÑO DEL EQUIPO') || upperLine.startsWith('EQUIPO')) { currentSection = 'equipo'; continue; }
+            if (upperLine.startsWith('CONCLUSIONES Y ACCIONES') || upperLine.startsWith('CONCLUSIONES')) { currentSection = 'conclusiones'; continue; }
+            
+            if (line) {
+                // Remove "- " or "• " from the start if we want to format it ourselves, 
+                // but PDFKit can just print the string. We leave the text as is.
+                result[currentSection] += line + '\n';
+            }
         }
 
-        // Si la IA no usó secciones, todo va al estado
-        if (!result.estado && !result.alertas && !result.decisiones) {
-            result.estado = content.trim().substring(0, 800);
+        // Limpiar espacios finales y detectar semáforo
+        for (const key of Object.keys(result)) {
+            result[key] = result[key].trim() || null;
         }
+
+        // Analizar la primera línea (estado general) para el semáforo
+        const estadoUpper = (result.estado_general || '').toUpperCase();
+        if (estadoUpper.includes('ROJO')) result.semaforo = 'ROJO';
+        else if (estadoUpper.includes('VERDE')) result.semaforo = 'VERDE';
+        else result.semaforo = 'AMARILLO';
 
         return result;
     }

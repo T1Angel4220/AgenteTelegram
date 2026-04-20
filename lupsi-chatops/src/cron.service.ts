@@ -234,28 +234,57 @@ Máximo 4 puntos concisos. Sin introducciones.`;
       await this.bot.telegram.sendMessage(chatId, '🔔 LUPSI iniciando auditoría de cierre de día...');
 
       // 1) REPORTE EJECUTIVO (PDF con gráficos)
-      const promptReporte = `Actúa como un Project Manager experto. SIEMPRE en ESPAÑOL.
-Genera un REPORTE EJECUTIVO ESTRUCTURADO del proyecto usando la base de conocimiento disponible.
-Usa OBLIGATORIAMENTE estas secciones:
+      const promptReporte = `Actúa como PM experto. ESPAÑOL. Genera un REPORTE EJECUTIVO PROFESIONAL con estas secciones EXACTAS (usa mayúsculas para los títulos):
 
-ESTADO DEL SPRINT:
-[Resumen del avance con % de completitud estimado basado en la planificación conocida.]
+ESTADO GENERAL:
+[Escribe exactamente el color del semáforo (VERDE, AMARILLO, ROJO) y en la misma línea una justificación muy breve en cursiva, ej. AMARILLO - Riesgo leve por retrasos]
 
-ALERTAS Y RIESGOS:
-[Riesgos detectados hoy. Si no hay, escribe "Sin alertas críticas."]
+RESUMEN EJECUTIVO:
+[Un párrafo directo al punto sobre el resultado del sprint, completitud, desviaciones y situación global. Cero relleno.]
+
+INDICADORES CLAVE:
+[Lista en viñetas: Velocidad estimada vs real, Historias completadas, Desviación de tiempo, y Bugs resueltos. Inventa/calcula datos realistas basados en el contexto.]
+
+RIESGOS Y PROBLEMAS:
+[Lista con viñetas de los cuellos de botella reales, dependencias o sobrecargas detectadas.]
 
 DESEMPEÑO DEL EQUIPO:
-[Un párrafo corto por miembro activo.]
+[Lista con viñetas analizando el trabajo de cada miembro con nombre: si está sobrecargado, bloqueado u óptimo.]
 
-DECISIONES RECOMENDADAS:
-[3 a 5 acciones concretas que el PM debe tomar MAÑANA. Sé muy específico.]
+CONCLUSIONES Y ACCIONES:
+[Un párrafo corto de conclusión general seguido de 3 bullet points con acciones concretas para el PM o equipo.]
 
-Tono profesional. Sin emojis. Empieza directamente con "ESTADO DEL SPRINT:".`;
+Sin emojis. Sin introducciones. Empieza exactamente con "ESTADO GENERAL:".`;
 
       const [resultReporte, metrics] = await Promise.all([
         this.aiService.chatWithAgent(promptReporte),
         this.trelloService.getMetrics()
       ]);
+
+      // ── REGISTRO PARA EL BURNDOWN CHART ──
+      // Sumar tarjetas en listas que NO sean "Done" o "Completado"
+      let tareasPendientes = 0;
+      for (const [nombreLista, conteo] of Object.entries(metrics.listas || {})) {
+        if (!/done|completado|terminado|hecho/i.test(nombreLista)) {
+          tareasPendientes += conteo as number;
+        }
+      }
+
+      const burndownPath = path.join(process.cwd(), 'burndown.json');
+      let burndownData: any[] = [];
+      if (fs.existsSync(burndownPath)) {
+        burndownData = JSON.parse(fs.readFileSync(burndownPath, 'utf-8'));
+      }
+      
+      const hoyStr = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+      // Evitar duplicados del mismo día
+      if (burndownData.length === 0 || burndownData[burndownData.length - 1].fecha !== hoyStr) {
+        burndownData.push({ fecha: hoyStr, pendientes: tareasPendientes });
+        fs.writeFileSync(burndownPath, JSON.stringify(burndownData, null, 2));
+      }
+
+      // Añadimos el historial del burndown a las métricas para el PDF
+      metrics.burndown = burndownData;
 
       const pdfBuffer = await this.pdfService.generateReport(resultReporte.text, metrics);
       const filename = `Reporte_LUPSI_${new Date().toISOString().split('T')[0]}.pdf`;
@@ -266,14 +295,17 @@ Tono profesional. Sin emojis. Empieza directamente con "ESTADO DEL SPRINT:".`;
         { caption: '📊 Reporte ejecutivo nocturno generado.' },
       );
 
-      // 2) ANÁLISIS PROACTIVO DE CÓDIGO (en paralelo, 3 mensajes separados)
+      // 2) ANÁLISIS PROACTIVO DE CÓDIGO (secuencial para evitar Rate Limit de OpenRouter)
       try {
         const baseCtx = `Eres LUPSI, PM autónomo del equipo. Hablas SIEMPRE en ESPAÑOL. Eres conciso y directo.`;
-        const [opt, test, debt] = await Promise.all([
-          this.aiService.chatWithAgent(baseCtx + ` Identifica MÁXIMO 3 optimizaciones de código urgentes. Formato: archivo → problema → solución. MUY CORTO.`),
-          this.aiService.chatWithAgent(baseCtx + ` Propón 3 pruebas de software prioritarias que faltan. Formato: tipo → qué prueba → urgencia.`),
-          this.aiService.chatWithAgent(baseCtx + ` Los 2 puntos de deuda técnica más urgentes. Formato: problema → impacto → esfuerzo (Bajo/Medio/Alto).`)
-        ]);
+        
+        const opt = await this.aiService.chatWithAgent(baseCtx + ` Identifica MÁXIMO 3 optimizaciones de código urgentes. Formato: archivo → problema → solución. MUY CORTO.`);
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Delay 2s
+        
+        const test = await this.aiService.chatWithAgent(baseCtx + ` Propón 3 pruebas de software prioritarias que faltan. Formato: tipo → qué prueba → urgencia.`);
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        const debt = await this.aiService.chatWithAgent(baseCtx + ` Los 2 puntos de deuda técnica más urgentes. Formato: problema → impacto → esfuerzo (Bajo/Medio/Alto).`);
 
         for (const [emoji, titulo, res] of [
           ['⚡', 'OPTIMIZACIONES DETECTADAS', opt],

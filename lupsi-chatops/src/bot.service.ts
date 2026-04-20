@@ -225,26 +225,39 @@ export class BotService implements OnModuleInit {
       const chatId = ctx.chat.id;
       (async () => {
         try {
-          const prompt = `Actúa como PM experto. ESPAÑOL. Genera un REPORTE EJECUTIVO con estas secciones EXACTAS:
+          const prompt = `Actúa como PM experto. ESPAÑOL. Genera un REPORTE EJECUTIVO PROFESIONAL con estas secciones EXACTAS (usa mayúsculas para los títulos):
 
-ESTADO DEL SPRINT:
-[Resumen del avance con % estimado de completitud.]
+ESTADO GENERAL:
+[Escribe exactamente el color del semáforo (VERDE, AMARILLO, ROJO) y en la misma línea una justificación muy breve en cursiva, ej. AMARILLO - Riesgo leve por retrasos]
 
-ALERTAS Y RIESGOS:
-[Riesgos actuales. Si no hay, escribe "Sin alertas críticas."]
+RESUMEN EJECUTIVO:
+[Un párrafo directo al punto sobre el resultado del sprint, completitud, desviaciones y situación global. Cero relleno.]
+
+INDICADORES CLAVE:
+[Lista en viñetas: Velocidad estimada vs real, Historias completadas, Desviación de tiempo, y Bugs resueltos. Inventa/calcula datos realistas basados en el contexto.]
+
+RIESGOS Y PROBLEMAS:
+[Lista con viñetas de los cuellos de botella reales, dependencias o sobrecargas detectadas.]
 
 DESEMPEÑO DEL EQUIPO:
-[Un párrafo por miembro activo.]
+[Lista con viñetas analizando el trabajo de cada miembro con nombre: si está sobrecargado, bloqueado u óptimo.]
 
-DECISIONES RECOMENDADAS:
-[3 a 5 acciones concretas para el PM hoy. Numeradas.]
+CONCLUSIONES Y ACCIONES:
+[Un párrafo corto de conclusión general seguido de 3 bullet points con acciones concretas para el PM o equipo.]
 
-Sin emojis. Sin preamble. Empieza con "ESTADO DEL SPRINT:".`;
+Sin emojis. Sin introducciones. Empieza exactamente con "ESTADO GENERAL:".`;
 
           const [result, metrics] = await Promise.all([
             this.aiService.chatWithAgent(prompt),
             this.trelloService.getMetrics(),
           ]);
+
+          // Añadir datos de burndown si existen
+          const burndownPath = path.join(process.cwd(), 'burndown.json');
+          if (fs.existsSync(burndownPath)) {
+            metrics.burndown = JSON.parse(fs.readFileSync(burndownPath, 'utf-8'));
+          }
+
           const pdfBuffer = await this.pdfService.generateReport(result.text, metrics);
           await ctx.telegram.deleteMessage(chatId, loadingMsg.message_id).catch(() => {});
           await ctx.telegram.sendDocument(
