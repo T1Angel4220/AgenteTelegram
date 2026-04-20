@@ -1,4 +1,5 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, forwardRef, Inject } from '@nestjs/common';
+import { AiService } from './ai.service';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -12,10 +13,59 @@ export class DocsService implements OnModuleInit {
     private cachedKnowledge: string | null = null;
     private cachedSummary: string | null = null;
 
+    constructor(
+        @Inject(forwardRef(() => AiService))
+        private readonly aiService: AiService
+    ) {}
+
     async onModuleInit() {
         console.log('🚀 Iniciando LUPSI: Precargando base de conocimiento...');
         await this.getKnowledgeBase();
         console.log('✅ LUPSI Listo: Conocimiento cargado y cacheado.');
+        
+        // Sincronización automática de metadatos (opcionalmente disparada aquí)
+        setTimeout(() => this.syncMetadataWithAI(), 5000); 
+    }
+
+    async syncMetadataWithAI() {
+        if (!this.aiService || !this.cachedKnowledge) return;
+        
+        console.log('🧠 LUPSI: Sincronizando metadatos del proyecto desde los documentos...');
+        
+        const hoyStr = new Date().toISOString().split('T')[0];
+        const prompt = `Analiza este conocimiento acumulado de PDFs y documentos del proyecto:
+        
+        ${this.cachedKnowledge.substring(0, 12000)}
+        
+        Tu tarea es extraer los metadatos del SPRINT ACTUAL del proyecto para conocimiento.json.
+        FECHA DE HOY: ${hoyStr}
+        
+        REGLA CRÍTICA: Debes encontrar el sprint cuyo rango de fechas (inicio y fin) INCLUYA la fecha de hoy (${hoyStr}). No elijas simplemente el sprint con el número más alto si sus fechas son futuras.
+        
+        Responde ÚNICAMENTE con un JSON válido:
+        {
+          "sprint_actual": "Nombre del sprint",
+          "fecha_inicio": "YYYY-MM-DD",
+          "fecha_fin": "YYYY-MM-DD",
+          "objetivo_principal": "Resumen corto",
+          "riesgos_conocidos": "Resumen corto de riesgos encontrados"
+        }`;
+
+        try {
+            const response = await this.aiService.chatWithAgent(prompt);
+            const jsonStr = response.text.match(/\{[\s\S]*\}/)?.[0];
+            if (jsonStr) {
+                const metadata = JSON.parse(jsonStr);
+                const configPath = path.join(process.cwd(), 'conocimiento.json');
+                const current = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+                
+                const updated = { ...current, ...metadata };
+                fs.writeFileSync(configPath, JSON.stringify(updated, null, 2));
+                console.log('✅ Metadatos del proyecto actualizados automáticamente desde los documentos.');
+            }
+        } catch (e) {
+            console.error('❌ Error al sincronizar metadatos:', e.message);
+        }
     }
 
     async getKnowledgeBase(): Promise<string> {

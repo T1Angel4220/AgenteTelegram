@@ -234,25 +234,30 @@ Máximo 4 puntos concisos. Sin introducciones.`;
       await this.bot.telegram.sendMessage(chatId, '🔔 LUPSI iniciando auditoría de cierre de día...');
 
       // 1) REPORTE EJECUTIVO (PDF con gráficos)
-      const promptReporte = `Actúa como PM experto. ESPAÑOL. Genera un REPORTE EJECUTIVO PROFESIONAL con estas secciones EXACTAS (usa mayúsculas para los títulos):
+      const promptReporte = `Actúa como PM experto para SKT Software Solution (Software, Knowledge, and Trust). 
+Genera un REPORTE DE ESTADO DEL PROYECTO PROFESIONAL en ESPAÑOL con estas secciones EXACTAS:
 
 ESTADO GENERAL:
-[Escribe exactamente el color del semáforo (VERDE, AMARILLO, ROJO) y en la misma línea una justificación muy breve en cursiva, ej. AMARILLO - Riesgo leve por retrasos]
+[Escribe exactamente el color del semáforo (VERDE, AMARILLO, ROJO) y una justificación breve en la misma línea].
 
-RESUMEN EJECUTIVO:
-[Un párrafo directo al punto sobre el resultado del sprint, completitud, desviaciones y situación global. Cero relleno.]
+1. RESUMEN EJECUTIVO:
+[Incluye una lista de los Top 3 Hitos Alcanzados y una lista de Bloqueos Actuales].
 
-INDICADORES CLAVE:
-[Lista en viñetas: Velocidad estimada vs real, Historias completadas, Desviación de tiempo, y Bugs resueltos. Inventa/calcula datos realistas basados en el contexto.]
+2. ANÁLISIS DE FLUJO DE TRABAJO:
+[Métricas del Periodo: Tareas Planificadas, Completadas y Pasadas.
+Distribución de Carga: Una lista por miembro indicando Rol, Miembro, Estado de Carga (Normal/Sobrecargado) y Tareas (Activas/Pendientes)].
 
-RIESGOS Y PROBLEMAS:
-[Lista con viñetas de los cuellos de botella reales, dependencias o sobrecargas detectadas.]
+3. SALUD DEL CÓDIGO Y REPOSITORIO:
+[Métricas de PRs (Abiertos/Fusionados), Issues (Reportados/Resueltos) y Estado de Ramas (Main/Develop)].
 
-DESEMPEÑO DEL EQUIPO:
-[Lista con viñetas analizando el trabajo de cada miembro con nombre: si está sobrecargado, bloqueado u óptimo.]
+4. AUDITORÍA DE DOCUMENTACIÓN:
+[Lista de documentos principales (Diccionario de Datos, API Endpoints, Manual de Despliegue). Formato: Documento | Estado | Acción].
 
-CONCLUSIONES Y ACCIONES:
-[Un párrafo corto de conclusión general seguido de 3 bullet points con acciones concretas para el PM o equipo.]
+5. MATRIZ DE RIESGOS:
+[Lista de riesgos. Formato: Riesgo | Impacto | Mitigación | Responsable].
+
+6. RECOMENDACIONES Y PRÓXIMOS PASOS:
+[Ajustes al Proceso y Top 3 Prioridades para la próxima semana].
 
 Sin emojis. Sin introducciones. Empieza exactamente con "ESTADO GENERAL:".`;
 
@@ -332,8 +337,10 @@ Si afecta a un miembro específico, incluye "notifyMember" con su nombre de Trel
 Explica tu razón en la <respuesta> de forma muy concisa.`
       );
 
-      if (resultDecision.action) {
-        const actionId = this.autonomyService.saveDecision(resultDecision.action);
+      const actions = (resultDecision as any).actions || [];
+      if (actions.length > 0) {
+        const primaryAction = actions[0];
+        const actionId = this.autonomyService.saveDecision(primaryAction);
 
         // Guardar en historial
         const historialPath = path.join(process.cwd(), 'historial.txt');
@@ -351,9 +358,9 @@ Explica tu razón en la <respuesta> de forma muy concisa.`
           }
         );
 
-        if (resultDecision.action.notifyMember) {
+        if (primaryAction.notifyMember) {
           await this.botService.notifyMember(
-            resultDecision.action.notifyMember,
+            primaryAction.notifyMember,
             `Hola 👋 LUPSI ha detectado una situación con tus tareas. El PM la revisará pronto.`
           );
         }
@@ -420,6 +427,36 @@ Sin introducciones. Directo.`;
       }
     } catch (error) {
       console.error('Error en resumen semanal:', error);
+    }
+  }
+
+  // ══════════════════════════════════════════════════════
+  // CICLO 6 — ACTUALIZACIÓN DE BURNDOWN (23:59 — Todos los días)
+  // Registra el número de tareas pendientes para el gráfico histórico.
+  // ══════════════════════════════════════════════════════
+  @Cron('59 23 * * *')
+  async actualizarBurndown() {
+    console.log('📉 Actualizando registro de burndown histórico...');
+    try {
+      const metrics = await this.trelloService.getMetrics();
+      const pendientes = metrics.total;
+      const burndownPath = path.join(process.cwd(), 'burndown.json');
+      let data: any[] = [];
+      if (fs.existsSync(burndownPath)) {
+        data = JSON.parse(fs.readFileSync(burndownPath, 'utf-8'));
+      }
+      const hoy = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+      const index = data.findIndex(d => d.fecha === hoy);
+      if (index !== -1) {
+        data[index].pendientes = pendientes;
+      } else {
+        data.push({ fecha: hoy, pendientes });
+      }
+      if (data.length > 15) data.shift();
+      fs.writeFileSync(burndownPath, JSON.stringify(data, null, 2));
+      console.log(`✅ Burndown actualizado: ${hoy} -> ${pendientes} tareas.`);
+    } catch (error) {
+      console.error('Error actualizando burndown:', error);
     }
   }
 

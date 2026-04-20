@@ -107,8 +107,8 @@ export class TrelloService {
       await axios.put(url);
       return true;
     } catch (error) {
-      console.error('Error al mover tarjeta en Trello:', error);
-      return false;
+      console.error('Error al mover tarjeta en Trello:', error.response?.data || error.message);
+      throw new Error(error.response?.data || error.message || 'Error al mover tarjeta');
     }
   }
 
@@ -124,8 +124,8 @@ export class TrelloService {
       await axios.post(url);
       return true;
     } catch (error) {
-      console.error('Error al crear tarjeta en Trello:', error);
-      return false;
+      console.error('Error al crear tarjeta en Trello:', error.response?.data || error.message);
+      throw new Error(error.response?.data || error.message || 'Error al crear tarjeta');
     }
   }
 
@@ -136,8 +136,8 @@ export class TrelloService {
       await axios.post(url);
       return true;
     } catch (error) {
-      console.error('Error al añadir comentario en Trello:', error);
-      return false;
+      console.error('Error al añadir comentario en Trello:', error.response?.data || error.message);
+      throw new Error(error.response?.data || error.message || 'Error al añadir comentario');
     }
   }
 
@@ -178,8 +178,8 @@ export class TrelloService {
       await axios.post(url);
       return true;
     } catch (error) {
-      console.error('Error al asignar usuario en Trello:', error);
-      return false;
+      console.error('Error al asignar usuario en Trello:', error.response?.data || error.message);
+      throw new Error(error.response?.data || error.message || 'Error al asignar usuario');
     }
   }
 

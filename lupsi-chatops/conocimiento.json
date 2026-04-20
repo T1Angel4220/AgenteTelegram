@@ -1,8 +1,9 @@
 {
   "proyecto": "LUPSI",
-  "sprint_actual": "Sprint 3: Módulo Core",
-  "fecha_inicio": "2026-04-01",
-  "fecha_fin": "2026-04-15",
-  "objetivo_principal": "Finalizar la arquitectura base y la conexión completa de APIs de Trello y GitHub.",
-  "riesgos_conocidos": "El equipo tiene poco tiempo por carga académica. Alta probabilidad de atraso si las tareas pasan más de 2 días en 'Doing'."
+  "sprint_actual": "Sprint 3",
+  "fecha_inicio": "2026-04-11",
+  "fecha_fin": "2026-04-30",
+  "objetivo_principal": "Integrar el motor de reservas y los front‑ends PWA (Portal del Paciente y Panel Administrativo) y validar la comunicación con la API backend.",
+  "riesgos_conocidos": "Sobrecarga del equipo, posibles retrasos en la integración de la autenticación JWT y riesgo de error humano en la gestión de citas.",
+  "reglas_aprendidas": []
 }

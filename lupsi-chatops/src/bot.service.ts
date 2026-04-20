@@ -20,6 +20,9 @@ export class BotService implements OnModuleInit {
   // Estado de standup por usuario: chatId → 'waiting' | 'done'
   private standupState: Map<string, boolean> = new Map();
 
+  // Estado para capturar motivos de rechazo: chatId → actionId o detalle de decisión
+  private rejectionState: Map<string, any> = new Map();
+
   constructor(
     private readonly trelloService: TrelloService,
     private readonly githubService: GithubService,
@@ -168,6 +171,17 @@ export class BotService implements OnModuleInit {
       }
     });
 
+    // ── /sincronizar — Sincronizar metadatos desde PDFs ─────────────────────
+    this.bot.command('sincronizar', async (ctx) => {
+      await ctx.reply('🔄 Analizando documentos de planificación para sincronizar metadatos...');
+      try {
+        await this.docsService.syncMetadataWithAI();
+        ctx.reply('✅ Sincronización completada. Usa /contexto para ver los cambios.');
+      } catch (e) {
+        ctx.reply('❌ Error al sincronizar metadatos desde los documentos.');
+      }
+    });
+
     // ── /contexto — Ver el sprint y documentos activos ───────────────────────
     this.bot.command('contexto', (ctx) => {
       try {
@@ -178,14 +192,14 @@ export class BotService implements OnModuleInit {
           (new Date(c.fecha_fin).getTime() - Date.now()) / (24 * 60 * 60 * 1000)
         ));
         ctx.reply(
-          `📌 *Contexto Activo de LUPSI*\n\n` +
+          this.safe(`📌 *Contexto Activo de LUPSI*\n\n` +
           `🗓 *Sprint:* ${c.sprint_actual}\n` +
           `📅 *Inicio:* ${c.fecha_inicio}\n` +
           `📅 *Fin:* ${c.fecha_fin}\n` +
           `⏳ *Días restantes:* ${diasRestantes}\n` +
           `🎯 *Objetivo:* ${c.objetivo_principal}\n\n` +
           `⚠️ *Riesgos conocidos:*\n${c.riesgos_conocidos || 'Ninguno listado'}\n\n` +
-          `📚 *Documentos en base de conocimiento:*\n${docs || 'Ninguno cargado'}`,
+          `📚 *Documentos en base de conocimiento:*\n${docs || 'Ninguno cargado'}`),
           { parse_mode: 'Markdown' }
         );
       } catch (e) {
@@ -225,25 +239,30 @@ export class BotService implements OnModuleInit {
       const chatId = ctx.chat.id;
       (async () => {
         try {
-          const prompt = `Actúa como PM experto. ESPAÑOL. Genera un REPORTE EJECUTIVO PROFESIONAL con estas secciones EXACTAS (usa mayúsculas para los títulos):
+          const prompt = `Actúa como PM experto para SKT Software Solution (Software, Knowledge, and Trust). 
+Genera un REPORTE DE ESTADO DEL PROYECTO PROFESIONAL en ESPAÑOL con estas secciones EXACTAS:
 
 ESTADO GENERAL:
-[Escribe exactamente el color del semáforo (VERDE, AMARILLO, ROJO) y en la misma línea una justificación muy breve en cursiva, ej. AMARILLO - Riesgo leve por retrasos]
+[Escribe exactamente el color del semáforo (VERDE, AMARILLO, ROJO) y una justificación breve en la misma línea].
 
-RESUMEN EJECUTIVO:
-[Un párrafo directo al punto sobre el resultado del sprint, completitud, desviaciones y situación global. Cero relleno.]
+1. RESUMEN EJECUTIVO:
+[Incluye una lista de los Top 3 Hitos Alcanzados y una lista de Bloqueos Actuales].
 
-INDICADORES CLAVE:
-[Lista en viñetas: Velocidad estimada vs real, Historias completadas, Desviación de tiempo, y Bugs resueltos. Inventa/calcula datos realistas basados en el contexto.]
+2. ANÁLISIS DE FLUJO DE TRABAJO:
+[Métricas del Periodo: Tareas Planificadas, Completadas y Pasadas.
+Distribución de Carga: Una lista por miembro indicando Rol, Miembro, Estado de Carga (Normal/Sobrecargado) y Tareas (Activas/Pendientes)].
 
-RIESGOS Y PROBLEMAS:
-[Lista con viñetas de los cuellos de botella reales, dependencias o sobrecargas detectadas.]
+3. SALUD DEL CÓDIGO Y REPOSITORIO:
+[Métricas de PRs (Abiertos/Fusionados), Issues (Reportados/Resueltos) y Estado de Ramas (Main/Develop)].
 
-DESEMPEÑO DEL EQUIPO:
-[Lista con viñetas analizando el trabajo de cada miembro con nombre: si está sobrecargado, bloqueado u óptimo.]
+4. AUDITORÍA DE DOCUMENTACIÓN:
+[Lista de documentos principales (Diccionario de Datos, API Endpoints, Manual de Despliegue). Formato: Documento | Estado | Acción].
 
-CONCLUSIONES Y ACCIONES:
-[Un párrafo corto de conclusión general seguido de 3 bullet points con acciones concretas para el PM o equipo.]
+5. MATRIZ DE RIESGOS:
+[Lista de riesgos. Formato: Riesgo | Impacto | Mitigación | Responsable].
+
+6. RECOMENDACIONES Y PRÓXIMOS PASOS:
+[Ajustes al Proceso y Top 3 Prioridades para la próxima semana].
 
 Sin emojis. Sin introducciones. Empieza exactamente con "ESTADO GENERAL:".`;
 
@@ -315,23 +334,42 @@ Sin emojis. Sin introducciones. Empieza exactamente con "ESTADO GENERAL:".`;
         return ctx.editMessageText('❌ Acción expirada o ya procesada.').catch(() => {});
       }
       await ctx.answerCbQuery('Ejecutando...');
-      const success = await this.executeDecision(decision);
-      if (success) {
+      const result = await this.executeDecision(decision);
+      if (result.success) {
         this.pendingActions.delete(actionId);
         this.logHistorial('APROBADO', `${decision.tool || decision.tipo} — ${decision.rationale || ''}`);
         await ctx.editMessageText(this.safe(`✅ *Ejecutado correctamente.*\nAcción: ${decision.tool || decision.tipo}`), { parse_mode: 'Markdown' });
       } else {
-        await ctx.editMessageText('⚠️ No pude ejecutar esta acción. Verifica permisos o datos en Trello.');
+        await ctx.editMessageText('⚠️ *Fallo al ejecutar la acción.* Analizando el problema...', { parse_mode: 'Markdown' });
+        const prompt = `La ejecución de la herramienta ${decision.tool || decision.tipo} falló con este error:\n${result.message}\n\nAnaliza la situación. Si es un error de parámetros (como un nombre de miembro mal escrito), corrígelo. 
+        Si propones una acción técnica, DEBES usar la etiqueta <accion>.`;
+        const aiResponse = await this.aiService.chatWithAgent(prompt, ctx.chat?.id.toString());
+        await ctx.reply(this.safe(`🛠️ *LUPSI Self-Healing:*\n\n${aiResponse.text}`), { parse_mode: 'Markdown' });
+        
+        const healingActions = (aiResponse as any).actions || [];
+        if (healingActions.length > 0) {
+           const primaryHealingAction = healingActions[0];
+           this.pendingActions.set(actionId, primaryHealingAction); // Reutilizar ID
+           await ctx.reply(this.safe(`¿Ejecuto esta nueva acción correctiva? (${primaryHealingAction.tool || primaryHealingAction.tipo})`), {
+             parse_mode: 'Markdown',
+             ...Markup.inlineKeyboard([[Markup.button.callback('✅ Confirmar', `approve_${actionId}`)], [Markup.button.callback('❌ Cancelar', `reject_${actionId}`)]])
+           });
+        }
       }
     });
 
     this.bot.action(/^reject_(.+)$/, async (ctx) => {
       const actionId = ctx.match[1];
+      const decision = this.pendingActions.get(actionId);
       this.pendingActions.delete(actionId);
       this.autonomyService.deleteDecision(actionId);
       await ctx.answerCbQuery('Acción rechazada.');
       this.logHistorial('RECHAZADO', `ID: ${actionId}`);
       await ctx.editMessageText('❌ *Acción rechazada por el PM.*', { parse_mode: 'Markdown' });
+      
+      // Activar estado de aprendizaje activo
+      this.rejectionState.set(ctx.chat?.id.toString() || 'unknown', decision || { id: actionId });
+      await ctx.reply('🧠 Si deseas que aprenda de este rechazo, responde a este mensaje explicando el motivo. (Si no, simplemente ignóralo)');
     });
 
     this.bot.action(/^approve_auto_(.+)$/, async (ctx) => {
@@ -340,20 +378,32 @@ Sin emojis. Sin introducciones. Empieza exactamente con "ESTADO GENERAL:".`;
       const decision = pending.find(d => d.id === id);
       if (!decision) return ctx.answerCbQuery('Esta decisión ya no está pendiente.');
       await ctx.answerCbQuery('Ejecutando...');
-      const success = await this.executeDecision(decision);
-      if (success) {
+      const result = await this.executeDecision(decision);
+      if (result.success) {
         this.autonomyService.deleteDecision(id);
         this.logHistorial('APROBADO MANUAL', `${decision.tool || 'acción'}`);
         await ctx.editMessageText('✅ *Decisión aprobada y ejecutada.* Registrada en el historial.', { parse_mode: 'Markdown' });
+      } else {
+        await ctx.editMessageText('⚠️ *Fallo al ejecutar la acción.* Analizando el problema...', { parse_mode: 'Markdown' });
+        const prompt = `La ejecución de la herramienta ${decision.tool || decision.tipo} falló con este error:\n${result.message}\n\nAnaliza la situación. Si es un error de parámetros (como un nombre de miembro mal escrito), corrígelo. 
+        Si propones una acción técnica, DEBES usar la etiqueta <accion>.`;
+        const aiResponse = await this.aiService.chatWithAgent(prompt, ctx.chat?.id.toString());
+        await ctx.reply(this.safe(`🛠️ *LUPSI Self-Healing:*\n\n${aiResponse.text}`), { parse_mode: 'Markdown' });
       }
     });
 
     this.bot.action(/^reject_auto_(.+)$/, async (ctx) => {
       const id = ctx.match[1];
+      const pending = this.autonomyService.getPendingDecisions();
+      const decision = pending.find(d => d.id === id);
       this.autonomyService.deleteDecision(id);
       await ctx.answerCbQuery('Rechazado.');
       this.logHistorial('RECHAZADO', `ID autónomo: ${id}`);
       await ctx.editMessageText('❌ *Acción rechazada.* Eliminada de la cola.', { parse_mode: 'Markdown' });
+
+      // Activar estado de aprendizaje activo
+      this.rejectionState.set(ctx.chat?.id.toString() || 'unknown', decision || { id });
+      await ctx.reply('🧠 Si deseas que aprenda de este rechazo, responde a este mensaje explicando el motivo. (Si no, simplemente ignóralo)');
     });
 
     // ── Listener de texto: Chat IA + procesamiento de standup ─────────────────
@@ -381,6 +431,30 @@ Sin emojis. Sin introducciones. Empieza exactamente con "ESTADO GENERAL:".`;
         fs.writeFileSync(standupPath, JSON.stringify(standup, null, 2));
 
         return ctx.reply('✅ ¡Gracias! Registré tu actualización del día. ¡Éxito con tus tareas! 💪');
+      }
+
+      // Si el usuario está dando un motivo de rechazo
+      if (this.rejectionState.has(chatId)) {
+        const decisionRejected = this.rejectionState.get(chatId);
+        this.rejectionState.delete(chatId);
+        
+        const conocimientoPath = path.join(process.cwd(), 'conocimiento.json');
+        try {
+          const c = JSON.parse(fs.readFileSync(conocimientoPath, 'utf-8'));
+          if (!c.reglas_aprendidas) c.reglas_aprendidas = [];
+          
+          c.reglas_aprendidas.push({
+            fecha: new Date().toISOString().split('T')[0],
+            accion_rechazada: decisionRejected.tool || decisionRejected.tipo || 'Acción desconocida',
+            motivo: ctx.message.text
+          });
+          
+          fs.writeFileSync(conocimientoPath, JSON.stringify(c, null, 2));
+          return ctx.reply('🧠 ¡Entendido! He guardado esta regla en mi base de conocimiento. La tendré en cuenta para mis futuras decisiones.');
+        } catch (e) {
+          console.error('Error guardando regla:', e);
+          return ctx.reply('⚠️ Lo siento, no pude guardar la regla en conocimiento.json.');
+        }
       }
 
       // Chat normal con la IA
@@ -419,25 +493,37 @@ Sin emojis. Sin introducciones. Empieza exactamente con "ESTADO GENERAL:".`;
       }
 
       // Si la IA también solicitó GET_CARD_DETAILS como acción
-      if (result.action?.tool === 'GET_CARD_DETAILS') {
-        await this.enviarDetallesTarjeta(ctx, result.action.args?.searchTerm || '');
+      const actions = (result as any).actions || [];
+      const getCardAction = actions.find(a => a.tool === 'GET_CARD_DETAILS');
+      if (getCardAction) {
+        await this.enviarDetallesTarjeta(ctx, getCardAction.args?.searchTerm || '');
       }
 
-
-      if (result.action) {
-        const actionId = Math.random().toString(36).substring(2, 10);
-        this.pendingActions.set(actionId, result.action);
-        const toolName = result.action.tool || result.action.tipo || 'acción';
-        await ctx.reply(
-          this.safe(`🤖 *Acción requerida*\nDeseo ejecutar: *${toolName}*\n¿Autorizas esta operación?`),
-          {
-            parse_mode: 'Markdown',
-            ...Markup.inlineKeyboard([
-              [Markup.button.callback('✅ Confirmar', `approve_${actionId}`)],
-              [Markup.button.callback('❌ Cancelar', `reject_${actionId}`)],
-            ]),
+      if (actions.length > 0) {
+        for (const action of actions) {
+          if (action.tool === 'GET_CARD_DETAILS') continue; // Ya manejado arriba
+          
+          const actionId = Math.random().toString(36).substring(2, 10);
+          this.pendingActions.set(actionId, action);
+          
+          let detail = '';
+          if (action.tool === 'NOTIFY_MEMBER') {
+            const dest = action.args?.trelloNames || action.args?.trelloName || action.args?.name || 'Equipo';
+            detail = `\nPara: *${dest}*`;
           }
-        );
+
+          const toolName = action.tool || action.tipo || 'acción';
+          await ctx.reply(
+            this.safe(`🤖 *Acción requerida*\nDeseo ejecutar: *${toolName}*${detail}\n¿Autorizas esta operación?`),
+            {
+              parse_mode: 'Markdown',
+              ...Markup.inlineKeyboard([
+                [Markup.button.callback('✅ Confirmar', `approve_${actionId}`)],
+                [Markup.button.callback('❌ Cancelar', `reject_${actionId}`)],
+              ]),
+            }
+          );
+        }
       }
     });
 
@@ -524,24 +610,53 @@ Sin emojis. Sin introducciones. Empieza exactamente con "ESTADO GENERAL:".`;
   }
 
   // ── Ejecución de decisiones (Trello / GitHub) ────────────────────────────
-  async executeDecision(decision: any): Promise<boolean> {
+  async executeDecision(decision: any): Promise<{success: boolean, message?: string}> {
+    console.log('🤖 LUPSI EJECUTANDO ACCIÓN:', JSON.stringify(decision, null, 2));
     try {
       const { tool, args, cardId, memberId, targetListId, tipo } = decision;
       if (tipo === 'MOVE_CARD' || tool === 'MOVE_CARD') {
-        return await this.trelloService.moveCard(cardId || args?.cardId, targetListId || args?.listId);
+        await this.trelloService.moveCard(cardId || args?.cardId, targetListId || args?.listId);
       } else if (tipo === 'REASSIGN_CARD' || tool === 'ASSIGN_USER') {
-        return await this.trelloService.assignUser(cardId || args?.cardId, memberId || args?.memberId);
+        await this.trelloService.assignUser(cardId || args?.cardId, memberId || args?.memberId);
       } else if (tool === 'CREATE_CARD') {
-        return await this.trelloService.createCard(args.listId, args.name, args.desc, args.idMembers, args.idLabels, args.due, args.start);
+        await this.trelloService.createCard(args.listId, args.name, args.desc, args.idMembers, args.idLabels, args.due, args.start);
       } else if (tool === 'ADD_COMMENT') {
-        return await this.trelloService.addComment(args.cardId, args.text);
+        await this.trelloService.addComment(args.cardId, args.text);
       } else if (tool === 'CREATE_ISSUE') {
-        return await this.githubService.createIssue(args.title, args.body);
+        await this.githubService.createIssue(args.title, args.body);
+      } else if (tool === 'NOTIFY_MEMBER') {
+        const nombresRaw = args.trelloNames || args.trelloName || args.name || args.member || '';
+        const texto = args.text || args.message;
+        
+        // Si hay múltiples nombres separados por coma
+        const listaNombres = nombresRaw.split(',').map(n => n.trim()).filter(n => n.length > 0);
+        
+        let alMenosUnoEnviado = false;
+        let errores: string[] = [];
+
+        for (const nombre of listaNombres) {
+          const successNotify = await this.notifyMember(nombre, texto);
+          if (successNotify) {
+            alMenosUnoEnviado = true;
+          } else {
+            errores.push(nombre);
+          }
+        }
+
+        if (!alMenosUnoEnviado && listaNombres.length > 0) {
+          throw new Error(`No se pudo encontrar a ninguno de los miembros especificados: ${errores.join(', ')}`);
+        }
+        
+        if (errores.length > 0) {
+          return { success: true, message: `Enviado a algunos, pero no se encontró a: ${errores.join(', ')}` };
+        }
+      } else {
+        return { success: false, message: `Herramienta desconocida: ${tool || tipo}` };
       }
-      return false;
+      return { success: true };
     } catch (e) {
       console.error('Error ejecutando decisión:', e.message);
-      return false;
+      return { success: false, message: e.message };
     }
   }
 
@@ -557,7 +672,15 @@ Sin emojis. Sin introducciones. Empieza exactamente con "ESTADO GENERAL:".`;
     const equipoPath = path.join(process.cwd(), 'equipo.json');
     if (!fs.existsSync(equipoPath)) return false;
     const equipo = JSON.parse(fs.readFileSync(equipoPath, 'utf-8'));
-    const member = equipo.find(m => m.trelloName === trelloName);
+    
+    // Búsqueda flexible: por coincidencia exacta, parcial o insensible a mayúsculas
+    const nameLower = trelloName.toLowerCase();
+    const member = equipo.find(m => 
+      m.trelloName === trelloName || 
+      m.trelloName.toLowerCase().includes(nameLower) ||
+      nameLower.includes(m.trelloName.toLowerCase())
+    );
+    
     if (!member) return false;
     await this.bot.telegram.sendMessage(member.chatId, this.safe(text), { parse_mode: 'Markdown' }).catch(console.error);
     return true;
@@ -586,15 +709,20 @@ Sin emojis. Sin introducciones. Empieza exactamente con "ESTADO GENERAL:".`;
     let t = text;
     // Truncar si supera límite de Telegram
     if (t.length > 3900) {
-      t = t.substring(0, 3900) + '\n\n_[Mensaje truncado por límite de Telegram]_';
+      t = t.substring(0, 3900) + '\n\n_[Mensaje truncado]_';
     }
-    // Escapar guiones bajos dentro de palabras (nombres de archivos, variables)
-    // pero preservar * para negritas y _ para cursivas cuando están en pareja
-    t = t.replace(/([^*]|^)\*([^*]|$)/g, '$1*$2'); // negritas simples — dejar pasar
-    // Solo escapar caracteres realmente problemáticos sin pareja
-    t = t.replace(/(?<!\*)\*(?!\*)/g, '\\*'); // asteriscos sueltos
-    // Escapar corchetes que no son parte de links
-    t = t.replace(/\[([^\]]*)\](?!\()/g, '[$1]');
+    
+    // Escapar guiones bajos siempre (causan muchos problemas con Markdown V1)
+    // exceptuando si ya están escapados
+    t = t.replace(/(?<!\\)_/g, '\\_');
+    
+    // No escapar asteriscos si vienen en pareja (para negritas)
+    // Solo escapar si hay un número impar de asteriscos en el mensaje (muy básico)
+    const asteriskCount = (t.match(/\*/g) || []).length;
+    if (asteriskCount % 2 !== 0) {
+      t = t.replace(/\*/g, '\\*');
+    }
+
     return t;
   }
 }

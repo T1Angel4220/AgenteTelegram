@@ -35,8 +35,45 @@ export class PdfService {
         return y + 22;
     }
 
+    // Dibuja una tabla simple
+    private drawTable(doc: any, y: number, headers: string[], rows: string[][], colWidths: number[]): number {
+        const startX = 50;
+        let currentY = y;
+        const rowHeight = 18;
+
+        // Header
+        doc.rect(startX, currentY, 495, rowHeight).fill(this.COLORS.primary);
+        doc.fillColor(this.COLORS.white).fontSize(8).font('Helvetica-Bold');
+        let currentX = startX;
+        headers.forEach((h, i) => {
+            doc.text(h.toUpperCase(), currentX + 5, currentY + 5, { width: colWidths[i] - 5 });
+            currentX += colWidths[i];
+        });
+        currentY += rowHeight;
+
+        // Rows
+        doc.fontSize(8).font('Helvetica');
+        rows.forEach((row, rowIndex) => {
+            if (currentY > 750) { doc.addPage(); currentY = 50; }
+            
+            // Fondo alterno
+            if (rowIndex % 2 !== 0) {
+                doc.rect(startX, currentY, 495, rowHeight).fill('#f1f5f9');
+            }
+            
+            doc.fillColor(this.COLORS.primary);
+            currentX = startX;
+            row.forEach((cell, cellIndex) => {
+                doc.text(cell || '-', currentX + 5, currentY + 5, { width: colWidths[cellIndex] - 5 });
+                currentX += colWidths[cellIndex];
+            });
+            currentY += rowHeight;
+        });
+
+        return currentY + 10;
+    }
+
     async generateReport(content: string, metrics?: any): Promise<Buffer> {
-        // Obtener gráficos en paralelo
         let barChartBuffer: any = null;
         let pieChartBuffer: any = null;
         let burndownChartBuffer: any = null;
@@ -73,7 +110,6 @@ export class PdfService {
                 }
             };
             
-            // Burndown Chart Configuration
             let burndownConfig: any = null;
             if (metrics.burndown && metrics.burndown.length > 0) {
                 burndownConfig = {
@@ -98,14 +134,8 @@ export class PdfService {
                 };
             }
 
-            const promises = [
-                this.generateChartImage(barConfig),
-                this.generateChartImage(pieConfig)
-            ];
-            
-            if (burndownConfig) {
-                promises.push(this.generateChartImage(burndownConfig));
-            }
+            const promises = [this.generateChartImage(barConfig), this.generateChartImage(pieConfig)];
+            if (burndownConfig) promises.push(this.generateChartImage(burndownConfig));
 
             const chartResults = await Promise.all(promises);
             barChartBuffer = chartResults[0];
@@ -113,143 +143,116 @@ export class PdfService {
             if (burndownConfig) burndownChartBuffer = chartResults[2];
         }
 
-
-        // Parsear el contenido estructurado de la IA
         const sections = this.parseContent(content);
 
         return new Promise((resolve) => {
             const C = this.COLORS;
-            const doc = new PDFDocument({ margin: 0, size: 'A4', info: { Title: 'Reporte Ejecutivo LUPSI' } });
+            const doc = new PDFDocument({ margin: 0, size: 'A4', bufferPages: true, info: { Title: 'Reporte SKT Software Solution' } });
             const buffers: Buffer[] = [];
             doc.on('data', buffers.push.bind(buffers));
             doc.on('end', () => resolve(Buffer.concat(buffers)));
 
             // ═══════════════════════════════════════════
-            // HEADER PREMIUM
+            // HEADER SKT SOLUTIONS
             // ═══════════════════════════════════════════
-            doc.rect(0, 0, 595, 95).fill(C.primary);
-            doc.rect(0, 0, 7, 95).fill(C.accent);
+            doc.rect(0, 0, 595, 100).fill(C.primary);
+            doc.rect(0, 0, 10, 100).fill(C.accent);
 
-            doc.fillColor(C.white).fontSize(22).font('Helvetica-Bold')
-               .text('REPORTE EJECUTIVO', 30, 18);
-            doc.fillColor(C.accent).fontSize(10).font('Helvetica-Bold')
-               .text('LUPSI · AGENTE AUTÓNOMO DE GESTIÓN', 30, 46);
+            doc.fillColor(C.white).fontSize(20).font('Helvetica-Bold')
+               .text('INFORME DE ESTADO DEL PROYECTO', 35, 25);
+            doc.fillColor(C.accent).fontSize(11).font('Helvetica-Bold')
+               .text('SKT Software Solution (Software, Knowledge, and Trust)', 35, 52);
             doc.fillColor(C.muted).fontSize(8).font('Helvetica')
-               .text(`Generado el ${new Date().toLocaleDateString('es-ES', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' })}`, 30, 62);
-            doc.fillColor(C.muted).text('Proyecto: LUPSI ChatOps  ·  Plataforma: Trello + GitHub', 30, 76);
+               .text(`Gestor: Angel Ayuquina  |  Emisión: ${new Date().toLocaleDateString('es-ES')}`, 35, 72);
 
-            // SEMÁFORO (esquina derecha)
+            // SEMÁFORO
             const semaforo = sections.semaforo || 'AMARILLO';
             const semaforoColor = semaforo === 'VERDE' ? C.success : semaforo === 'ROJO' ? C.danger : C.warning;
-            doc.rect(440, 15, 120, 65).fill(semaforoColor).roundedRect(440, 15, 120, 65, 6).fill(semaforoColor);
-            doc.fillColor(C.white).fontSize(10).font('Helvetica-Bold').text('ESTADO GLOBAL', 447, 22);
-            doc.fontSize(22).font('Helvetica-Bold').text(semaforo, 447, 37);
+            doc.rect(460, 20, 100, 60).fill(semaforoColor);
+            doc.fillColor(C.white).fontSize(8).font('Helvetica-Bold').text('SALUD PROYECTO', 465, 28);
+            doc.fontSize(16).font('Helvetica-Bold').text(semaforo, 465, 42);
 
-            // LÍNEA ACCENT
-            doc.rect(0, 95, 595, 4).fill(C.accent);
-
-            let y = 110;
+            let y = 120;
             const pageW = 495;
 
-            // ═══════════════════════════════════════════
-            // ESTADO GENERAL EXPLICADO
-            // ═══════════════════════════════════════════
-            if (sections.estado_general) {
-                doc.fillColor(semaforoColor).fontSize(11).font('Helvetica-Bold')
-                   .text(`ESTADO: ${sections.estado_general}`, 50, y, { width: pageW });
-                y += 25;
-            }
-
-            // ═══════════════════════════════════════════
-            // RESUMEN EJECUTIVO
-            // ═══════════════════════════════════════════
+            // 1. RESUMEN EJECUTIVO
             if (sections.resumen) {
-                y = this.drawSection(doc, 'RESUMEN EJECUTIVO', y, C.accent);
-                y += 8;
-                doc.fillColor(C.primary).fontSize(10).font('Helvetica')
-                   .text(sections.resumen.trim(), 58, y, { width: pageW - 16, lineGap: 3 });
-                y += (sections.resumen.split('\n').length * 13) + 20;
-            }
-
-            // ═══════════════════════════════════════════
-            // INDICADORES CLAVE (Texto)
-            // ═══════════════════════════════════════════
-            if (sections.indicadores) {
-                y = this.drawSection(doc, 'INDICADORES CLAVE', y, C.primary);
-                y += 8;
-                doc.fillColor(C.muted).fontSize(10).font('Helvetica-Bold')
-                   .text(sections.indicadores.trim(), 58, y, { width: pageW - 16, lineGap: 4 });
-                y += sections.indicadores.split('\n').length * 14 + 18;
-            }
-
-            // ═══════════════════════════════════════════
-            // GRÁFICOS (Burndown y Métricas)
-            // ═══════════════════════════════════════════
-            if (barChartBuffer || pieChartBuffer || burndownChartBuffer) {
-                // y = this.drawSection(doc, 'ANÁLISIS GRÁFICO', y, C.primary);
-                y += 5;
-                
-                if (burndownChartBuffer) {
-                    doc.image(burndownChartBuffer, 50, y, { width: 495, height: 180 });
-                    y += 190;
-                }
-                
-                if (barChartBuffer && pieChartBuffer) {
-                    doc.image(barChartBuffer, 50, y, { width: 240, height: 145 });
-                    doc.image(pieChartBuffer, 305, y, { width: 240, height: 145 });
-                    y += 155;
-                } else if (barChartBuffer) {
-                    doc.image(barChartBuffer, 175, y, { width: 240, height: 145 });
-                    y += 155;
-                } else if (pieChartBuffer) {
-                    doc.image(pieChartBuffer, 175, y, { width: 240, height: 145 });
-                    y += 155;
-                }
+                y = this.drawSection(doc, '1. RESUMEN EJECUTIVO', y, C.accent);
                 y += 10;
+                doc.fillColor(C.primary).fontSize(9).font('Helvetica')
+                   .text(sections.resumen, 55, y, { width: pageW - 10, lineGap: 2 });
+                y += (sections.resumen.split('\n').length * 12) + 15;
             }
 
-            // ═══════════════════════════════════════════
-            // RIESGOS Y PROBLEMAS
-            // ═══════════════════════════════════════════
+            // 2. ANÁLISIS DE FLUJO
+            if (sections.flujo) {
+                y = this.drawSection(doc, '2. ANÁLISIS DE FLUJO DE TRABAJO (TRELLO)', y, C.primary);
+                y += 10;
+                doc.fillColor(C.primary).fontSize(9).text(sections.flujo, 55, y, { width: pageW - 10 });
+                y += (sections.flujo.split('\n').length * 12) + 10;
+
+                if (burndownChartBuffer) {
+                    doc.image(burndownChartBuffer, 50, y, { width: 495, height: 160 });
+                    y += 170;
+                }
+            }
+
+            // 3. SALUD DEL CÓDIGO
+            if (sections.codigo) {
+                if (y > 600) { doc.addPage(); y = 50; }
+                y = this.drawSection(doc, '3. SALUD DEL CÓDIGO Y REPOSITORIO (GITHUB)', y, C.primary);
+                y += 10;
+                doc.fillColor(C.primary).fontSize(9).text(sections.codigo, 55, y, { width: pageW - 10 });
+                y += (sections.codigo.split('\n').length * 12) + 15;
+            }
+
+            // 4. AUDITORÍA DE DOCUMENTACIÓN
+            if (sections.documentacion) {
+                if (y > 600) { doc.addPage(); y = 50; }
+                y = this.drawSection(doc, '4. AUDITORÍA DE DOCUMENTACIÓN', y, C.primary);
+                y += 10;
+                // Intentar formatear como tabla si la IA mandó líneas con '|' o '-'
+                const lines = sections.documentacion.split('\n').map(l => l.replace(/^[•\-\*]\s*/, ''));
+                const rows = lines.map(l => l.split('|').map(c => c.trim()));
+                if (rows.length > 1) {
+                    y = this.drawTable(doc, y, ['Documento', 'Estado', 'Acción'], rows, [180, 100, 215]);
+                } else {
+                    doc.fillColor(C.primary).fontSize(9).text(sections.documentacion, 55, y);
+                    y += (lines.length * 12) + 15;
+                }
+            }
+
+            // 5. MATRIZ DE RIESGOS
             if (sections.riesgos) {
-                y = this.drawSection(doc, 'RIESGOS Y PROBLEMAS CRÍTICOS', y, C.danger);
-                y += 8;
-                const linesCount = sections.riesgos.split('\n').length;
-                doc.rect(50, y - 2, pageW, linesCount * 14 + 12).fill('#fef2f2');
-                doc.fillColor('#7f1d1d').fontSize(10).font('Helvetica')
-                   .text(sections.riesgos.trim(), 58, y, { width: pageW - 16, lineGap: 4 });
-                y += linesCount * 14 + 18;
+                if (y > 600) { doc.addPage(); y = 50; }
+                y = this.drawSection(doc, '5. MATRIZ DE RIESGOS', y, C.danger);
+                y += 10;
+                const lines = sections.riesgos.split('\n').map(l => l.replace(/^[•\-\*]\s*/, ''));
+                const rows = lines.map(l => l.split('|').map(c => c.trim()));
+                if (rows.length > 0) {
+                    y = this.drawTable(doc, y, ['Riesgo', 'Impacto', 'Mitigación', 'Resp.'], rows, [150, 60, 200, 85]);
+                } else {
+                    doc.fillColor(C.primary).fontSize(9).text(sections.riesgos, 55, y);
+                    y += (lines.length * 12) + 15;
+                }
             }
 
-            // ═══════════════════════════════════════════
-            // DESEMPEÑO DEL EQUIPO
-            // ═══════════════════════════════════════════
-            if (sections.equipo) {
-                y = this.drawSection(doc, 'DESEMPEÑO DEL EQUIPO', y, C.muted);
-                y += 8;
-                doc.fillColor(C.primary).fontSize(10).font('Helvetica')
-                   .text(sections.equipo.trim(), 58, y, { width: pageW - 16, lineGap: 3 });
-                y += (sections.equipo.split('\n').length * 13) + 20;
+            // 6. RECOMENDACIONES
+            if (sections.proximos) {
+                if (y > 600) { doc.addPage(); y = 50; }
+                y = this.drawSection(doc, '6. RECOMENDACIONES Y PRÓXIMOS PASOS', y, C.success);
+                y += 10;
+                doc.fillColor(C.primary).fontSize(9).text(sections.proximos, 55, y, { width: pageW - 10, lineGap: 2 });
+                y += (sections.proximos.split('\n').length * 12) + 15;
             }
 
-            // ═══════════════════════════════════════════
-            // CONCLUSIONES Y ACCIONES
-            // ═══════════════════════════════════════════
-            if (sections.conclusiones) {
-                y = this.drawSection(doc, 'CONCLUSIONES Y ACCIONES ESTRATÉGICAS', y, C.success);
-                y += 8;
-                const linesCount = sections.conclusiones.split('\n').length;
-                doc.rect(50, y - 2, pageW, linesCount * 14 + 12).fill('#f0fdf4');
-                doc.fillColor('#14532d').fontSize(10).font('Helvetica-Bold')
-                   .text(sections.conclusiones.trim(), 58, y, { width: pageW - 16, lineGap: 4 });
-                y += linesCount * 14 + 18;
+            // Footer
+            const pageCount = doc.bufferedPageRange().count;
+            for (let i = 0; i < pageCount; i++) {
+                doc.switchToPage(i);
+                doc.rect(0, 815, 595, 30).fill(C.primary);
+                doc.fillColor(C.muted).fontSize(7).text(`Generado por LUPSI para SKT Software Solution  |  Página ${i + 1} de ${pageCount}`, 35, 825);
             }
-
-            // PIE DE PÁGINA
-            doc.rect(0, 810, 595, 32).fill(C.primary);
-            doc.fillColor(C.muted).fontSize(7).font('Helvetica')
-               .text('Documento confidencial · Generado autónomamente por LUPSI · Proyecto de Gestión de Software - UTA', 30, 820);
-            doc.fillColor(C.accent).text('lupsi.bot', 530, 820);
 
             doc.end();
         });
@@ -261,43 +264,38 @@ export class PdfService {
         const result: any = {
             estado_general: '',
             resumen: '',
-            indicadores: '',
+            flujo: '',
+            codigo: '',
+            documentacion: '',
             riesgos: '',
-            equipo: '',
-            conclusiones: ''
+            proximos: ''
         };
         
-        // Limpiar Markdown (asteriscos y hashtags)
-        const cleanContent = content.replace(/[\*#]/g, '');
-        
-        let currentSection = 'estado_general'; // Default fallback
+        const cleanContent = content.replace(/[*#]/g, '');
+        let currentSection = 'estado_general';
         const lines = cleanContent.split('\n');
         
         for (let line of lines) {
             line = line.trim();
             const upperLine = line.toUpperCase();
             
-            // Detección exacta de títulos
             if (upperLine.startsWith('ESTADO GENERAL')) { currentSection = 'estado_general'; continue; }
-            if (upperLine.startsWith('RESUMEN EJECUTIVO')) { currentSection = 'resumen'; continue; }
-            if (upperLine.startsWith('INDICADORES CLAVE')) { currentSection = 'indicadores'; continue; }
-            if (upperLine.startsWith('RIESGOS Y PROBLEMAS') || upperLine.startsWith('RIESGOS')) { currentSection = 'riesgos'; continue; }
-            if (upperLine.startsWith('DESEMPEÑO DEL EQUIPO') || upperLine.startsWith('EQUIPO')) { currentSection = 'equipo'; continue; }
-            if (upperLine.startsWith('CONCLUSIONES Y ACCIONES') || upperLine.startsWith('CONCLUSIONES')) { currentSection = 'conclusiones'; continue; }
+            if (upperLine.startsWith('1. RESUMEN EJECUTIVO')) { currentSection = 'resumen'; continue; }
+            if (upperLine.startsWith('2. ANÁLISIS DE FLUJO')) { currentSection = 'flujo'; continue; }
+            if (upperLine.startsWith('3. SALUD DEL CÓDIGO')) { currentSection = 'codigo'; continue; }
+            if (upperLine.startsWith('4. AUDITORÍA DE DOCUMENTACIÓN')) { currentSection = 'documentacion'; continue; }
+            if (upperLine.startsWith('5. MATRIZ DE RIESGOS')) { currentSection = 'riesgos'; continue; }
+            if (upperLine.startsWith('6. RECOMENDACIONES')) { currentSection = 'proximos'; continue; }
             
             if (line) {
-                // Remove "- " or "• " from the start if we want to format it ourselves, 
-                // but PDFKit can just print the string. We leave the text as is.
                 result[currentSection] += line + '\n';
             }
         }
 
-        // Limpiar espacios finales y detectar semáforo
         for (const key of Object.keys(result)) {
             result[key] = result[key].trim() || null;
         }
 
-        // Analizar la primera línea (estado general) para el semáforo
         const estadoUpper = (result.estado_general || '').toUpperCase();
         if (estadoUpper.includes('ROJO')) result.semaforo = 'ROJO';
         else if (estadoUpper.includes('VERDE')) result.semaforo = 'VERDE';

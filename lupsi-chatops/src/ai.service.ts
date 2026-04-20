@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import axios from 'axios';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -15,6 +15,7 @@ export class AiService {
     constructor(
         private trello: TrelloService,
         private github: GithubService,
+        @Inject(forwardRef(() => DocsService))
         private docs: DocsService
     ) {
         // Cargar sesiones persistidas al iniciar
@@ -46,7 +47,7 @@ export class AiService {
     }
 
 
-    async chatWithAgent(userMessage: string, chatId?: string): Promise<{ text: string, action?: any }> {
+    async chatWithAgent(userMessage: string, chatId?: string): Promise<{ text: string, actions?: any[] }> {
         try {
             const trelloContext = await this.trello.getBoardState();
             const githubContext = await this.github.getLatestCommits();
@@ -67,14 +68,23 @@ export class AiService {
                 historialContext = rawHistory.slice(-1500);
             }
 
+            // 2.5 Leemos los integrantes vinculados
+            let equipoContext = "No hay miembros vinculados aún.";
+            const equipoPath = path.join(process.cwd(), 'equipo.json');
+            if (fs.existsSync(equipoPath)) {
+                equipoContext = fs.readFileSync(equipoPath, 'utf-8');
+            }
+
             // 3. El Súper-Prompt Definitivo (Restructurado para Rigidez)
             const prompt = `ERES EL AGENTE AUTÓNOMO LUPSI. Identidad: Project Manager Activo.
       
       === REGLA DE ORO DE ACCIÓN ===
-      1. NO eres un tutor. NO des comandos de terminal (CLI) ni expliques cómo hacer las cosas.
-      2. Si el usuario pide una acción, TU DEBER es ejecutar la herramienta mediante la etiqueta <accion>.
-      3. Si faltan datos para una tarjeta, PREGUNTA. No inventes datos.
-      4. Usa EXCLUSIVAMENTE los IDs de la TOPOLOGÍA proporcionada abajo.
+      1. SIEMPRE que debas hacer algo (mover, crear, notificar, etc.), DEBES incluir la etiqueta <accion>.
+      2. NUNCA digas "¡Listo! He enviado..." o "Hecho" si no estás incluyendo el JSON de la herramienta en esa misma respuesta.
+      3. REGLA DE VERACIDAD: NO INVENTES NADA. Si un dato (fecha, hito, nombre) no está en los documentos o APIs, di que no lo sabes. Prohibido alucinar.
+      4. Para notificar a una persona, es OBLIGATORIO usar NOTIFY_MEMBER. No puedes "hablarles" sin usar la herramienta.
+      5. Si el usuario pide notificar a varios, incluye múltiples etiquetas <accion> (una por persona).
+      6. Usa EXCLUSIVAMENTE los IDs de la TOPOLOGÍA proporcionada abajo.
 
       === MANUAL DE HERRAMIENTAS (OBLIGATORIO) ===
       Para actuar, escribe: <accion>{"tool": "NOMBRE", "args": {...}}</accion>
@@ -84,9 +94,13 @@ export class AiService {
       - ADD_COMMENT: {"cardId": "string", "text": "string"}
       - CREATE_ISSUE: {"title": "string", "body": "string"}
       - ASSIGN_USER: {"cardId": "string", "memberId": "string"}
+      - NOTIFY_MEMBER: {"trelloNames": "Nombre1, Nombre2", "text": "string"} → Úsala para enviar el mismo mensaje a uno o varios miembros a la vez. Si es para todo el equipo, incluye todos los nombres separados por coma.
       - GET_CARD_DETAILS: {"searchTerm": "nombre parcial de la tarea"} → Úsala cuando el usuario pregunte por una tarea específica o pida sus adjuntos/entregables.
 
       === EJEMPLO DE RESPUESTA CORRECTA ===
+      Usuario: "Notifica a ALEX que revise el bug"
+      Respuesta: "<respuesta>Entendido, le avisaré a ALEX de inmediato.</respuesta> <accion>{\"tool\": \"NOTIFY_MEMBER\", \"args\": {\"trelloName\": \"ALEX\", \"text\": \"Hola, el PM solicita que revises el bug pendiente.\"}}</accion>"
+
       Usuario: "Crea un issue de bug"
       Respuesta: "<respuesta>Con gusto, voy a preparar el reporte de error en GitHub.</respuesta> <accion>{\"tool\": \"CREATE_ISSUE\", \"args\": {\"title\": \"Bug reportado\", \"body\": \"...\"}}</accion>"
 
@@ -94,6 +108,12 @@ export class AiService {
       Fecha Fin Sprint: ${conocimiento.fecha_fin} | Hoy: ${hoy}
       Objetivo: ${conocimiento.objetivo_principal}
       
+      === REGLAS APRENDIDAS (ÓRDENES DIRECTAS DEL PM) ===
+      ${(conocimiento.reglas_aprendidas || []).map(r => `- RECHAZASTE: ${r.accion_rechazada} MOTIVO: ${r.motivo}`).join('\n') || 'Ninguna regla aprendida aún.'}
+
+      EQUIPO VINCULADO (TELEGRAM):
+      ${equipoContext}
+
       TOPOLOGÍA TÉCNICA (USA ESTOS IDs):
       ${topology}
       
@@ -106,9 +126,18 @@ export class AiService {
       DOCUMENTACIÓN (BASE DE CONOCIMIENTO):
       ${knowledgeBase}
 
-      REGLA DE FORMATO FINAL: 
-      La respuesta legible al usuario DEBE ir en <respuesta></respuesta> en ESPAÑOL.
-      La acción técnica (opcional) DEBE ir en <accion></accion> como JSON.`;
+      === REGLAS DE FORMATO (OBLIGATORIO) ===
+      1. Tu respuesta DEBE estar contenida en etiquetas <respuesta></respuesta>.
+      2. CUALQUIER acción técnica DEBE estar en etiquetas <accion></accion>.
+      3. Si el usuario pide notificar a varias personas, escribe una etiqueta <accion> POR CADA PERSONA.
+      4. NUNCA respondas sin usar <respuesta>.
+      5. NUNCA digas que hiciste algo si no pusiste la etiqueta <accion> en este mismo turno.
+      
+      EJEMPLO GRUPAL:
+      Usuario: "Avisa a todo el equipo que hay junta"
+      Respuesta: "<respuesta>Entendido, notificaré a Sebastián y ALEX sobre la junta.</respuesta> <accion>{\"tool\": \"NOTIFY_MEMBER\", \"args\": {\"trelloNames\": \"Sebastián Alejandro Ortiz Bustos, ALEX\", \"text\": \"Junta hoy a las 5pm.\"}}</accion>"
+      
+      EJEMPLO MULTITAREA (ACCIONES DIFERENTES):`;
 
             const activeChat = chatId || 'default';
             if (!this.sessionMemory.has(activeChat)) {
@@ -137,6 +166,7 @@ export class AiService {
             });
 
             const content = response.data.choices[0]?.message?.content;
+            console.log('🤖 RAW AI RESPONSE:', content);
             if (!content) {
                 return { text: '❌ La IA no devolvió ninguna respuesta (vacío). Intenta de nuevo.' };
             }
@@ -153,12 +183,13 @@ export class AiService {
                 .replace(/<[^>]+>/g, '')          // Cualquier otra etiqueta HTML/XML
                 .trim();
 
-            // Extracción de acciones JSON
-            let action = null;
-            const actionMatch = content.match(/<accion>([\s\S]*?)<\/accion>/i);
-            if (actionMatch) {
+            // Extracción de acciones JSON (Soporte para múltiples etiquetas <accion>)
+            let actions: any[] = [];
+            const actionMatches = content.matchAll(/<accion>([\s\S]*?)<\/accion>/gi);
+            for (const match of actionMatches) {
                 try {
-                    action = JSON.parse(actionMatch[1].trim());
+                    const parsedAction = JSON.parse(match[1].trim());
+                    actions.push(parsedAction);
                 } catch (e) {
                     console.error('Error al parsear JSON de acción:', e.message);
                 }
@@ -167,7 +198,7 @@ export class AiService {
             memory.push({ role: 'assistant', content: cleanText });
             this.saveSessions(); // Persistir en disco para sobrevivir reinicios
             
-            return { text: cleanText, action };
+            return { text: cleanText, actions: actions.length > 0 ? actions : undefined };
         } catch (error) {
             console.error('Error en IA:', error?.response?.data || error.message);
             return { text: '❌ Mi cerebro de IA está fuera de línea por ahora.' };
@@ -176,8 +207,16 @@ export class AiService {
 
     async analyzeAndDecideTasks(trelloTopology: string, githubWorkload: string): Promise<any> {
         try {
+            const conocimientoPath = path.join(process.cwd(), 'conocimiento.json');
+            const conocimiento = JSON.parse(fs.readFileSync(conocimientoPath, 'utf-8'));
+            const reglasText = (conocimiento.reglas_aprendidas || []).map(r => `- Acción rechazada en el pasado: ${r.accion_rechazada}. Motivo del PM: ${r.motivo}`).join('\n');
+
             const prompt = `Eres un Agente Autónomo (Project Manager). 
 Debes analizar la siguiente topología de Trello (en JSON) y la carga de GitHub.
+
+=== REGLAS APRENDIDAS DE TUS ERRORES PASADOS ===
+${reglasText || 'Ninguna regla aprendida aún. Eres libre de decidir.'}
+¡NO PROPONGAS ACCIONES QUE VAYAN EN CONTRA DE ESTAS REGLAS!
 
 Topología Trello (IDs reales):
 ${trelloTopology}

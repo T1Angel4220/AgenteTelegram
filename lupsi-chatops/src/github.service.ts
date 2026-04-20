@@ -58,10 +58,11 @@ export class GithubService {
     } catch (error) {
       if (error.response) {
         console.error('Error detallado de GitHub:', error.response.data);
+        throw new Error(JSON.stringify(error.response.data));
       } else {
         console.error('Error al crear issue en GitHub:', error.message);
+        throw new Error(error.message || 'Error al crear issue');
       }
-      return false;
     }
   }
 
