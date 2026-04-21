@@ -36,6 +36,15 @@ export class BotService implements OnModuleInit {
   }
 
   onModuleInit() {
+    // Manejador global de errores para evitar que el bot se caiga
+    this.bot.catch((err: any, ctx) => {
+      console.error(`🚨 Error global en Telegraf para ${ctx.updateType}:`, err);
+      if (err.name === 'TimeoutError') {
+        ctx.reply('⚠️ La consulta tardó demasiado y fue cancelada. Por favor, intenta de nuevo con una pregunta más corta o recarga con /recargar.');
+      } else {
+        ctx.reply('❌ Ups, ocurrió un error inesperado en mi sistema interno.');
+      }
+    });
 
     // ── /start ───────────────────────────────────────────────────────────────
     this.bot.start((ctx) => {
@@ -239,32 +248,39 @@ export class BotService implements OnModuleInit {
       const chatId = ctx.chat.id;
       (async () => {
         try {
-          const prompt = `Actúa como PM experto para SKT Software Solution (Software, Knowledge, and Trust). 
-Genera un REPORTE DE ESTADO DEL PROYECTO PROFESIONAL en ESPAÑOL con estas secciones EXACTAS:
+          const prompt = `Actúa como Senior Project Manager de SKT Software Solution. 
+Genera un REPORTE EJECUTIVO DE ALTO NIVEL en ESPAÑOL. El tono debe ser profesional, analítico y directo.
 
-ESTADO GENERAL:
-[Escribe exactamente el color del semáforo (VERDE, AMARILLO, ROJO) y una justificación breve en la misma línea].
+Estructura obligatoria:
+
+ESTADO GENERAL: [Color: VERDE/AMARILLO/ROJO] - Justificación ejecutiva en una frase.
 
 1. RESUMEN EJECUTIVO:
-[Incluye una lista de los Top 3 Hitos Alcanzados y una lista de Bloqueos Actuales].
+- Visión general del progreso del sprint.
+- Top 3 logros técnicos clave.
+- Bloqueos críticos que requieren atención inmediata.
 
 2. ANÁLISIS DE FLUJO DE TRABAJO:
-[Métricas del Periodo: Tareas Planificadas, Completadas y Pasadas.
-Distribución de Carga: Una lista por miembro indicando Rol, Miembro, Estado de Carga (Normal/Sobrecargado) y Tareas (Activas/Pendientes)].
+- Interpretación de la velocidad del equipo y cuellos de botella detectados en las listas.
+- Comentario sobre la eficiencia en la transición de tareas.
 
 3. SALUD DEL CÓDIGO Y REPOSITORIO:
-[Métricas de PRs (Abiertos/Fusionados), Issues (Reportados/Resueltos) y Estado de Ramas (Main/Develop)].
+- Calidad de los últimos commits y actividad en GitHub.
+- Estado de las ramas y consistencia del código.
 
 4. AUDITORÍA DE DOCUMENTACIÓN:
-[Lista de documentos principales (Diccionario de Datos, API Endpoints, Manual de Despliegue). Formato: Documento | Estado | Acción].
+- Lista detallada: Documento | Estado | Acción Requerida.
+- Enfócate en la base de conocimiento cargada.
 
 5. MATRIZ DE RIESGOS:
-[Lista de riesgos. Formato: Riesgo | Impacto | Mitigación | Responsable].
+- Formato: Riesgo | Impacto | Mitigación | Responsable.
+- Identifica riesgos técnicos y de gestión.
 
 6. RECOMENDACIONES Y PRÓXIMOS PASOS:
-[Ajustes al Proceso y Top 3 Prioridades para la próxima semana].
+- Acciones correctivas sugeridas.
+- Prioridades estratégicas para el cierre del periodo.
 
-Sin emojis. Sin introducciones. Empieza exactamente con "ESTADO GENERAL:".`;
+REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
 
           const [result, metrics] = await Promise.all([
             this.aiService.chatWithAgent(prompt),

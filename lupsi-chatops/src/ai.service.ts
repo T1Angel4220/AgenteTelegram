@@ -180,9 +180,12 @@ export class AiService {
       Usuario: "Crea un issue de bug"
       Respuesta: "<respuesta>Con gusto, voy a preparar el reporte de error en GitHub.</respuesta> <accion>{\"tool\": \"CREATE_ISSUE\", \"args\": {\"title\": \"Bug reportado\", \"body\": \"...\"}}</accion>"
 
-      === CONTEXTO DEL PROYECTO ===
+      === CONTEXTO DEL PROYECTO (FUENTE DE VERDAD ABSOLUTA) ===
+      Sprint Actual: ${conocimiento.sprint_actual}
       Fecha Fin Sprint: ${conocimiento.fecha_fin} | Hoy: ${hoy}
       Objetivo: ${conocimiento.objetivo_principal}
+      
+      REGLA DE VERACIDAD DE SPRINT: Aunque encuentres documentos de otros sprints (ej. Sprint 5, Sprint 4) en la base de conocimiento, DEBES IGNORARLOS si contradicen el campo "Sprint Actual" de arriba. Actualmente estamos ÚNICAMENTE en el ${conocimiento.sprint_actual}. No menciones otros sprints como si fueran el presente.
       
       === REGLAS APRENDIDAS (ÓRDENES DIRECTAS DEL PM) ===
       ${(conocimiento.reglas_aprendidas || []).map(r => `- RECHAZASTE: ${r.accion_rechazada} MOTIVO: ${r.motivo}`).join('\n') || 'Ninguna regla aprendida aún.'}

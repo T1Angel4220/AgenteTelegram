@@ -196,12 +196,17 @@ export class TrelloService {
 
       const metrics = {
         listas: {},
-        miembros: {}
+        miembros: {},
+        urgent: 0
       };
 
       response.data.forEach(lista => {
         metrics.listas[lista.name] = lista.cards.length;
         lista.cards.forEach(card => {
+          // Contar urgentes por etiqueta
+          const isUrgent = (card.labels || []).some(l => (l.name || '').toLowerCase().includes('urgente') || l.color === 'red');
+          if (isUrgent) metrics.urgent++;
+
           (card.idMembers || []).forEach(mId => {
             const name = membersMap[mId] || 'Otros';
             metrics.miembros[name] = (metrics.miembros[name] || 0) + 1;

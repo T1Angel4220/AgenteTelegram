@@ -3,8 +3,8 @@
   "sprint_actual": "Sprint 3",
   "fecha_inicio": "2026-04-11",
   "fecha_fin": "2026-04-30",
-  "objetivo_principal": "Integrar el motor de reservas y los front-ends PWA (Portal del Paciente y Panel Administrativo) y validar la comunicación con la API backend.",
-  "riesgos_conocidos": "Sobrecarga del equipo, posibles retrasos en la integración de la autenticación JWT y riesgo de error humano en la gestión de citas.",
+  "objetivo_principal": "Desarrollar e integrar el Motor de Reservas en el backend y las interfaces PWA funcionales (Portal del Paciente y Panel Administrativo) para permitir agendamiento seguro y en tiempo real.",
+  "riesgos_conocidos": "Sobrecarga en el equipo frontend, retraso en validar la integración JWT, y riesgo de errores operativos sin documentación de despliegue.",
   "reglas_aprendidas": [
     {
       "fecha": "2026-04-21",

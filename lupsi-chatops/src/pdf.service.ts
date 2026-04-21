@@ -6,14 +6,15 @@ import axios from 'axios';
 export class PdfService {
 
     private readonly COLORS = {
-        primary:   '#0f172a', // Azul marino oscuro
-        accent:    '#6366f1', // Índigo vibrante
-        success:   '#10b981', // Verde
-        warning:   '#f59e0b', // Amarillo
-        danger:    '#ef4444', // Rojo
-        light:     '#f8fafc', // Blanco humo
-        muted:     '#64748b', // Gris medio
+        primary:   '#1e293b', // Slate 800
+        accent:    '#4f46e5', // Indigo 600
+        success:   '#059669', // Emerald 600
+        warning:   '#d97706', // Amber 600
+        danger:    '#dc2626', // Red 600
+        light:     '#f8fafc', // Slate 50
+        muted:     '#94a3b8', // Slate 400
         white:     '#ffffff',
+        border:    '#e2e8f0', // Slate 200
     };
 
     private async generateChartImage(config: any): Promise<Buffer | null> {
@@ -29,10 +30,23 @@ export class PdfService {
 
     // Dibuja una sección con título y banda de color
     private drawSection(doc: any, title: string, y: number, color: string): number {
-        doc.rect(50, y, 495, 22).fill(color);
-        doc.fillColor(this.COLORS.white).fontSize(9).font('Helvetica-Bold')
-           .text(title.toUpperCase(), 58, y + 7);
-        return y + 22;
+        doc.rect(50, y, 495, 24).fill(color);
+        doc.fillColor(this.COLORS.white).fontSize(10).font('Helvetica-Bold')
+           .text(title.toUpperCase(), 60, y + 7);
+        return y + 30;
+    }
+
+    private drawKPICard(doc: any, x: number, y: number, label: string, value: string, color: string) {
+        const width = 110;
+        const height = 45;
+        doc.rect(x, y, width, height).fill(this.COLORS.white);
+        doc.rect(x, y, 3, height).fill(color);
+        
+        doc.fillColor(this.COLORS.muted).fontSize(7).font('Helvetica')
+           .text(label.toUpperCase(), x + 10, y + 10);
+        
+        doc.fillColor(this.COLORS.primary).fontSize(14).font('Helvetica-Bold')
+           .text(value, x + 10, y + 22);
     }
 
     // Dibuja una tabla simple
@@ -54,20 +68,37 @@ export class PdfService {
         // Rows
         doc.fontSize(8).font('Helvetica');
         rows.forEach((row, rowIndex) => {
-            if (currentY > 750) { doc.addPage(); currentY = 50; }
-            
+            if (currentY > 730) { doc.addPage(); currentY = 50; }
+
+            // Calcular altura máxima de la fila basándonos en el contenido envuelto
+            let maxRowHeight = 18;
+            row.forEach((cell, cellIndex) => {
+                if (cellIndex < colWidths.length) {
+                    const h = doc.heightOfString(cell || '-', { width: colWidths[cellIndex] - 10 });
+                    if (h + 10 > maxRowHeight) maxRowHeight = h + 10;
+                }
+            });
+
             // Fondo alterno
             if (rowIndex % 2 !== 0) {
-                doc.rect(startX, currentY, 495, rowHeight).fill('#f1f5f9');
+                doc.rect(startX, currentY, 495, maxRowHeight).fill('#f8fafc');
             }
             
             doc.fillColor(this.COLORS.primary);
             currentX = startX;
             row.forEach((cell, cellIndex) => {
-                doc.text(cell || '-', currentX + 5, currentY + 5, { width: colWidths[cellIndex] - 5 });
-                currentX += colWidths[cellIndex];
+                if (cellIndex < colWidths.length) {
+                    const width = colWidths[cellIndex] - 10;
+                    doc.text(cell || '-', currentX + 5, currentY + 5, { width: width });
+                    currentX += colWidths[cellIndex];
+                }
             });
-            currentY += rowHeight;
+            
+            // Dibujar línea inferior de la fila para estructura
+            doc.moveTo(startX, currentY + maxRowHeight).lineTo(startX + 495, currentY + maxRowHeight)
+               .lineWidth(0.5).strokeColor(this.COLORS.border).stroke();
+
+            currentY += maxRowHeight;
         });
 
         return currentY + 10;
@@ -155,33 +186,48 @@ export class PdfService {
             // ═══════════════════════════════════════════
             // HEADER SKT SOLUTIONS
             // ═══════════════════════════════════════════
-            doc.rect(0, 0, 595, 100).fill(C.primary);
-            doc.rect(0, 0, 10, 100).fill(C.accent);
+            doc.rect(0, 0, 595, 120).fill(C.primary);
+            doc.rect(0, 115, 595, 5).fill(C.accent);
 
-            doc.fillColor(C.white).fontSize(20).font('Helvetica-Bold')
-               .text('INFORME DE ESTADO DEL PROYECTO', 35, 25);
-            doc.fillColor(C.accent).fontSize(11).font('Helvetica-Bold')
-               .text('SKT Software Solution (Software, Knowledge, and Trust)', 35, 52);
-            doc.fillColor(C.muted).fontSize(8).font('Helvetica')
-               .text(`Gestor: Angel Ayuquina  |  Emisión: ${new Date().toLocaleDateString('es-ES')}`, 35, 72);
+            doc.fillColor(C.white).fontSize(22).font('Helvetica-Bold')
+               .text('INFORME DE ESTADO DEL PROYECTO', 40, 35);
+            doc.fillColor(C.muted).fontSize(12).font('Helvetica-Bold')
+               .text('SKT Software Solution', 40, 62);
+            doc.fillColor(C.muted).fontSize(9).font('Helvetica')
+               .text(`Software, Knowledge, and Trust  |  Gestor: Angel Ayuquina`, 40, 78);
 
-            // SEMÁFORO
+            // SEMÁFORO (Badge moderno)
             const semaforo = sections.semaforo || 'AMARILLO';
             const semaforoColor = semaforo === 'VERDE' ? C.success : semaforo === 'ROJO' ? C.danger : C.warning;
-            doc.rect(460, 20, 100, 60).fill(semaforoColor);
-            doc.fillColor(C.white).fontSize(8).font('Helvetica-Bold').text('SALUD PROYECTO', 465, 28);
-            doc.fontSize(16).font('Helvetica-Bold').text(semaforo, 465, 42);
+            
+            doc.roundedRect(440, 30, 120, 50, 4).fill(C.white);
+            doc.fillColor(semaforoColor).fontSize(7).font('Helvetica-Bold').text('SALUD DEL PROYECTO', 450, 40);
+            doc.fontSize(18).text(semaforo, 450, 52);
 
-            let y = 120;
+            let y = 140;
             const pageW = 495;
 
+            // KPI CARDS
+            if (metrics) {
+                const total = Object.values(metrics.listas as Record<string, number>).reduce((a, b) => a + b, 0);
+                const urgent = (metrics.urgent || 0);
+                const progress = metrics.listas['Doing'] || metrics.listas['In Progress'] || 0;
+
+                this.drawKPICard(doc, 50, y, 'Tareas Totales', total.toString(), C.primary);
+                this.drawKPICard(doc, 175, y, 'En Progreso', progress.toString(), C.accent);
+                this.drawKPICard(doc, 300, y, 'Alertas Críticas', urgent.toString(), C.danger);
+                this.drawKPICard(doc, 425, y, 'Emisión', new Date().toLocaleDateString('es-ES'), C.success);
+                y += 70;
+            }
+
+            y += 10;
+
             // Fallback: Si no se detectaron secciones estructuradas, imprimir todo el contenido
-            const hasStructuredData = Object.values(sections).some(v => v !== null && v !== 'AMARILLO' && v !== 'ROJO' && v !== 'VERDE');
+            const hasStructuredData = Object.values(sections).some(v => v !== null && v !== 'AMARILLO' && v !== 'ROJO' && v !== 'VERDE' && v !== '');
             if (!hasStructuredData) {
-                doc.fillColor(C.primary).fontSize(10).font('Helvetica')
-                   .text('CONTENIDO DEL REPORTE:', 50, y);
+                doc.fillColor(C.primary).fontSize(10).font('Helvetica-Bold').text('CONTENIDO DEL REPORTE:', 50, y);
                 y += 20;
-                doc.fontSize(9).text(content, 55, y, { width: pageW - 10 });
+                doc.fontSize(9).font('Helvetica').text(content, 50, y, { width: pageW });
                 doc.end();
                 return;
             }
@@ -189,72 +235,82 @@ export class PdfService {
             // 1. RESUMEN EJECUTIVO
             if (sections.resumen) {
                 y = this.drawSection(doc, '1. RESUMEN EJECUTIVO', y, C.accent);
-                y += 10;
+                y += 15;
+                const textHeight = doc.heightOfString(sections.resumen, { width: pageW - 10, lineGap: 2 });
                 doc.fillColor(C.primary).fontSize(9).font('Helvetica')
                    .text(sections.resumen, 55, y, { width: pageW - 10, lineGap: 2 });
-                y += (sections.resumen.split('\n').length * 12) + 15;
+                y += textHeight + 20;
             }
 
             // 2. ANÁLISIS DE FLUJO
             if (sections.flujo) {
+                if (y > 600) { doc.addPage(); y = 50; }
                 y = this.drawSection(doc, '2. ANÁLISIS DE FLUJO DE TRABAJO (TRELLO)', y, C.primary);
-                y += 10;
+                y += 15;
+                const textHeight = doc.heightOfString(sections.flujo, { width: pageW - 10 });
                 doc.fillColor(C.primary).fontSize(9).text(sections.flujo, 55, y, { width: pageW - 10 });
-                y += (sections.flujo.split('\n').length * 12) + 10;
+                y += textHeight + 15;
 
                 if (burndownChartBuffer) {
+                    if (y > 600) { doc.addPage(); y = 50; }
                     doc.image(burndownChartBuffer, 50, y, { width: 495, height: 160 });
-                    y += 170;
+                    y += 180;
                 }
             }
 
             // 3. SALUD DEL CÓDIGO
             if (sections.codigo) {
-                if (y > 600) { doc.addPage(); y = 50; }
+                if (y > 650) { doc.addPage(); y = 50; }
                 y = this.drawSection(doc, '3. SALUD DEL CÓDIGO Y REPOSITORIO (GITHUB)', y, C.primary);
-                y += 10;
+                y += 15;
+                const textHeight = doc.heightOfString(sections.codigo, { width: pageW - 10 });
                 doc.fillColor(C.primary).fontSize(9).text(sections.codigo, 55, y, { width: pageW - 10 });
-                y += (sections.codigo.split('\n').length * 12) + 15;
+                y += textHeight + 20;
             }
 
             // 4. AUDITORÍA DE DOCUMENTACIÓN
             if (sections.documentacion) {
-                if (y > 600) { doc.addPage(); y = 50; }
+                if (y > 650) { doc.addPage(); y = 50; }
                 y = this.drawSection(doc, '4. AUDITORÍA DE DOCUMENTACIÓN', y, C.primary);
-                y += 10;
+                y += 15;
                 // Intentar formatear como tabla si la IA mandó líneas con '|' o '-'
                 const lines = sections.documentacion.split('\n').map(l => l.replace(/^[•\-\*]\s*/, ''));
-                const rows = lines.map(l => l.split('|').map(c => c.trim()));
+                const rows = lines.map(l => l.split('|').map(c => c.trim())).filter(r => r.length >= 2);
+                
                 if (rows.length > 1) {
                     y = this.drawTable(doc, y, ['Documento', 'Estado', 'Acción'], rows, [180, 100, 215]);
                 } else {
+                    const textHeight = doc.heightOfString(sections.documentacion, { width: pageW - 10 });
                     doc.fillColor(C.primary).fontSize(9).text(sections.documentacion, 55, y);
-                    y += (lines.length * 12) + 15;
+                    y += textHeight + 20;
                 }
             }
 
             // 5. MATRIZ DE RIESGOS
             if (sections.riesgos) {
-                if (y > 600) { doc.addPage(); y = 50; }
+                if (y > 650) { doc.addPage(); y = 50; }
                 y = this.drawSection(doc, '5. MATRIZ DE RIESGOS', y, C.danger);
-                y += 10;
+                y += 15;
                 const lines = sections.riesgos.split('\n').map(l => l.replace(/^[•\-\*]\s*/, ''));
-                const rows = lines.map(l => l.split('|').map(c => c.trim()));
+                const rows = lines.map(l => l.split('|').map(c => c.trim())).filter(r => r.length >= 2);
+                
                 if (rows.length > 0) {
                     y = this.drawTable(doc, y, ['Riesgo', 'Impacto', 'Mitigación', 'Resp.'], rows, [150, 60, 200, 85]);
                 } else {
+                    const textHeight = doc.heightOfString(sections.riesgos, { width: pageW - 10 });
                     doc.fillColor(C.primary).fontSize(9).text(sections.riesgos, 55, y);
-                    y += (lines.length * 12) + 15;
+                    y += textHeight + 20;
                 }
             }
 
             // 6. RECOMENDACIONES
             if (sections.proximos) {
-                if (y > 600) { doc.addPage(); y = 50; }
+                if (y > 650) { doc.addPage(); y = 50; }
                 y = this.drawSection(doc, '6. RECOMENDACIONES Y PRÓXIMOS PASOS', y, C.success);
-                y += 10;
+                y += 15;
+                const textHeight = doc.heightOfString(sections.proximos, { width: pageW - 10, lineGap: 2 });
                 doc.fillColor(C.primary).fontSize(9).text(sections.proximos, 55, y, { width: pageW - 10, lineGap: 2 });
-                y += (sections.proximos.split('\n').length * 12) + 15;
+                y += textHeight + 20;
             }
 
             // Footer
