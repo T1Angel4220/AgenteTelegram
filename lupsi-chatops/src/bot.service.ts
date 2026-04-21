@@ -270,6 +270,8 @@ Sin emojis. Sin introducciones. Empieza exactamente con "ESTADO GENERAL:".`;
             this.aiService.chatWithAgent(prompt),
             this.trelloService.getMetrics(),
           ]);
+          
+          console.log('📄 REPORT AI RESPONSE:', result.text.substring(0, 200) + '...');
 
           // Añadir datos de burndown si existen
           const burndownPath = path.join(process.cwd(), 'burndown.json');

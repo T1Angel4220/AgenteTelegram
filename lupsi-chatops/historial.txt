@@ -11,3 +11,6 @@ El proyecto está muy atrasado. Quedaban 15 tareas en To Do y nadie hizo commits
 [20/4/2026, 10:10:47] [APROBADO] NOTIFY_MEMBER — 
 [20/4/2026, 10:16:08] [APROBADO] NOTIFY_MEMBER — 
 [20/4/2026, 10:18:59] [APROBADO] NOTIFY_MEMBER — 
+[21/4/2026, 8:16:56] [APROBADO] NOTIFY_MEMBER — 
+[21/4/2026, 8:17:00] [APROBADO] NOTIFY_MEMBER — 
+[21/4/2026, 8:17:02] [RECHAZADO] ID: rhm3snnz

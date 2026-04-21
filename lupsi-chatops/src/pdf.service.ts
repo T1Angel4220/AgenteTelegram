@@ -175,6 +175,17 @@ export class PdfService {
             let y = 120;
             const pageW = 495;
 
+            // Fallback: Si no se detectaron secciones estructuradas, imprimir todo el contenido
+            const hasStructuredData = Object.values(sections).some(v => v !== null && v !== 'AMARILLO' && v !== 'ROJO' && v !== 'VERDE');
+            if (!hasStructuredData) {
+                doc.fillColor(C.primary).fontSize(10).font('Helvetica')
+                   .text('CONTENIDO DEL REPORTE:', 50, y);
+                y += 20;
+                doc.fontSize(9).text(content, 55, y, { width: pageW - 10 });
+                doc.end();
+                return;
+            }
+
             // 1. RESUMEN EJECUTIVO
             if (sections.resumen) {
                 y = this.drawSection(doc, '1. RESUMEN EJECUTIVO', y, C.accent);
@@ -271,24 +282,24 @@ export class PdfService {
             proximos: ''
         };
         
-        const cleanContent = content.replace(/[*#]/g, '');
+        const lines = content.split('\n');
         let currentSection = 'estado_general';
-        const lines = cleanContent.split('\n');
         
         for (let line of lines) {
-            line = line.trim();
-            const upperLine = line.toUpperCase();
+            // Limpiar línea de caracteres Markdown comunes y espacios al inicio/final
+            const cleanLine = line.replace(/[*#_~`>]/g, '').trim();
+            const upperLine = cleanLine.toUpperCase();
             
-            if (upperLine.startsWith('ESTADO GENERAL')) { currentSection = 'estado_general'; continue; }
-            if (upperLine.startsWith('1. RESUMEN EJECUTIVO')) { currentSection = 'resumen'; continue; }
-            if (upperLine.startsWith('2. ANÁLISIS DE FLUJO')) { currentSection = 'flujo'; continue; }
-            if (upperLine.startsWith('3. SALUD DEL CÓDIGO')) { currentSection = 'codigo'; continue; }
-            if (upperLine.startsWith('4. AUDITORÍA DE DOCUMENTACIÓN')) { currentSection = 'documentacion'; continue; }
-            if (upperLine.startsWith('5. MATRIZ DE RIESGOS')) { currentSection = 'riesgos'; continue; }
-            if (upperLine.startsWith('6. RECOMENDACIONES')) { currentSection = 'proximos'; continue; }
+            if (upperLine.includes('ESTADO GENERAL')) { currentSection = 'estado_general'; continue; }
+            if (upperLine.includes('1. RESUMEN EJECUTIVO')) { currentSection = 'resumen'; continue; }
+            if (upperLine.includes('2. ANÁLISIS DE FLUJO')) { currentSection = 'flujo'; continue; }
+            if (upperLine.includes('3. SALUD DEL CÓDIGO')) { currentSection = 'codigo'; continue; }
+            if (upperLine.includes('4. AUDITORÍA DE DOCUMENTACIÓN')) { currentSection = 'documentacion'; continue; }
+            if (upperLine.includes('5. MATRIZ DE RIESGOS')) { currentSection = 'riesgos'; continue; }
+            if (upperLine.includes('6. RECOMENDACIONES')) { currentSection = 'proximos'; continue; }
             
-            if (line) {
-                result[currentSection] += line + '\n';
+            if (line.trim()) {
+                result[currentSection] += line.trim() + '\n';
             }
         }
 

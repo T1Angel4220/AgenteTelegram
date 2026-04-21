@@ -11,6 +11,10 @@ import { DocsService } from './docs.service';
 @Injectable()
 export class AiService {
     private sessionMemory: Map<string, Array<{role: string, content: string}>> = new Map();
+    private keys: string[] = [];
+    private models: string[] = [];
+    private currentKeyIndex = 0;
+    private currentModelIndex = 0;
 
     constructor(
         private trello: TrelloService,
@@ -18,6 +22,15 @@ export class AiService {
         @Inject(forwardRef(() => DocsService))
         private docs: DocsService
     ) {
+        // Cargar llaves y modelos desde el entorno
+        const envKeys = process.env.AI_KEYS || process.env.OPENROUTER_API_KEY;
+        this.keys = envKeys ? envKeys.split(',').map(k => k.trim()) : [];
+        
+        const envModels = process.env.AI_MODELS;
+        this.models = envModels ? envModels.split(',').map(m => m.trim()) : ['openrouter/free'];
+
+        console.log(`🔌 IA Service inicializado con ${this.keys.length} llaves y ${this.models.length} modelos.`);
+
         // Cargar sesiones persistidas al iniciar
         this.loadSessions();
     }
@@ -44,6 +57,69 @@ export class AiService {
         } catch (e) {
             console.warn('No se pudo guardar sesión:', e.message);
         }
+    }
+
+    /**
+     * Realiza una petición a OpenRouter con soporte para failover (reintento con otras keys/modelos)
+     */
+    private async postWithFailover(payload: { messages: any[], max_tokens: number }): Promise<any> {
+        let lastError = null;
+        let attempts = 0;
+        const MAX_TOTAL_ATTEMPTS = 3; // Límite total de intentos para no exceder timeouts globales
+        
+        // Intentar con cada modelo disponible
+        for (let m = 0; m < this.models.length && attempts < MAX_TOTAL_ATTEMPTS; m++) {
+            const modelIndex = (this.currentModelIndex + m) % this.models.length;
+            const model = this.models[modelIndex];
+
+            // Para cada modelo, intentar con cada llave disponible
+            for (let k = 0; k < this.keys.length && attempts < MAX_TOTAL_ATTEMPTS; k++) {
+                const keyIndex = (this.currentKeyIndex + k) % this.keys.length;
+                const key = this.keys[keyIndex];
+                attempts++;
+
+                try {
+                    console.log(`🤖 [Intento ${attempts}] Modelo: ${model} | Key Index: ${keyIndex}`);
+                    
+                    const response = await axios.post('https://openrouter.ai/api/v1/chat/completions', {
+                        model: model,
+                        messages: payload.messages,
+                        max_tokens: payload.max_tokens
+                    }, {
+                        headers: {
+                            'Authorization': `Bearer ${key}`,
+                            'Content-Type': 'application/json'
+                        },
+                        timeout: 20000 // Reducido a 20s para ser más ágil
+                    });
+
+                    // Si tuvo éxito, actualizamos los índices actuales para la próxima vez
+                    this.currentKeyIndex = keyIndex;
+                    this.currentModelIndex = modelIndex;
+                    return response.data;
+                } catch (error) {
+                    const status = error?.response?.status;
+                    const errorData = error?.response?.data;
+                    console.warn(`⚠️ Fallo intento ${attempts}: Status ${status}`, errorData || error.message);
+                    
+                    lastError = error;
+
+                    // Si el error es 400 o 404 (Bad Request / Not Found - usualmente modelo inválido), saltamos el modelo
+                    if (status === 400 || status === 404) {
+                        break; // Probar con el siguiente modelo
+                    }
+
+                    // Si es 401, 429 o 402, probamos con la siguiente key
+                    if (status === 429 || status === 402 || status === 401) {
+                        continue; 
+                    } else {
+                        break; // Otros errores: probamos con el siguiente modelo
+                    }
+                }
+            }
+        }
+        
+        throw lastError || new Error('No se pudo completar la petición tras varios intentos.');
     }
 
 
@@ -153,19 +229,12 @@ export class AiService {
                 ...memory
             ];
 
-            const response = await axios.post('https://openrouter.ai/api/v1/chat/completions', {
-                model: 'openrouter/free',
+            const data = await this.postWithFailover({
                 messages: messages,
                 max_tokens: 2000
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-                    'Content-Type': 'application/json'
-                },
-                timeout: 60000 // Límite de 60 segundos para la IA
             });
 
-            const content = response.data.choices[0]?.message?.content;
+            const content = data.choices[0]?.message?.content;
             console.log('🤖 RAW AI RESPONSE:', content);
             if (!content) {
                 return { text: '❌ La IA no devolvió ninguna respuesta (vacío). Intenta de nuevo.' };
@@ -250,21 +319,15 @@ Si no hay decisiones, devuelve {"decisiones": []}. Responde solo con JSON.
 === ÚLTIMA REGLA / FINAL RULE ===
 ALL TEXT INSIDE "rationale" MUST BE IN SPANISH. NO INGLÉS. NO PENSAMIENTOS. SOLO JSON PURO.`;
 
-            const response = await axios.post('https://openrouter.ai/api/v1/chat/completions', {
-                model: 'openrouter/free',
+            const data = await this.postWithFailover({
                 messages: [
                     { role: 'system', content: 'Eres un motor JSON. Responde siempe en Español.' },
                     { role: 'user', content: prompt }
                 ],
                 max_tokens: 1500
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-                    'Content-Type': 'application/json'
-                }
             });
 
-            let content = response.data.choices[0].message.content;
+            let content = data.choices[0].message.content;
             
             // Extracción ultra-resiliente de JSON por si el modelo genera pensamientos antes de la llave.
             const startObj = content.indexOf('{');
