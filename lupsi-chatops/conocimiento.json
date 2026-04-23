@@ -1,10 +1,10 @@
 {
   "proyecto": "LUPSI",
-  "sprint_actual": "Sprint 3",
-  "fecha_inicio": "2026-04-11",
+  "sprint_actual": "Sprint 3: Motor de Agendamiento e Interfaces Frontend",
+  "fecha_inicio": "2026-04-08",
   "fecha_fin": "2026-04-30",
-  "objetivo_principal": "Desarrollar e integrar el Motor de Reservas en el backend y las interfaces PWA funcionales (Portal del Paciente y Panel Administrativo) para permitir agendamiento seguro y en tiempo real.",
-  "riesgos_conocidos": "Sobrecarga en el equipo frontend, retraso en validar la integración JWT, y riesgo de errores operativos sin documentación de despliegue.",
+  "objetivo_principal": "Desarrollar e integrar el Motor de Reservas en el backend para prevenir cruces de horarios y construir los portales PWA para pacientes y administración, incluido el repositorio RBAC.",
+  "riesgos_conocidos": "Resistencia al cambio, caídas del servidor, ciberataques, perfiles falsos, fallos en la dirección del proyecto e incompatibilidades tecnológicas.",
   "reglas_aprendidas": [
     {
       "fecha": "2026-04-21",

@@ -90,7 +90,7 @@ export class BotService implements OnModuleInit {
       const msg = await ctx.reply('⏳ Consultando el tablero de Trello...');
       try {
         const reporte = await this.trelloService.getBoardState();
-        await ctx.telegram.deleteMessage(ctx.chat.id, msg.message_id).catch(() => {});
+        await ctx.telegram.deleteMessage(ctx.chat.id, msg.message_id).catch(() => { });
         ctx.reply(this.safe(reporte), { parse_mode: 'Markdown' });
       } catch (e) {
         ctx.reply('❌ No pude conectar con Trello. Verifica las credenciales.');
@@ -102,7 +102,7 @@ export class BotService implements OnModuleInit {
       const msg = await ctx.reply('⏳ Obteniendo actividad de GitHub...');
       try {
         const res = await this.githubService.getLatestCommits();
-        await ctx.telegram.deleteMessage(ctx.chat.id, msg.message_id).catch(() => {});
+        await ctx.telegram.deleteMessage(ctx.chat.id, msg.message_id).catch(() => { });
         ctx.reply(this.safe(res), { parse_mode: 'Markdown' });
       } catch (e) {
         ctx.reply('❌ No pude conectar con GitHub. Verifica el token.');
@@ -115,7 +115,7 @@ export class BotService implements OnModuleInit {
       try {
         const health = await this.managerService.getHealthCheck();
         const trello = await this.trelloService.getBoardState();
-        await ctx.telegram.deleteMessage(ctx.chat.id, msg.message_id).catch(() => {});
+        await ctx.telegram.deleteMessage(ctx.chat.id, msg.message_id).catch(() => { });
         ctx.reply(this.safe(`${health}${trello}`), { parse_mode: 'Markdown' });
       } catch (e) {
         ctx.reply('❌ Error al realizar el análisis.');
@@ -202,13 +202,13 @@ export class BotService implements OnModuleInit {
         ));
         ctx.reply(
           this.safe(`📌 *Contexto Activo de LUPSI*\n\n` +
-          `🗓 *Sprint:* ${c.sprint_actual}\n` +
-          `📅 *Inicio:* ${c.fecha_inicio}\n` +
-          `📅 *Fin:* ${c.fecha_fin}\n` +
-          `⏳ *Días restantes:* ${diasRestantes}\n` +
-          `🎯 *Objetivo:* ${c.objetivo_principal}\n\n` +
-          `⚠️ *Riesgos conocidos:*\n${c.riesgos_conocidos || 'Ninguno listado'}\n\n` +
-          `📚 *Documentos en base de conocimiento:*\n${docs || 'Ninguno cargado'}`),
+            `🗓 *Sprint:* ${c.sprint_actual}\n` +
+            `📅 *Inicio:* ${c.fecha_inicio}\n` +
+            `📅 *Fin:* ${c.fecha_fin}\n` +
+            `⏳ *Días restantes:* ${diasRestantes}\n` +
+            `🎯 *Objetivo:* ${c.objetivo_principal}\n\n` +
+            `⚠️ *Riesgos conocidos:*\n${c.riesgos_conocidos || 'Ninguno listado'}\n\n` +
+            `📚 *Documentos en base de conocimiento:*\n${docs || 'Ninguno cargado'}`),
           { parse_mode: 'Markdown' }
         );
       } catch (e) {
@@ -286,7 +286,7 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
             this.aiService.chatWithAgent(prompt),
             this.trelloService.getMetrics(),
           ]);
-          
+
           console.log('📄 REPORT AI RESPONSE:', result.text.substring(0, 200) + '...');
 
           // Añadir datos de burndown si existen
@@ -296,7 +296,7 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
           }
 
           const pdfBuffer = await this.pdfService.generateReport(result.text, metrics);
-          await ctx.telegram.deleteMessage(chatId, loadingMsg.message_id).catch(() => {});
+          await ctx.telegram.deleteMessage(chatId, loadingMsg.message_id).catch(() => { });
           await ctx.telegram.sendDocument(
             chatId,
             Input.fromBuffer(pdfBuffer, `Reporte_LUPSI_${new Date().toISOString().split('T')[0]}.pdf`),
@@ -317,7 +317,7 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
         const githubWorkload = await this.githubService.getLatestCommits();
         const aiResponse = await this.aiService.analyzeAndDecideTasks(trelloTopology, githubWorkload);
         const decisiones = aiResponse.decisiones || [];
-        await ctx.telegram.deleteMessage(ctx.chat.id, msg.message_id).catch(() => {});
+        await ctx.telegram.deleteMessage(ctx.chat.id, msg.message_id).catch(() => { });
 
         if (decisiones.length === 0) {
           return ctx.reply('✅ Analicé el proyecto en detalle. Todo marcha correctamente, no hay acciones recomendadas en este momento.');
@@ -349,7 +349,7 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
       const decision = this.pendingActions.get(actionId);
       if (!decision) {
         await ctx.answerCbQuery('Esta acción ya fue procesada o expiró.', { show_alert: true });
-        return ctx.editMessageText('❌ Acción expirada o ya procesada.').catch(() => {});
+        return ctx.editMessageText('❌ Acción expirada o ya procesada.').catch(() => { });
       }
       await ctx.answerCbQuery('Ejecutando...');
       const result = await this.executeDecision(decision);
@@ -363,15 +363,15 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
         Si propones una acción técnica, DEBES usar la etiqueta <accion>.`;
         const aiResponse = await this.aiService.chatWithAgent(prompt, ctx.chat?.id.toString());
         await ctx.reply(this.safe(`🛠️ *LUPSI Self-Healing:*\n\n${aiResponse.text}`), { parse_mode: 'Markdown' });
-        
+
         const healingActions = (aiResponse as any).actions || [];
         if (healingActions.length > 0) {
-           const primaryHealingAction = healingActions[0];
-           this.pendingActions.set(actionId, primaryHealingAction); // Reutilizar ID
-           await ctx.reply(this.safe(`¿Ejecuto esta nueva acción correctiva? (${primaryHealingAction.tool || primaryHealingAction.tipo})`), {
-             parse_mode: 'Markdown',
-             ...Markup.inlineKeyboard([[Markup.button.callback('✅ Confirmar', `approve_${actionId}`)], [Markup.button.callback('❌ Cancelar', `reject_${actionId}`)]])
-           });
+          const primaryHealingAction = healingActions[0];
+          this.pendingActions.set(actionId, primaryHealingAction); // Reutilizar ID
+          await ctx.reply(this.safe(`¿Ejecuto esta nueva acción correctiva? (${primaryHealingAction.tool || primaryHealingAction.tipo})`), {
+            parse_mode: 'Markdown',
+            ...Markup.inlineKeyboard([[Markup.button.callback('✅ Confirmar', `approve_${actionId}`)], [Markup.button.callback('❌ Cancelar', `reject_${actionId}`)]])
+          });
         }
       }
     });
@@ -384,7 +384,7 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
       await ctx.answerCbQuery('Acción rechazada.');
       this.logHistorial('RECHAZADO', `ID: ${actionId}`);
       await ctx.editMessageText('❌ *Acción rechazada por el PM.*', { parse_mode: 'Markdown' });
-      
+
       // Activar estado de aprendizaje activo
       this.rejectionState.set(ctx.chat?.id.toString() || 'unknown', decision || { id: actionId });
       await ctx.reply('🧠 Si deseas que aprenda de este rechazo, responde a este mensaje explicando el motivo. (Si no, simplemente ignóralo)');
@@ -455,18 +455,18 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
       if (this.rejectionState.has(chatId)) {
         const decisionRejected = this.rejectionState.get(chatId);
         this.rejectionState.delete(chatId);
-        
+
         const conocimientoPath = path.join(process.cwd(), 'conocimiento.json');
         try {
           const c = JSON.parse(fs.readFileSync(conocimientoPath, 'utf-8'));
           if (!c.reglas_aprendidas) c.reglas_aprendidas = [];
-          
+
           c.reglas_aprendidas.push({
             fecha: new Date().toISOString().split('T')[0],
             accion_rechazada: decisionRejected.tool || decisionRejected.tipo || 'Acción desconocida',
             motivo: ctx.message.text
           });
-          
+
           fs.writeFileSync(conocimientoPath, JSON.stringify(c, null, 2));
           return ctx.reply('🧠 ¡Entendido! He guardado esta regla en mi base de conocimiento. La tendré en cuenta para mis futuras decisiones.');
         } catch (e) {
@@ -478,8 +478,10 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
       // Chat normal con la IA
       const thinkingMsg = await ctx.reply('🧠 Analizando...');
       const result = await this.aiService.chatWithAgent(ctx.message.text, chatId);
-      await ctx.telegram.deleteMessage(ctx.chat.id, thinkingMsg.message_id).catch(() => {});
-      await ctx.reply(this.safe(result.text), { parse_mode: 'Markdown' });
+      await ctx.telegram.deleteMessage(ctx.chat.id, thinkingMsg.message_id).catch(() => { });
+      if (result.text && result.text.trim().length > 0) {
+        await ctx.reply(this.safe(result.text), { parse_mode: 'Markdown' });
+      }
 
       // ── Detección proactiva de tarjeta mencionada ─────────────────────────
       // Si el mensaje contiene palabras clave de búsqueda de tarea, intentar 
@@ -520,10 +522,10 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
       if (actions.length > 0) {
         for (const action of actions) {
           if (action.tool === 'GET_CARD_DETAILS') continue; // Ya manejado arriba
-          
+
           const actionId = Math.random().toString(36).substring(2, 10);
           this.pendingActions.set(actionId, action);
-          
+
           let detail = '';
           if (action.tool === 'NOTIFY_MEMBER') {
             const dest = action.args?.trelloNames || action.args?.trelloName || action.args?.name || 'Equipo';
@@ -628,7 +630,7 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
   }
 
   // ── Ejecución de decisiones (Trello / GitHub) ────────────────────────────
-  async executeDecision(decision: any): Promise<{success: boolean, message?: string}> {
+  async executeDecision(decision: any): Promise<{ success: boolean, message?: string }> {
     console.log('🤖 LUPSI EJECUTANDO ACCIÓN:', JSON.stringify(decision, null, 2));
     try {
       const { tool, args, cardId, memberId, targetListId, tipo } = decision;
@@ -640,15 +642,21 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
         await this.trelloService.createCard(args.listId, args.name, args.desc, args.idMembers, args.idLabels, args.due, args.start);
       } else if (tool === 'ADD_COMMENT') {
         await this.trelloService.addComment(args.cardId, args.text);
+      } else if (tool === 'MARK_CARD_COMPLETE' || tool === 'MARK_CARD_COMPLETED') {
+        await this.trelloService.markCardAsComplete(args.cardId || cardId);
       } else if (tool === 'CREATE_ISSUE') {
         await this.githubService.createIssue(args.title, args.body);
       } else if (tool === 'NOTIFY_MEMBER') {
-        const nombresRaw = args.trelloNames || args.trelloName || args.name || args.member || '';
+        const nombresRaw = args.trelloNames || args.trello_names || args.trelloName || args.name || args.member || '';
         const texto = args.text || args.message;
-        
-        // Si hay múltiples nombres separados por coma
-        const listaNombres = nombresRaw.split(',').map(n => n.trim()).filter(n => n.length > 0);
-        
+
+        let listaNombres: string[] = [];
+        if (Array.isArray(nombresRaw)) {
+          listaNombres = nombresRaw.map(n => typeof n === 'string' ? n.trim() : String(n)).filter(n => n.length > 0);
+        } else if (typeof nombresRaw === 'string') {
+          listaNombres = nombresRaw.split(',').map(n => n.trim()).filter(n => n.length > 0);
+        }
+
         let alMenosUnoEnviado = false;
         let errores: string[] = [];
 
@@ -664,10 +672,13 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
         if (!alMenosUnoEnviado && listaNombres.length > 0) {
           throw new Error(`No se pudo encontrar a ninguno de los miembros especificados: ${errores.join(', ')}`);
         }
-        
+
         if (errores.length > 0) {
           return { success: true, message: `Enviado a algunos, pero no se encontró a: ${errores.join(', ')}` };
         }
+      } else if (tool === 'AUTO_FIX_CODE') {
+        const prUrl = await this.githubService.createAutoFixPR(args.filePath, args.newContent, `Fix: ${args.reason || 'Mejora automática'}`);
+        return { success: true, message: `Pull Request creado con éxito: ${prUrl}` };
       } else {
         return { success: false, message: `Herramienta desconocida: ${tool || tipo}` };
       }
@@ -690,18 +701,28 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
     const equipoPath = path.join(process.cwd(), 'equipo.json');
     if (!fs.existsSync(equipoPath)) return false;
     const equipo = JSON.parse(fs.readFileSync(equipoPath, 'utf-8'));
+
+    // Búsqueda flexible: Priorizar coincidencia exacta primero
+    const nameLower = trelloName.toLowerCase().trim();
+    let member = equipo.find(m => m.trelloName.toLowerCase().trim() === nameLower || (m.nombre && m.nombre.toLowerCase().trim() === nameLower));
     
-    // Búsqueda flexible: por coincidencia exacta, parcial o insensible a mayúsculas
-    const nameLower = trelloName.toLowerCase();
-    const member = equipo.find(m => 
-      m.trelloName === trelloName || 
-      m.trelloName.toLowerCase().includes(nameLower) ||
-      nameLower.includes(m.trelloName.toLowerCase())
-    );
-    
+    // Fallback: coincidencia parcial solo si no hay coincidencia exacta
+    if (!member) {
+      member = equipo.find(m =>
+        m.trelloName.toLowerCase().includes(nameLower) ||
+        nameLower.includes(m.trelloName.toLowerCase()) ||
+        (m.nombre && nameLower.includes(m.nombre.toLowerCase()))
+      );
+    }
+
     if (!member) return false;
-    await this.bot.telegram.sendMessage(member.chatId, this.safe(text), { parse_mode: 'Markdown' }).catch(console.error);
-    return true;
+    try {
+      await this.bot.telegram.sendMessage(member.chatId, this.safe(text), { parse_mode: 'Markdown' });
+      return true;
+    } catch (e) {
+      console.error(`Error enviando mensaje a ${trelloName} (${member.chatId}):`, e.message);
+      throw new Error(`Telegram bloqueó el mensaje para ${trelloName}. Motivo probable: El usuario NO ha iniciado un chat con el bot aún. Pídele que le envíe un mensaje al bot primero. Error técnico: ${e.message}`);
+    }
   }
 
   async notifyMemberStandup(chatId: string, mensaje: string) {
@@ -729,11 +750,11 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
     if (t.length > 3900) {
       t = t.substring(0, 3900) + '\n\n_[Mensaje truncado]_';
     }
-    
+
     // Escapar guiones bajos siempre (causan muchos problemas con Markdown V1)
     // exceptuando si ya están escapados
     t = t.replace(/(?<!\\)_/g, '\\_');
-    
+
     // No escapar asteriscos si vienen en pareja (para negritas)
     // Solo escapar si hay un número impar de asteriscos en el mensaje (muy básico)
     const asteriskCount = (t.match(/\*/g) || []).length;

@@ -50,6 +50,17 @@ export class TrelloService {
           // Analizamos etiquetas para prioridad
           let priority = '';
           let isComplete = card.dueComplete ? '✅ Terminada' : '🟡 Pendiente';
+          let isOverdue = false;
+          
+          if (!card.dueComplete && card.due) {
+            const dueDate = new Date(card.due);
+            const now = new Date();
+            if (dueDate < now) {
+              isComplete = '🔴 Atrasada';
+              isOverdue = true;
+              statusIcon = '⚠️';
+            }
+          }
           
           if (card.labels && card.labels.length > 0) {
             card.labels.forEach((label) => {
@@ -59,8 +70,12 @@ export class TrelloService {
                 priority = ' [URGENTE]';
               }
               if (label.name.toLowerCase().includes('completado') || label.color === 'green') {
-                statusIcon = '✅';
-                isComplete = '✅ Terminada';
+                if (isOverdue) {
+                  isComplete = '🔴 Atrasada (Pero con etiqueta Verde/Completado)';
+                } else if (!card.dueComplete) {
+                  isComplete = '🟡 Pendiente (Pero con etiqueta Verde/Completado)';
+                  statusIcon = '✅';
+                }
               }
             });
           }
@@ -141,6 +156,18 @@ export class TrelloService {
     }
   }
 
+  // NUEVA FUNCIÓN: Marcar tarjeta como completada
+  async markCardAsComplete(cardId: string): Promise<boolean> {
+    try {
+      const url = `https://api.trello.com/1/cards/${cardId}?dueComplete=true&key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`;
+      await axios.put(url);
+      return true;
+    } catch (error) {
+      console.error('Error al marcar tarjeta como completada en Trello:', error.response?.data || error.message);
+      throw new Error(error.response?.data || error.message || 'Error al marcar tarjeta como completada');
+    }
+  }
+
   // Obtiene topología cruda para la toma de decisiones de la IA
   async getBoardTopologyForAI(): Promise<string> {
     try {
@@ -195,17 +222,27 @@ export class TrelloService {
       membersRes.data.forEach(m => { membersMap[m.id] = m.fullName; });
 
       const metrics = {
+        total: 0,
+        completadas: 0,
+        urgentes: 0,
+        totalMiembros: Object.keys(membersMap).length,
         listas: {},
         miembros: {},
-        urgent: 0
       };
 
       response.data.forEach(lista => {
-        metrics.listas[lista.name] = lista.cards.length;
+        const count = lista.cards.length;
+        metrics.total += count;
+        metrics.listas[lista.name] = count;
+
+        const esListaDone = /done|completado|terminado|hecho/i.test(lista.name);
+
         lista.cards.forEach(card => {
+          if (esListaDone) metrics.completadas++;
+
           // Contar urgentes por etiqueta
           const isUrgent = (card.labels || []).some(l => (l.name || '').toLowerCase().includes('urgente') || l.color === 'red');
-          if (isUrgent) metrics.urgent++;
+          if (isUrgent) metrics.urgentes++;
 
           (card.idMembers || []).forEach(mId => {
             const name = membersMap[mId] || 'Otros';

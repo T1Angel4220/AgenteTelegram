@@ -1,0 +1,934 @@
+[Archivo: InformeAvanceSprint1.pdf]
+INFORME DE AVANCE DEL
+PROYECTO
+PROYECTO:   Sistema Web PWA LUPSIREFERENCIA:   Avance Sprint 1
+CLIENTE:Centro M ́edico LUPSIREVISI
+ ́
+ON:1.0
+AUTOR:Angel Ayuquina (PM)FECHA:20/03/2026
+DISTRIBUCI
+ ́
+ON:
+1. Patrocinador Acad ́emico: Ing. Paulo Torres, Mg.
+2. Directorio y Administraci ́on del Centro M ́edico LUPSI (Dra. Karen Topa)
+3. Equipo de Desarrollo SKT Software Solution (S. Ortiz, D. Luisa, A. Guachi)
+Cuadro 1: Distribuci ́on del informe
+SITUACI
+ ́
+ON CRONOGRAMA
+Atraso:S ́ı [ ]No [X]Plazo: 20/03/2026
+COMENTARIOS
+El progreso hasta la fecha de corte (20/03/2026) reporta la finalizaci ́on exitosa del Sprint
+1, aline ́andose a la l ́ınea base del archivo Microsoft Project. Los objetivos de Planificaci ́on,
+Dise ̃no UX/UI, Infraestructura Base y Modelado de BD fueron alcanzados a tiempo.
+Cuadro 2: Comentarios sobre el cronograma
+Figura 1: Vista de Gantt MS Project - Fase 1 y Fase 2 (Sprint 1)
+1
+
+SITUACI
+ ́
+ON FINANZAS
+COSTE ACTUAL$825.00Sobrecoste:S ́ıNoXValor:
+$0.00
+Cantidad  factura-
+da
+$0.00Pagospen-
+dientes:
+S ́ıNoX
+Cuadro 3: Resumen de situaci ́on financiera
+COMENTARIOS
+El Coste Actual de$825.00 USD refleja el costo valorizado proporcional de las horas de
+ingenier ́ıa (talento humano) invertidas por el equipo de desarrollo durante las primeras 3
+semanas correspondientes al Sprint 1. No representa un desembolso en efectivo por parte
+de la  cl ́ınica. En infraestructura  Cloud, el gasto  real es  de$0.00 al  aprovechar  las capas
+gratuitas de los proveedores.
+Cuadro 4: Come
+---
+[Archivo: InformeAvanceSprint2.pdf]
+INFORME DE AVANCE DEL
+PROYECTO
+PROYECTO:   Sistema Web PWA LUPSIREFERENCIA:   Avance Sprint 2
+CLIENTE:Centro M ́edico LUPSIREVISI
+ ́
+ON:1.0
+AUTOR:Angel Ayuquina (PM)FECHA:08/04/2026
+DISTRIBUCI
+ ́
+ON:
+1. Patrocinador Acad ́emico: Ing. Paulo Torres, Mg.
+2. Directorio y Administraci ́on del Centro M ́edico LUPSI (Dra. Karen Topa)
+3. Equipo de Desarrollo SKT Software Solution (S. Ortiz, D. Luisa, A. Guachi)
+Cuadro 1: Distribuci ́on del informe
+SITUACI
+ ́
+ON CRONOGRAMA
+Atraso:S ́ı [ ]No [X]Plazo: 08/04/2026
+COMENTARIOS
+El progreso hasta la fecha de corte (08/04/2026) reporta la finalizaci ́on exitosa del Sprint
+2, aline ́andose a la l ́ınea base del archivo Microsoft Project. Los objetivos correspondientes
+a la capa de Seguridad (RLS), Autenticaci ́on, Validaci ́on de Identidad y Cat ́alogos fueron
+alcanzados a tiempo, consolidando el n ́ucleo del backend.
+Cuadro 2: Comentarios sobre el cronograma
+Figura 1: Vista de Gantt MS
+1
+
+SITUACI
+ ́
+ON FINANZAS
+COSTE ACTUAL$1,390.96Sobrecoste:S ́ıNoXValor:
+$0.00
+Cantidad  factura-
+da
+$0.00Pagospen-
+dientes:
+S ́ıNoX
+Cuadro 3: Resumen de situaci ́on financiera
+COMENTARIOS
+El Coste Actual de$1,390.96 USD refleja el costo valorizado ACUMULADO de las horas
+de  ingenier ́ıa  (talento  humano)  invertidas  por  el  equipo  de  desarrollo  desde  el  inicio  del
+proyecto hasta el cierre del Sprint 2. No representa un desembolso en efectivo por parte de
+la cl ́ınica. En cuanto a infraestructura en la nube, el gasto real es de$0.00 al mantenerse
+den
+---
+[Archivo: InformeAvanceSprint3.pdf]
+INFORME DE AVANCE DEL
+PROYECTO
+PROYECTO:   Sistema Web PWA LUPSIREFERENCIA:   Avance Sprint 3
+CLIENTE:Centro M ́edico LUPSIREVISI
+ ́
+ON:1.0
+AUTOR:Angel Ayuquina (PM)FECHA:30/04/2026
+DISTRIBUCI
+ ́
+ON:
+1. Patrocinador Acad ́emico: Ing. Paulo Torres, Mg.
+2. Directorio y Administraci ́on del Centro M ́edico LUPSI (Dra. Saenz D ́ıaz Luz Marina de
+Jes ́us)
+3. Equipo de Desarrollo SKT Software Solution (S. Ortiz, D. Luisa, A. Guachi)
+Cuadro 1: Distribuci ́on del informe
+SITUACI
+ ́
+ON CRONOGRAMA
+Atraso:S ́ı [ ]No [X]Plazo: 30/04/2026
+COMENTARIOS
+El progreso hasta la fecha de corte (30/04/2026) reporta la finalizaci ́on exitosa del Sprint
+3, cumpliendo con la l ́ınea base del proyecto. Se logr ́o resolver el n ́ucleo (core) del negocio
+mediante la implementaci ́on del Motor de Reservas S ́ıncrono en el backend. Adicionalmente,
+se sald ́o la deuda t ́ecnica integrando la autenticaci ́on JWT con el frontend, lo que permiti ́o
+conectar  de  forma  segura  las  nuevas  interfaces  PWA  del  Portal  del  Paciente  y  el  Panel
+Administrativo.
+Cuadro 2: Comentarios sobre el cronograma
+1
+
+Figura 1: Vista de Gantt MS Project - Fase 3 (Motor de Reservas y PWA)
+SITUACI
+ ́
+ON FINANZAS
+COSTE ACTUAL$2,650.40Sobrecoste:S ́ıNoXValor:
+$0.00
+Cantidad  factura-
+da
+$0.00Pagospen-
+dientes:
+S ́ıNoX
+Cuadro 3: Resumen de situaci ́on financiera
+COMENTARIOS
+El Coste Actual de$2,650.40 USD refleja el costo valorizado ACUMULADO de las horas
+de ingenier ́ıa invertidas por el equipo de desarrollo hasta el cierr
+---
+[Archivo: InformeAvanceSprint4.pdf]
+INFORME DE AVANCE DEL
+PROYECTO
+PROYECTO:   Sistema Web PWA LUPSIREFERENCIA:   Avance Sprint 4
+CLIENTE:Centro M ́edico LUPSIREVISI
+ ́
+ON:1.0
+AUTOR:Angel Ayuquina (PM)FECHA:15/05/2026
+DISTRIBUCI
+ ́
+ON:
+1. Patrocinador Acad ́emico: Ing. Paulo Torres, Mg.
+2. Directorio y Administraci ́on del Centro M ́edico LUPSI (Dra. Saenz D ́ıaz Luz Marina de
+Jes ́us)
+3. Equipo de Desarrollo SKT Software Solution (S. Ortiz, D. Luisa, A. Guachi)
+Cuadro 1: Distribuci ́on del informe
+SITUACI
+ ́
+ON CRONOGRAMA
+Atraso:S ́ı [ ]No [X]Plazo: 15/05/2026
+COMENTARIOS
+El progreso hasta la fecha de corte (15/05/2026) reporta la finalizaci ́on exitosa del Sprint
+4.  Se  ha  cumplido  con  el  objetivo  de  digitalizar  el  almacenamiento  m ́edico  mediante  la
+integraci ́on exitosa de la API de Cloudinary, permitiendo la carga y visualizaci ́on de recetas
+en formato PDF. Paralelamente, se implement ́o un estricto control de acceso basado en roles
+(RBAC), garantizando que la informaci ́on m ́edica permanezca completamente aislada de
+roles administrativos, cumpliendo as ́ı con las historias US-04 y US-05.
+Cuadro 2: Comentarios sobre el cronograma
+Figura 1: Vista de Gantt MS Project - Fase 4 (Historia Cl ́ınica Cloud y RBAC)
+SITUACI
+ ́
+ON FINANZAS
+1
+
+COSTE ACTUAL$4,690.40Sobrecoste:S ́ıNoXValor:
+$0.00
+Cantidad  factura-
+da
+$0.00Pagospen-
+dientes:
+S ́ıNoX
+Cuadro 3: Resumen de situaci ́on financiera
+COMENTARIOS
+El Coste Actual de$4,690.40 USD refleja el costo valorizado ACUMULADO de las horas
+de ingenier ́ıa i
+---
+[Archivo: InformeAvanceSprint5.pdf]
+INFORME DE AVANCE Y
+CIERRE
+PROYECTO:   Sistema Web PWA LUPSIREFERENCIA:   Avance Sprint 5 (Final)
+CLIENTE:Centro M ́edico LUPSIREVISI
+ ́
+ON:1.1
+AUTOR:Angel Ayuquina (PM)FECHA:10/06/2026
+DISTRIBUCI
+ ́
+ON:
+1. Patrocinador Acad ́emico: Ing. Paulo Torres, Mg.
+2. Directorio y Administraci ́on del Centro M ́edico LUPSI (Dra. Saenz D ́ıaz Luz Marina de
+Jes ́us)
+3. Equipo de Desarrollo SKT Software Solution (S. Ortiz, D. Luisa, A. Guachi)
+Cuadro 1: Distribuci ́on del informe
+SITUACI
+ ́
+ON CRONOGRAMA
+Atraso:S ́ı [ ]No [X]Plazo final: 10/06/2026
+COMENTARIOS
+El proyecto concluye su ciclo de vida de desarrollo de manera exitosa y dentro de los plazos
+establecidos. Durante el Sprint 5, el sistema fue sometido a pruebas de estr ́es y concurrencia,
+demostrando robustez frente al agendamiento masivo. Se ejecutaron las pruebas piloto, se
+imparti ́o la capacitaci ́on al personal m ́edico entregando los manuales correspondientes, y
+finalmente,  la  aplicaci ́on  fue  desplegada  en  el  servidor  de  producci ́on  (Render)  bajo  un
+dominio seguro (SSL). El sistema LUPSI se encuentra 100 % operativo y entregado al cliente.
+Cuadro 2: Comentarios sobre el cronograma
+Figura 1: Vista de Gantt MS Project - Fase 5 y 6 (QA, Capacitaci ́on y Despliegue)
+SITUACI
+ ́
+ON FINANZAS
+1
+
+COSTE ACTUAL$5,850.00Sobrecoste:S ́ıNoXValor:
+$0.00
+Cantidad  factura-
+da
+$0.00Pagospen-
+dientes:
+S ́ıNoX
+Cuadro 3: Resumen de situaci ́on financiera al cierre
+COMENTARIOS
+El Coste Actual final de$5,850.00 USD refleja la valo
+---
+[Archivo: planificacion3.tex]
+ne{30/04/2026}
+
+\textbf{COMENTARIOS}
+
+\begin{longtable}{|p{0.95\textwidth}|}
+    \hline
+    El progreso hasta la fecha de corte (30/04/2026) reporta la finalización exitosa del Sprint 3, cumpliendo con la línea base del proyecto. Se logró resolver el núcleo (core) del negocio mediante la implementación del Motor de Reservas Síncrono en el backend. Adicionalmente, se saldó la deuda técnica integrando la autenticación JWT con el frontend, lo que permitió conectar de forma segura las nuevas interfaces PWA del Portal del Paciente y el Panel Administrativo. \\
+    \hline
+    \caption{Comentarios sobre el cronograma}
+\end{longtable}
+
+% --- INICIO IMÁGENES ANCLADAS ---
+\begin{figure}[H]
+    \centering
+    % Recuerda subir la imagen de tu Gantt actualizada a Overleaf con el nombre SP3.png
+    \includegraphics[width=0.95\linewidth]{Project2.png} 
+    \caption{Vista de Gantt MS Project - Fase 3 (Motor de Reservas y PWA)}
+    \label{fig:proj1}
+\end{figure}
+% --- FIN IMÁGENES ANCLADAS ---
+
+\section*{SITUACIÓN FINANZAS}
+
+\begin{longtable}{|p{3.5cm}|p{2cm}|p{2.5cm}|p{0.5cm}|p{0.5cm}|p{0.5cm}|p{1cm}|p{1.5cm}|}
+    \hline
+    \textbf{COSTE ACTUAL} & \$2,650.40 & \textbf{Sobrecoste:} & Sí & & No & \textbf{X} & \textbf{Valor:} \$0.00 \\
+    \hline
+    \textbf{Cantidad facturada} & \$0.00 & \textbf{Pagos pendientes:} & Sí & & No & \textbf{X} & \\
+    \hline
+    \caption{Resumen de situación financiera}
+\end{longtable}
+
+\textbf{COMENTARIOS}
+
+\begin{longtable}{|p{0.95\textwidth}|}
+    \hline
+---
+[Archivo: PLanificacion_sprint_1.pdf]
+to
+acotado de tareas.
+Product Backlog: listado ordenado y priorizado de requerimientos macro.
+Sprint Backlog: desglose de tareas operativas seleccionadas para ejecutarse
+en el sprint actual.
+UX/UI: Diseño de Experiencia de Usuario e Interfaz de Usuario para garan-
+tizar la facilidad de uso.
+ER / DDL: Diagrama Entidad-Relación y Lenguaje de Definición de Datos
+para modelar la base de datos.
+Repositorio: Entorno de control de versiones centralizado (GitHub) para
+organizar el código fuente.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-002
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.3
+Planificación Sprint 1
+ELABORACIÓN:
+02/03/2026
+Requisitos, Arquitectura y Modelado de
+Datos
+ÚLTIMA
+REVISIÓN:
+20/03/2026
+6.  Planificación del Sprint 1
+6.1.  Objetivo específico del sprint
+Aprobar formalmente los prototipos visuales y el modelo de base de datos con
+el cliente, y dejar los repositorios operativos para garantizar que el equipo inicie la
+codificación en el siguiente sprint sin riesgos de reprocesos.
+6.2.  Entregables del Sprint
+EntregableResponsableFechaAceptado
+1. Documento de Requisitos y Prototipos
+UX/UI Validados
+Angel Ayuquina13/03/2026
+2. Modelado de Base de Datos y Definición de
+Arquitectura
+Sebastián Ortiz17/03/2026
+3. Base de datos estructurada y repositorios
+operativos
+Alex Guachi20/03/2026
+6.3.  Backlog del Sprint 1 (Desglose de Tareas)
+La siguiente tabla detalla las tareas operativas específicas (T-XX) a ejecutar
+durante este sprint y su trazabilidad directa con los requerimient
+---
+[Archivo: Historias_de_usuario.pdf]
+SKT Software Solution
+CÓDIGO:
+MI-GAM-PRO-002
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Historias de usuario
+ELABORACIÓN:
+25/03/2026
+Definición de historias de usuario y
+trazabilidad por sprint
+ÚLTIMA
+REVISIÓN:
+25/03/2026
+1.  Título
+Definición formal de historias de usuario y trazabilidad por sprint para el Sistema
+Web Progresivo LUPSI
+2.  Introducción
+Las historias de usuario constituyen una forma estructurada de expresar necesi-
+dades funcionales desde la perspectiva de los actores que interactúan con el sistema.
+En un proyecto ágil como LUPSI, este mecanismo permite organizar el trabajo por
+valor de negocio, priorizar entregables y verificar de manera objetiva cuándo una
+funcionalidad se considera completa.
+El presente documento formaliza las historias de usuario del Sistema Web Progre-
+sivo LUPSI y las vincula con su planificación por sprints. La versión actual incorpora
+de forma explícita el Sprint 1 como base de ingeniería del producto, ya que en esa
+etapa se establecen los requerimientos funcionales, el diseño de interfaces (UX/UI),
+la arquitectura del sistema, el modelado relacional de la base de datos y la iniciali-
+zación de repositorios. A partir del Sprint 2, se aborda la codificación del backend,
+frontend, políticas de seguridad y validaciones como el algoritmo Módulo 10.
+Este documento tiene un alcance descriptivo y funcional. Su finalidad es dejar
+claramente establecidas las necesidades de los usuarios, las condiciones de aceptación
+y la relación entre dich
+---
+[Archivo: InformeAvanceSprint3.pdf]
+: Resumen de situaci ́on financiera
+COMENTARIOS
+El Coste Actual de$2,650.40 USD refleja el costo valorizado ACUMULADO de las horas
+de ingenier ́ıa invertidas por el equipo de desarrollo hasta el cierre del Sprint 3. Se reitera
+que este rubro  es una estimaci ́on del valor del desarrollo y no representa un desembolso
+en efectivo. En cuanto a infraestructura en la nube, el gasto real se mantiene en$0.00 al
+operar dentro de los l ́ımites de la capa gratuita.
+Cuadro 4: Comentarios sobre las finanzas
+SITUACI
+ ́
+ON ALCANCE
+ENTREGABLE (Artefacto de Softwa-
+re)
+FECHAACEPTADO
+1. Integraci ́on Auth-Frontend (Deuda T ́ecni-
+ca S2).
+15/04/2026
+2
+
+2. Backend: Motor de Reservas y control de
+Concurrencia.
+21/04/2026
+3. Frontend: Portal del Paciente (PWA).30/04/2026
+4. Frontend: Panel Administrativo web.30/04/2026
+Cuadro 5: Entregables formales del Sprint 3
+PRINCIPALES PUNTOS ABIERTOS
+DESCRIPCI
+ ́
+ON (Hacia el Sprint 4)FECHAESPE-
+RADA
+RESPONSABLE
+Backend: Repositorio RBAC y manejo de
+indicaciones m ́edicas post-consulta.
+10/05/2026Sebasti ́an Ortiz
+Integraci ́on  Cloud:  Conexi ́on  con  Clou-
+dinary  para  almacenamiento  de  recetas
+PDF.
+15/05/2026Daniel / Alex
+QA:  Inicio  de  planificaci ́on  para  pruebas
+de estr ́es y validaci ́on piloto.
+11/05/2026Angel Ayuquina
+Cuadro 6: Puntos abiertos hacia el Sprint 4
+OTROS
+El progreso del Sprint 3 ha sido un hito cr ́ıtico. El sistema ahora permite el flujo principal
+de valor: los pacientes pueden autenticarse, revisar la disponibilidad de horari
+---
+[Archivo: InformeAvanceSprint4.pdf]
+factura-
+da
+$0.00Pagospen-
+dientes:
+S ́ıNoX
+Cuadro 3: Resumen de situaci ́on financiera
+COMENTARIOS
+El Coste Actual de$4,690.40 USD refleja el costo valorizado ACUMULADO de las horas
+de ingenier ́ıa invertidas por el equipo de desarrollo hasta el cierre del Sprint 4. Este rubro
+sigue siendo una estimaci ́on del valor del desarrollo y no un desembolso en efectivo. El equipo
+ha logrado mantener el gasto de infraestructura en$0.00, aprovechando eficientemente las
+capas gratuitas de Supabase y Cloudinary sin exceder las cuotas de almacenamiento.
+Cuadro 4: Comentarios sobre las finanzas
+SITUACI
+ ́
+ON ALCANCE
+ENTREGABLE (Artefacto de Softwa-
+re)
+FECHAACEPTADO
+1. Backend: M ́odulo RBAC y protecci ́on es-
+tricta de rutas m ́edicas.
+10/05/2026
+2. Integraci ́on Backend: Conexi ́on API Clou-
+dinary para subida de PDFs.
+12/05/2026
+3. Frontend: Interfaz del M ́edico (Carga y vi-
+sualizaci ́on de expedientes).
+15/05/2026
+Cuadro 5: Entregables formales del Sprint 4
+PRINCIPALES PUNTOS ABIERTOS
+DESCRIPCI
+ ́
+ON (Hacia el Sprint 5)FECHAESPE-
+RADA
+RESPONSABLE
+QA: Ejecuci ́on de pruebas de estr ́es y va-
+lidaci ́on de concurrencia final.
+18/05/2026Sebasti ́an Ortiz
+QA:  Pruebas  de  usabilidad  (piloto)  con
+pacientes en entorno real.
+20/05/2026Alex Guachi
+Despliegue: Pase a producci ́on en servidor
+final (Render) y ajustes de dominio.
+25/05/2026Angel / Daniel
+Cuadro 6: Puntos abiertos hacia el Sprint 5
+OTROS
+2
+
+Con el cierre del Sprint 4, el proyecto LUPSI ha completado formalmente el desarrollo
+---
+[Archivo: InformeAvanceSprint5.pdf]
+ecoste:S ́ıNoXValor:
+$0.00
+Cantidad  factura-
+da
+$0.00Pagospen-
+dientes:
+S ́ıNoX
+Cuadro 3: Resumen de situaci ́on financiera al cierre
+COMENTARIOS
+El Coste Actual final de$5,850.00 USD refleja la valorizaci ́on total acumulada de las horas
+de ingenier ́ıa, QA y DevOps invertidas por el equipo a lo largo de los 5 sprints del proyecto.
+Este monto consolida el valor intangible del producto entregado. Respecto a los costos de
+infraestructura (Supabase, Cloudinary y Render), el dise ̃no arquitect ́onico permiti ́o alojar
+el sistema aprovechando las capas gratuitas, garantizando a la cl ́ınica un costo operativo
+mensual de$0.00 en su fase inicial de adopci ́on.
+Cuadro 4: Comentarios sobre las finanzas
+SITUACI
+ ́
+ON ALCANCE
+ENTREGABLE (Artefacto de Softwa-
+re)
+FECHAACEPTADO
+1. Reporte QA: Pruebas de Estr ́es y versi ́on
+piloto sin bugs cr ́ıticos.
+27/05/2026
+2. Manuales de Usuario y Taller de Capaci-
+taci ́on M ́edica.
+02/06/2026
+3. Despliegue en Producci ́on (Render) y cer-
+tificados de seguridad SSL.
+10/06/2026
+Cuadro 5: Entregables formales del Sprint 5
+PRINCIPALES PUNTOS ABIERTOS (FASE POST-PRODUCCI
+ ́
+ON)
+DESCRIPCI
+ ́
+ON(Post-
+Lanzamiento)
+FECHAESPE-
+RADA
+RESPONSABLE
+Monitoreo de estabilidad de los servidores
+en la nube durante el primer mes de uso.
+10/07/2026Equipo SKT
+Soporte t ́ecnico de Nivel 1 ante consultas
+del personal administrativo.
+10/07/2026   (1   mes
+de garant ́ıa)
+Equipo SKT
+Cuadro 6: Puntos de seguimiento post-implementaci ́on
+OTROS
+2
+
+Con  la  firma  de  este  d
+---
+[Archivo: Informe_5.pdf]
+SKT Software Solution
+CÓDIGO:
+MI-DES-RGI-005
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de inicialización de frontend
+Angular PWA
+ELABORACIÓN:
+09/09/2025
+Sprint 1 – Infraestructura Base
+ÚLTIMA
+REVISIÓN:
+09/09/2025
+1.  Título
+Informe de inicialización de frontend Angular como PWA base con SCSS/Tailwind
+2.  Introducción
+El frontend del sistema LUPSI se construye con Angular, configurado como una
+Aplicación Web Progresiva (PWA) para ofrecer experiencia similar a una app nativa
+en dispositivos móviles. Este informe documenta la creación del proyecto, la habili-
+tación del service worker, la integración de SCSS y Tailwind CSS, y el estado actual
+del desarrollo hasta la fecha de presentación (08/09/2025).
+3.  Objetivo
+Disponer de una base de frontend funcional, responsive, con capacidades offline
+básicas (PWA) y una estructura de estilos moderna que acelere el desarrollo de las
+próximas historias de usuario.
+4.  Definiciones
+Angular: Framework de desarrollo frontend basado en TypeScript.
+PWA (Progressive Web App): Aplicación web que utiliza tecnologías mo-
+dernas para ofrecer una experiencia similar a una app nativa (instalable, offline,
+notificaciones).
+Service Worker: Script que actúa como proxy entre el navegador y la red,
+permitiendo cacheo y funcionamiento offline.
+Tailwind CSS: Framework CSS utility-first para diseñar interfaces rápida-
+mente.
+5.  Actividades realizadas
+Creación del proyecto Angular con Angular CLI: ng new frontend-lupsi
+–style=scss –routing.
+
+SKT
+---
+[Archivo: planificacion3.tex]
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{amssymb}
+
+\geometry{a4paper, margin=2.5cm}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.8ex}
+
+\begin{document}
+
+\begin{center}
+    {\Huge \textbf{INFORME DE AVANCE DEL PROYECTO}}
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{tabular}{p{2.5cm}p{5.5cm}p{3cm}p{4cm}}
+    \textbf{PROYECTO:} & Sistema Web PWA LUPSI & \textbf{REFERENCIA:}  & Avance Sprint 3 \\
+    \textbf{CLIENTE:} & Centro Médico LUPSI & \textbf{REVISIÓN:} & 1.0 \\
+    \textbf{AUTOR:} & Angel Ayuquina (PM) & \textbf{FECHA:} & 30/04/2026 \\
+\end{tabular}
+
+\vspace{0.5cm}
+
+\textbf{DISTRIBUCIÓN:}
+\begin{longtable}{|p{0.95\textwidth}|}
+    \hline
+    1. Patrocinador Académico: Ing. Paulo Torres, Mg. \\
+    2. Directorio y Administración del Centro Médico LUPSI (Dra. Saenz Díaz Luz Marina de Jesús) \\
+    3. Equipo de Desarrollo SKT Software Solution (S. Ortiz, D. Luisa, A. Guachi) \\
+    \hline
+    \caption{Distribución del informe}
+\end{longtable}
+
+\section*{SITUACIÓN CRONOGRAMA}
+
+\textbf{Atraso:} \hspace{0.5cm} Sí [ ] \hspace{1cm} No [\textbf{X}] \hspace{1cm} \textbf{Plazo:} \underline{30/04/2026}
+
+\textbf{COMENTARIOS}
+
+\begin{longtable}{|p{0.95\textwidth}|}
+    \hline
+    El progreso hasta la fecha de corte (30/04/2026) reporta la finalización exitosa del Sprint 3, cumpliendo co
+---
+[Archivo: planificacion3.tex]
+{Pagos pendientes:} & Sí & & No & \textbf{X} & \\
+    \hline
+    \caption{Resumen de situación financiera}
+\end{longtable}
+
+\textbf{COMENTARIOS}
+
+\begin{longtable}{|p{0.95\textwidth}|}
+    \hline
+    El Coste Actual de \textbf{\$2,650.40 USD} refleja el costo valorizado ACUMULADO de las horas de ingeniería invertidas por el equipo de desarrollo hasta el cierre del Sprint 3. Se reitera que este rubro es una estimación del valor del desarrollo y no representa un desembolso en efectivo. En cuanto a infraestructura en la nube, el gasto real se mantiene en \$0.00 al operar dentro de los límites de la capa gratuita. \\
+    \hline
+    \caption{Comentarios sobre las finanzas}
+\end{longtable}
+
+\section*{SITUACIÓN ALCANCE}
+
+\begin{longtable}{|p{7.5cm}|p{3cm}|p{3cm}|}
+    \hline
+    \textbf{ENTREGABLE (Artefacto de Software)} & \textbf{FECHA} & \textbf{ACEPTADO} \\
+    \hline
+    1. Integración Auth-Frontend (Deuda Técnica S2). & 15/04/2026 &  \\
+    \hline
+    2. Backend: Motor de Reservas y control de Concurrencia. & 21/04/2026 &  \\
+    \hline
+    3. Frontend: Portal del Paciente (PWA). & 30/04/2026 &  \\
+    \hline
+    4. Frontend: Panel Administrativo web. & 30/04/2026 & \\
+    \hline
+    \caption{Entregables formales del Sprint 3}
+    \label{tab:entregables}
+\end{longtable}
+
+\section*{PRINCIPALES PUNTOS ABIERTOS}
+
+\begin{longtable}{|p{7cm}|p{3.5cm}|p{3.5cm}|}
+    \hline
+    \textbf{DESCRIPCIÓN (Hacia el Sprint 4)} & \textbf{FECHA ESPERADA} & \textbf{RESPONSABLE} \\
+    \hline
+---
+[Archivo: planificacion3.tex]
+{PRINCIPALES PUNTOS ABIERTOS}
+
+\begin{longtable}{|p{7cm}|p{3.5cm}|p{3.5cm}|}
+    \hline
+    \textbf{DESCRIPCIÓN (Hacia el Sprint 4)} & \textbf{FECHA ESPERADA} & \textbf{RESPONSABLE} \\
+    \hline
+    Backend: Repositorio RBAC y manejo de indicaciones médicas post-consulta. & 10/05/2026 & Sebastián Ortiz \\
+    \hline
+    Integración Cloud: Conexión con Cloudinary para almacenamiento de recetas PDF. & 15/05/2026 & Daniel / Alex \\
+    \hline
+    QA: Inicio de planificación para pruebas de estrés y validación piloto. & 11/05/2026 & Angel Ayuquina \\
+    \hline
+    \caption{Puntos abiertos hacia el Sprint 4}
+    \label{tab:puntos_abiertos}
+\end{longtable}
+
+\section*{OTROS}
+
+\begin{longtable}{|p{0.95\textwidth}|}
+    \hline
+    El progreso del Sprint 3 ha sido un hito crítico. El sistema ahora permite el flujo principal de valor: los pacientes pueden autenticarse, revisar la disponibilidad de horarios y realizar reservas validadas estrictamente por el backend. Además, el equipo Frontend logró solventar la integración del Login a tiempo. El equipo se encuentra listo para iniciar el Sprint 4, enfocado en la Historia Clínica Digital y el almacenamiento en la nube. \\
+    \hline
+    \caption{Otros aspectos a considerar}
+    \label{tab:otros}
+\end{longtable}
+
+\end{document}
+---
+[Archivo: PlanificacionSprint3.pdf]
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-004
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 3
+ELABORACIÓN:
+11/04/2026
+Motor de Agendamiento e Interfaces
+Frontend
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+1.  Título
+Planificación del Sprint 3: Motor de Agendamiento, Concurrencia e Interfaces
+Frontend - LUPSI
+2.  Introducción
+El presente documento formaliza la planificación del tercer sprint del proyecto
+LUPSI. Su propósito es dejar claramente definidos el objetivo del sprint, el alcance
+técnico, las actividades prioritarias, los entregables esperados y su alineación con el
+cronograma general.
+Tras haber consolidado la base de datos, la seguridad (RLS) y la autenticación
+en el Sprint 2, el Sprint 3 aborda el núcleo operativo del negocio: la gestión de citas
+médicas. Esta etapa materializa las historias de usuario US-02 y US-03, garantizando
+un agendamiento síncrono sin conflictos y proveyendo las interfaces gráficas (PWA)
+tanto para los pacientes como para el personal administrativo.
+3.  Objetivo
+Desarrollar e integrar el Motor de Reservas en el backend para prevenir el cruce
+de horarios, y construir los portales web progresivos (Frontend) que permitan a los
+pacientes agendar citas y al personal de recepción visualizar la carga diaria de forma
+segura y en tiempo real.
+4.  Alcance del Sprint 3
+El Sprint 3 se centra exclusivamente en la lógica de negocio de agendamiento y
+en las vistas operativas de los usuarios.
+4.1.  Incluye
+Lógica backend de agendamiento síncrono (Motor
+---
+[Archivo: PlanificacionSprint3.pdf]
+lisionar datos.
+JWT (JSON Web Token): Estándar para la transmisión segura de infor-
+mación de autenticación entre el cliente y el servidor.
+6.  Planificación del Sprint 3
+6.1.  Objetivo específico del sprint
+Implementar el ciclo completo de agendamiento, asegurando que un paciente
+pueda reservar una cita desde la interfaz visual y el backend la valide y persista sin
+permitir que dos personas ocupen el mismo horario.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-004
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 3
+ELABORACIÓN:
+11/04/2026
+Motor de Agendamiento e Interfaces
+Frontend
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+6.2.  Entregables del Sprint
+EntregableResponsableFechaAceptado
+1. Backend: Motor de Reservas y control de
+Concurrencia
+Sebastián Ortiz21/04/2026
+2. Frontend: Portal del Paciente (PWA)Daniel Luisa30/04/2026
+3. Frontend: Panel AdministrativoAlex Guachi30/04/2026
+4. Integración Auth-Frontend (Deuda Técnica
+S2)
+Alex Guachi15/04/2026
+6.3.  Backlog del Sprint 3 (Desglose de Tareas)
+La siguiente tabla detalla las tareas operativas específicas (T-XX) a ejecutar
+durante este sprint y su trazabilidad directa con los requerimientos aprobados en el
+Product Backlog (PB-XX).
+TareaOrigenActividad (Sprint Bac-
+klog)
+ResponsableEstado
+T-01PB-11Desarrollar lógica de agen-
+damiento  síncrono  previ-
+niendo cruce de horarios.
+SebastiánEn Curso
+T-02PB-12Construir interfaces PWA
+para reserva y consulta de
+citas del paciente.
+DanielEn Curso
+T-03PB-13Crear vista de agenda dia-
+ria
+---
+[Archivo: PlanificacionSprint3.pdf]
+to  síncrono  previ-
+niendo cruce de horarios.
+SebastiánEn Curso
+T-02PB-12Construir interfaces PWA
+para reserva y consulta de
+citas del paciente.
+DanielEn Curso
+T-03PB-13Crear vista de agenda dia-
+ria y administración para
+personal de recepción.
+AlexEn Curso
+T-04Deuda S2Integrar las interfaces web
+del login con la lógica del
+servidor API/JWT.
+AlexEn Curso
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-004
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 3
+ELABORACIÓN:
+11/04/2026
+Motor de Agendamiento e Interfaces
+Frontend
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+6.4.  Cronograma Detallado
+TareaDíasInicioFinHHitoEntregableResponsable
+Integración
+Auth
+608/0415/0424Hito 1Login PWAAlex
+Motor
+Reservas
+1008/0421/0440Hito 1API  Agenda-
+miento
+Sebastián
+Portal
+Paciente
+1608/0430/0464Hito 2Vistas   Fron-
+tend
+Daniel
+Panel Admin1608/0430/0464Hito 2Vistas Recep-
+ción
+Alex
+7.  Criterios de aceptación del Sprint 3
+El sprint se considerará aprobado cuando se cumpla lo siguiente:
+El sistema backend rechaza estrictamente la superposición de citas médicas
+(US-02).
+El Portal del Paciente permite visualizar horarios disponibles y confirmar re-
+servas de forma exitosa.
+La agenda administrativa refleja en tiempo de ejecución los horarios reservados
+sin exponer data clínica sensible (US-03).
+Las interfaces frontend están conectadas de manera segura con el backend
+mediante los tokens JWT.
+8.  Trazabilidad con las historias de usuario
+Este sprint entrega valor directo y funcional enfocado en el core
+---
+[Archivo: PlanificacionSprint3.pdf]
+ión visual clara en el frontend cuando un paciente reserva exi-
+tosamente o si ocurre un error.
+Código fuente documentado y subido a las ramas principales correspondientes
+en GitHub.
+11.  Conclusiones
+El Sprint 3 constituye el hito más importante para la viabilidad operativa del
+proyecto LUPSI, ya que resuelve el problema central del centro médico: la gestión
+de citas sin conflictos.
+Al finalizar este sprint, el sistema dejará de ser una estructura base para con-
+vertirse en una aplicación web progresiva funcional, permitiendo la interacción real
+entre pacientes y administradores, y dejando el terreno preparado para la digitali-
+zación de documentos clínicos en el Sprint 4.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-004
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 3
+ELABORACIÓN:
+11/04/2026
+Motor de Agendamiento e Interfaces
+Frontend
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+12.  Firmas de Responsabilidad
+RolNombre / Represen-
+tante
+Firma (QR)Fecha
+Gestor del ProyectoAngel Ayuquina11/04/2026
+Desarrollador Backend   Sebastián Ortiz11/04/2026
+Desarrollador Fullstack  Daniel Luisa
+11/04/2026
+Desarrollador Frontend  Alex Guachi
+11/04/2026
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-004
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 3
+ELABORACIÓN:
+11/04/2026
+Motor de Agendamiento e Interfaces
+Frontend
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+13.  Control de cambios
+VersiónDescripción del CambioResponsabledel
+Cambio
+Fechade
+Aprobación
+1.0Elaboración de la planifica-
+ción e
+---
+[Archivo: PlanificacionSprint4.pdf]
+tema basándose en los roles de los usuarios individuales.
+Expediente Digital: Archivo en formato PDF que contiene recetas o reportes
+clínicos de un paciente.
+6.  Planificación del Sprint 4
+6.1.  Objetivo específico del sprint
+Lograr que un usuario con rol "Médico" pueda subir de forma exitosa una receta
+en PDF y asociarla a un paciente, garantizando que un usuario con rol "Recepcio-
+nista" no pueda acceder a dicho documento bajo ninguna circunstancia.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-005
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 4
+ELABORACIÓN:
+11/04/2026
+Historia Clínica Digital y Seguridad RBAC
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+6.2.  Entregables del Sprint
+EntregableResponsableFechaAceptado
+1. Backend: Módulo RBAC y protección
+estricta de rutas médicas
+Sebastián Ortiz10/05/2026
+2. Integración Backend: Conexión API
+Cloudinary para subida de PDFs
+Daniel Luisa12/05/2026
+3. Frontend: Interfaz del Médico (Carga y
+visualización de expedientes)
+Alex Guachi15/05/2026
+6.3.  Backlog del Sprint 4 (Desglose de Tareas)
+La siguiente tabla detalla las tareas operativas (T-XX) a ejecutar durante este
+sprint y su trazabilidad directa con el Product Backlog (PB-XX).
+TareaOrigenActividad (Sprint Bac-
+klog)
+ResponsableEstado
+T-01PB-14Desarrollarrepositorio
+RBAC  y  políticas  de
+privacidad clínica.
+SebastiánPendiente
+T-02PB-15Configurar cuenta de Clou-
+dinary y programar servi-
+cio de carga en NestJS.
+DanielPendiente
+T-03PB-15Construir validadores para
+restringir la s

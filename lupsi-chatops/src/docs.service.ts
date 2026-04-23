@@ -7,10 +7,15 @@ import * as path from 'path';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pdfParse = require('pdf-parse') as (buffer: Buffer) => Promise<{ text: string; numpages: number }>;
 
+interface Chunk {
+    file: string;
+    content: string;
+}
+
 @Injectable()
 export class DocsService implements OnModuleInit {
     private readonly knowledgePath = path.join(process.cwd(), 'conocimiento');
-    private cachedKnowledge: string | null = null;
+    private chunks: Chunk[] = [];
     private cachedSummary: string | null = null;
 
     constructor(
@@ -20,35 +25,44 @@ export class DocsService implements OnModuleInit {
 
     async onModuleInit() {
         console.log('🚀 Iniciando LUPSI: Precargando base de conocimiento...');
-        await this.getKnowledgeBase();
-        console.log('✅ LUPSI Listo: Conocimiento cargado y cacheado.');
+        await this.loadChunks();
+        console.log('✅ LUPSI Listo: Conocimiento cargado y fragmentado.');
         
-        // Sincronización automática de metadatos (opcionalmente disparada aquí)
+        // Sincronización automática de metadatos
         setTimeout(() => this.syncMetadataWithAI(), 5000); 
     }
 
     async syncMetadataWithAI() {
-        if (!this.aiService || !this.cachedKnowledge) return;
+        if (!this.aiService || this.chunks.length === 0) return;
         
         console.log('🧠 LUPSI: Sincronizando metadatos del proyecto desde los documentos...');
         
+        // Para sincronizar metadatos usamos los fragmentos más relevantes sobre fechas y sprints
         const hoyStr = new Date().toISOString().split('T')[0];
-        const prompt = `Analiza este conocimiento acumulado de PDFs y documentos del proyecto:
+        const relevantContext = await this.getRelevantContext(`sprint cronograma fecha planificación actual ${hoyStr}`, 20);
+        const fullText = relevantContext;
         
-        ${this.cachedKnowledge.substring(0, 12000)}
+        const prompt = `Analiza este conocimiento (fragmentos de PDFs/TeX del proyecto):
         
-        Tu tarea es extraer los metadatos del SPRINT ACTUAL del proyecto para conocimiento.json.
+        ${fullText}
+        
+        Tu tarea es extraer los metadatos del SPRINT ACTUAL del proyecto.
         FECHA DE HOY: ${hoyStr}
         
-        REGLA CRÍTICA: Debes encontrar el sprint cuyo rango de fechas (inicio y fin) INCLUYA la fecha de hoy (${hoyStr}). No elijas simplemente el sprint con el número más alto si sus fechas son futuras.
+        REGLAS CRÍTICAS DE EXTRACCIÓN:
+        1. Debes identificar en qué Sprint nos encontramos basándote en que la FECHA DE HOY (${hoyStr}) esté comprendida entre el inicio y fin de ese Sprint.
+        2. NO INVENTES FECHAS bajo ninguna circunstancia.
+        3. Si el texto proviene de un PDF mal formateado (ej. tablas unidas como "1608/0430/0464Hito"), entiende que "08/04" significa 8 de abril y "30/04" significa 30 de abril.
+        4. El inicio del sprint es la fecha más temprana en el cronograma, y el fin es la fecha más tardía (ej. 30/04/2026).
+        5. NUNCA inventes periodos estándar de 2 semanas. Extrae estrictamente la información de los textos.
         
-        Responde ÚNICAMENTE con un JSON válido:
+        Responde ÚNICAMENTE con un JSON válido (sin Markdown, sin explicaciones):
         {
-          "sprint_actual": "Nombre del sprint",
+          "sprint_actual": "Nombre del sprint y tema (ej: Sprint 3: Frontend)",
           "fecha_inicio": "YYYY-MM-DD",
           "fecha_fin": "YYYY-MM-DD",
-          "objetivo_principal": "Resumen corto",
-          "riesgos_conocidos": "Resumen corto de riesgos encontrados"
+          "objetivo_principal": "Resumen del objetivo (máx 2 líneas)",
+          "riesgos_conocidos": "Riesgos mencionados en la planificación"
         }`;
 
         try {
@@ -68,62 +82,78 @@ export class DocsService implements OnModuleInit {
         }
     }
 
-    async getKnowledgeBase(): Promise<string> {
-        if (this.cachedKnowledge) return this.cachedKnowledge;
+    /**
+     * Busca los fragmentos más relevantes para una consulta dada
+     */
+    async getRelevantContext(query: string, limit: number = 5): Promise<string> {
+        if (this.chunks.length === 0) await this.loadChunks();
+        
+        const keywords = query.toLowerCase().split(/\s+/).filter(k => k.length > 3);
+        
+        // Puntuación simple por coincidencia de palabras clave
+        const scored = this.chunks.map(chunk => {
+            let score = 0;
+            const contentLower = chunk.content.toLowerCase();
+            keywords.forEach(kw => {
+                if (contentLower.includes(kw)) score += 1;
+            });
+            return { chunk, score };
+        });
 
+        // Ordenar por relevancia y tomar los mejores
+        const relevant = scored
+            .filter(s => s.score > 0)
+            .sort((a, b) => b.score - a.score)
+            .slice(0, limit)
+            .map(s => `[Archivo: ${s.chunk.file}]\n${s.chunk.content}`);
+
+        // Si no hay coincidencias, devolvemos los primeros para dar algo de contexto
+        if (relevant.length === 0) {
+            return this.chunks.slice(0, 3).map(c => `[Archivo: ${c.file}]\n${c.content}`).join('\n---\n');
+        }
+
+        return relevant.join('\n---\n');
+    }
+
+    private async loadChunks() {
         try {
-            if (!fs.existsSync(this.knowledgePath)) {
-                return 'No hay carpeta de conocimiento configurada.';
-            }
+            if (!fs.existsSync(this.knowledgePath)) return;
 
-            const files = fs.readdirSync(this.knowledgePath)
-                .filter(f => !f.startsWith('.'));
+            const files = fs.readdirSync(this.knowledgePath).filter(f => !f.startsWith('.'));
+            const newChunks: Chunk[] = [];
 
-            const results = await Promise.all(files.map(async (file) => {
+            for (const file of files) {
                 const filePath = path.join(this.knowledgePath, file);
                 const ext = path.extname(file).toLowerCase();
-                const baseName = path.basename(file, ext);
-
-                // Preferir versión de texto si existe equivalente .txt/.md del mismo PDF
-                if (ext === '.pdf' && (
-                    files.includes(`${baseName}.txt`) ||
-                    files.includes(`${baseName}.md`) ||
-                    files.includes(`${baseName}.tex`)
-                )) {
-                    console.log(`⏩ Saltando ${file} (existe versión de texto).`);
-                    return '';
-                }
+                let text = '';
 
                 if (ext === '.pdf') {
-                    try {
-                        const dataBuffer = fs.readFileSync(filePath);
-                        const data = await pdfParse(dataBuffer);
-                        const texto = (data.text || '').substring(0, 4000);
-                        console.log(`✅ PDF leído: ${file} (${data.numpages} págs.)`);
-                        return `\n=== PDF: ${file} ===\n${texto}\n`;
-                    } catch (pdfErr) {
-                        console.error(`❌ Error leyendo PDF ${file}:`, pdfErr.message);
-                        return `\n=== PDF (sin extracción): ${file} ===\n[Documento disponible en carpeta de conocimiento]\n`;
-                    }
-                } else if (['.md', '.txt', '.tex'].includes(ext)) {
-                    const text = fs.readFileSync(filePath, 'utf-8');
-                    return `\n=== DOCUMENTO: ${file} ===\n${text.substring(0, 4000)}\n`;
+                    const dataBuffer = fs.readFileSync(filePath);
+                    const data = await pdfParse(dataBuffer);
+                    text = data.text || '';
+                    console.log(`✅ PDF leído: ${file}`);
+                } else if (['.md', '.txt', '.tex', '.csv'].includes(ext)) {
+                    text = fs.readFileSync(filePath, 'utf-8');
+                    console.log(`✅ Doc leído: ${file}`);
                 }
-                return '';
-            }));
 
-            const contenido = results.filter(r => r.trim()).join('');
-            this.cachedKnowledge = contenido || 'La carpeta de conocimiento está vacía.';
-            this.cachedSummary = files
-                .filter(f => ['.pdf', '.md', '.txt', '.tex'].includes(path.extname(f).toLowerCase()))
-                .map(f => `• ${f}`)
-                .join('\n');
+                if (text.trim()) {
+                    // Dividir en fragmentos de ~1500 caracteres
+                    const chunkSize = 1500;
+                    for (let i = 0; i < text.length; i += chunkSize - 200) { // 200 caracteres de solapamiento
+                        newChunks.push({
+                            file: file,
+                            content: text.substring(i, i + chunkSize).trim()
+                        });
+                    }
+                }
+            }
 
-            console.log(`📚 Documentos procesados: ${files.length} archivos.`);
-            return this.cachedKnowledge;
+            this.chunks = newChunks;
+            this.cachedSummary = files.map(f => `• ${f}`).join('\n');
+            console.log(`📚 Memoria RAG lista: ${this.chunks.length} fragmentos cargados.`);
         } catch (error) {
-            console.error('Error leyendo base de conocimiento:', error);
-            return 'Error al procesar los documentos de conocimiento.';
+            console.error('Error cargando chunks:', error);
         }
     }
 
@@ -132,8 +162,8 @@ export class DocsService implements OnModuleInit {
     }
 
     clearCache() {
-        this.cachedKnowledge = null;
+        this.chunks = [];
         this.cachedSummary = null;
-        console.log('🔄 Caché de conocimiento limpiada.');
+        console.log('🔄 Memoria RAG limpiada.');
     }
 }

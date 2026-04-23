@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUPSI CORE | Autonomous Prime Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-blue: #00f2ff;
+            --neon-purple: #bc13fe;
+            --neon-pink: #ff00bd;
+            --bg-dark: #020617;
+        }
+        body { 
+            font-family: 'Space Grotesk', sans-serif; 
+            background: var(--bg-dark); 
+            color: #fff;
+            overflow-x: hidden;
+        }
+        #particles-js {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+        }
+        .cyber-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(0, 242, 255, 0.1);
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+        .cyber-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: 0.5s;
+        }
+        .cyber-card:hover::before { left: 100%; }
+        .cyber-card:hover {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.2);
+        }
+
+        .neon-text { text-shadow: 0 0 10px rgba(0, 242, 255, 0.5); }
+        .neon-border { border: 1px solid var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue); }
+        
+        .scanline {
+            width: 100%; height: 2px;
+            background: rgba(0, 242, 255, 0.1);
+            position: absolute;
+            z-index: 10;
+            animation: scan 8s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        .gradient-heading {
+            background: linear-gradient(to right, #00f2ff, #bc13fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-badge {
+            background: rgba(0, 242, 255, 0.1);
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            padding: 2px 12px;
+            border-radius: 100px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .spinning-ring {
+            width: 150px; height: 150px;
+            border: 2px dashed rgba(0, 242, 255, 0.2);
+            border-radius: 50%;
+            animation: rotate 20s linear infinite;
+            position: absolute;
+            top: -50px; right: -50px;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div id="particles-js"></div>
+    <div class="scanline"></div>
+
+    <div class="max-w-7xl mx-auto relative">
+        <!-- TOP HEADER -->
+        <header class="flex flex-col md:flex-row justify-between items-center mb-16 gap-6">
+            <div class="flex items-center gap-6">
+                <div class="relative">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center text-3xl shadow-[0_0_30px_rgba(0,242,255,0.4)]">
+                        🛰️
+                    </div>
+                    <div class="absolute -bottom-2 -right-2 w-6 h-6 bg-green-500 rounded-full border-4 border-slate-900 animate-ping"></div>
+                </div>
+                <div>
+                    <h1 class="text-5xl font-black tracking-tighter gradient-heading">LUPSI <span class="font-light">CORE</span></h1>
+                    <p class="mono text-xs text-cyan-400/60 uppercase tracking-[0.3em]">Quantum Project Management Layer v4.0</p>
+                </div>
+            </div>
+            
+            <div class="flex gap-4">
+                <div class="cyber-card px-6 py-3 flex flex-col items-end">
+                    <span class="text-[10px] text-slate-500 font-bold">SYSTEM ENTROPY</span>
+                    <span class="text-xl font-bold text-cyan-400">0.0032ms</span>
+                </div>
+                <div class="cyber-card px-6 py-3 flex flex-col items-end border-purple-500/30">
+                    <span class="text-[10px] text-slate-500 font-bold">ACTIVE NODES</span>
+                    <span class="text-xl font-bold text-purple-400" id="team-size-nav">--</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN GRID -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- LEFT COLUMN: STATUS & CHARTS -->
+            <div class="lg:col-span-8 space-y-8">
+                
+                <!-- KPI STRIP -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="cyber-card p-6" data-tilt>
+                        <p class="text-[10px] font-bold text-slate-400 mb-2">BACKLOG SIZE</p>
+                        <h4 class="text-4xl font-bold" id="total-tasks">--</h4>
+                        <div class="mt-4 h-1 bg-cyan-950 rounded-full overflow-hidden">
+                            <div class="h-full bg-cyan-400 glow-indigo" style="width: 65%"></div>
+                        </div>
+                    </div>
+                    <div class="cyber-card p-6" data-tilt>
+                        <p class="text-[10px] font-bold text-rose-400 mb-2">CRITICAL THREATS</p>
+                        <h4 class="text-4xl font-bold text-rose-500" id="urgent-tasks">--</h4>
+                        <div class="mt-4 flex gap-1">
+                            <div class="w-1 h-3 bg-rose-500"></div>
+                            <div class="w-1 h-3 bg-rose-500"></div>
+                            <div class="w-1 h-3 bg-slate-800"></div>
+                        </div>
+                    </div>
+                    <div class="cyber-card p-6" data-tilt>
+                        <p class="text-[10px] font-bold text-purple-400 mb-2">COMPLETED</p>
+                        <h4 class="text-4xl font-bold text-purple-500" id="done-tasks">--</h4>
+                    </div>
+                    <div class="cyber-card p-6" data-tilt>
+                        <p class="text-[10px] font-bold text-emerald-400 mb-2">VELOCITY</p>
+                        <h4 class="text-4xl font-bold text-emerald-500">94<span class="text-sm">%</span></h4>
+                    </div>
+                </div>
+
+                <!-- MAIN CHART -->
+                <div class="cyber-card p-8 min-h-[450px]">
+                    <div class="flex justify-between items-center mb-10">
+                        <div>
+                            <span class="status-badge">Live Analytics</span>
+                            <h3 class="text-2xl font-bold mt-2">Historical Entropy & Burndown</h3>
+                        </div>
+                        <div class="text-right">
+                            <p class="mono text-xs text-slate-500">SPRINT CYCLE</p>
+                            <p class="text-lg font-bold text-cyan-400" id="sprint-name">--</p>
+                        </div>
+                    </div>
+                    <div class="h-[300px]">
+                        <canvas id="burndownChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: AI & TEAM -->
+            <div class="lg:col-span-4 space-y-8">
+                
+                <!-- AI TERMINAL -->
+                <div class="cyber-card p-8 border-cyan-400/20 bg-cyan-400/5 min-h-[500px] flex flex-col">
+                    <div class="spinning-ring"></div>
+                    <div class="flex items-center gap-3 mb-8 relative z-10">
+                        <div class="w-3 h-3 rounded-full bg-cyan-400 animate-pulse"></div>
+                        <h3 class="mono text-sm font-bold tracking-widest text-cyan-400">LUPSI_AI_LOGS</h3>
+                    </div>
+                    
+                    <div id="ai-log" class="flex-grow space-y-6 overflow-y-auto max-h-[400px] mono text-[11px] leading-relaxed relative z-10">
+                        <!-- AI ENTRIES -->
+                    </div>
+
+                    <div class="mt-8 relative z-10">
+                        <div class="p-4 rounded-xl bg-slate-900/80 border border-cyan-400/20">
+                            <p class="text-[10px] text-cyan-400 font-bold mb-1">PROACTIVE ACTION</p>
+                            <p class="text-xs text-slate-300">Auditoría completa programada en 4h 20m.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DISTRIBUTION -->
+                <div class="cyber-card p-8">
+                    <h3 class="text-sm font-bold uppercase tracking-widest mb-6">Structural DNA</h3>
+                    <div class="h-[200px]">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- FOOTER INFO -->
+        <footer class="mt-16 flex flex-wrap gap-12 border-t border-slate-800 pt-8 pb-12">
+            <div>
+                <p class="text-[10px] font-bold text-slate-500 uppercase">Core Objective</p>
+                <p id="core-objective" class="text-sm text-slate-300 italic max-w-md">--</p>
+            </div>
+            <div>
+                <p class="text-[10px] font-bold text-slate-500 uppercase">Deadline</p>
+                <p class="text-xl font-bold text-purple-400"><span id="days-left">--</span> DAYS UNTIL SYNC</p>
+            </div>
+        </header>
+    </div>
+
+    <script>
+        // Particles Background
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#00f2ff" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.2, "random": true },
+                "size": { "value": 2, "random": true },
+                "line_linked": { "enable": true, "distance": 150, "color": "#00f2ff", "opacity": 0.1, "width": 1 },
+                "move": { "enable": true, "speed": 1, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false }
+            },
+            "interactivity": {
+                "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" } },
+                "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } } }
+            },
+            "retina_detect": true
+        });
+
+        async function fetchData() {
+            try {
+                const response = await fetch('/metrics');
+                const data = await response.json();
+                updateUI(data);
+            } catch (err) {
+                console.error("Error fetching metrics:", err);
+            }
+        }
+
+        function updateUI(data) {
+            const { trello, burndown, proyecto } = data;
+
+            document.getElementById('total-tasks').innerText = trello.total || 0;
+            document.getElementById('urgent-tasks').innerText = trello.urgentes || 0;
+            document.getElementById('done-tasks').innerText = trello.completadas || 0;
+            document.getElementById('team-size-nav').innerText = trello.totalMiembros || 0;
+            document.getElementById('sprint-name').innerText = proyecto.sprint_actual || 'INIT_SEQ';
+            document.getElementById('core-objective').innerText = proyecto.objetivo_principal || 'System optimization.';
+
+            if (proyecto.fecha_fin) {
+                const end = new Date(proyecto.fecha_fin);
+                const daysLeft = Math.max(0, Math.round((end - Date.now()) / (1000 * 60 * 60 * 24)));
+                document.getElementById('days-left').innerText = daysLeft;
+            }
+
+            renderCharts(burndown, trello.listas);
+            updateAILog(trello, proyecto);
+        }
+
+        function renderCharts(burndown, lists) {
+            const bCtx = document.getElementById('burndownChart').getContext('2d');
+            new Chart(bCtx, {
+                type: 'line',
+                data: {
+                    labels: burndown.map(d => d.fecha),
+                    datasets: [{
+                        label: 'Entropy',
+                        data: burndown.map(d => d.pendientes),
+                        borderColor: '#00f2ff',
+                        backgroundColor: 'rgba(0, 242, 255, 0.05)',
+                        fill: true,
+                        tension: 0.5,
+                        borderWidth: 2,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, border: { display: false } },
+                        x: { grid: { display: false }, border: { display: false } }
+                    }
+                }
+            });
+
+            const dCtx = document.getElementById('distributionChart').getContext('2d');
+            new Chart(dCtx, {
+                type: 'radar',
+                data: {
+                    labels: Object.keys(lists),
+                    datasets: [{
+                        data: Object.values(lists),
+                        backgroundColor: 'rgba(188, 19, 254, 0.2)',
+                        borderColor: '#bc13fe',
+                        borderWidth: 2,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        r: {
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            angleLines: { color: 'rgba(255,255,255,0.05)' },
+                            pointLabels: { color: '#64748b', font: { size: 8 } },
+                            ticks: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateAILog(trello, proyecto) {
+            const log = document.getElementById('ai-log');
+            log.innerHTML = '';
+            const entries = [
+                { tag: 'WARN', color: 'text-rose-500', text: `Riesgo detectado: ${proyecto.riesgos_conocidos || 'Inestabilidad en backlog'}` },
+                { tag: 'INFO', color: 'text-cyan-400', text: `Objetivo activo: ${proyecto.objetivo_principal}` },
+                { tag: 'EXEC', color: 'text-purple-400', text: `Escaneo de Trello completado. ${trello.total} nodos identificados.` },
+                { tag: 'LIVE', color: 'text-emerald-400', text: 'Esperando eventos de Webhook... Sistema en escucha.' }
+            ];
+
+            entries.forEach((e, i) => {
+                const div = document.createElement('div');
+                div.className = 'opacity-0 transition-opacity duration-1000';
+                div.innerHTML = `<span class="${e.color} font-bold">[${e.tag}]</span> > ${e.text}`;
+                log.appendChild(div);
+                setTimeout(() => div.classList.remove('opacity-0'), i * 800);
+            });
+        }
+
+        fetchData();
+        setInterval(fetchData, 60000);
+    </script>
+</body>
+</html>

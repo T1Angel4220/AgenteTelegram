@@ -127,7 +127,6 @@ export class AiService {
         try {
             const trelloContext = await this.trello.getBoardState();
             const githubContext = await this.github.getLatestCommits();
-            const knowledgeBase = await this.docs.getKnowledgeBase();
             const topology = await this.trello.getBoardTopologyForAI();
 
             // 1. Leemos el conocimiento estático (Fechas del sprint)
@@ -161,6 +160,8 @@ export class AiService {
       4. Para notificar a una persona, es OBLIGATORIO usar NOTIFY_MEMBER. No puedes "hablarles" sin usar la herramienta.
       5. Si el usuario pide notificar a varios, incluye múltiples etiquetas <accion> (una por persona).
       6. Usa EXCLUSIVAMENTE los IDs de la TOPOLOGÍA proporcionada abajo.
+      7. ¡ESTÁS CONECTADO EN TIEMPO REAL! Los datos del ESTADO TRELLO y la TOPOLOGÍA proporcionados abajo son 100% reales y actualizados al milisegundo. PROHIBIDO decir que "simulas", "basado en datos previos" o "no tienes acceso en tiempo real".
+      8. CUIDADO CON EL HISTORIAL: Si en el historial de conversación anterior mencionaste o te equivocaste de ID, NO LO COPIES. SIEMPRE extrae el ID exacto y verdadero leyendo la TOPOLOGÍA TÉCNICA actual.
 
       === MANUAL DE HERRAMIENTAS (OBLIGATORIO) ===
       Para actuar, escribe: <accion>{"tool": "NOMBRE", "args": {...}}</accion>
@@ -170,8 +171,10 @@ export class AiService {
       - ADD_COMMENT: {"cardId": "string", "text": "string"}
       - CREATE_ISSUE: {"title": "string", "body": "string"}
       - ASSIGN_USER: {"cardId": "string", "memberId": "string"}
+      - MARK_CARD_COMPLETE: {"cardId": "string"} → Úsala cuando el usuario te pida marcar una tarea o tarjeta específica como terminada o completada. OBLIGATORIO: El "cardId" DEBE ser EXACTAMENTE el código alfanumérico de 24 caracteres de la TOPOLOGÍA TÉCNICA. ¡PROHIBIDO inventar sufijos como "_forgotten_id" o agregar texto extra! Solo copia y pega el ID real.
       - NOTIFY_MEMBER: {"trelloNames": "Nombre1, Nombre2", "text": "string"} → Úsala para enviar el mismo mensaje a uno o varios miembros a la vez. Si es para todo el equipo, incluye todos los nombres separados por coma.
-      - GET_CARD_DETAILS: {"searchTerm": "nombre parcial de la tarea"} → Úsala cuando el usuario pregunte por una tarea específica o pida sus adjuntos/entregables.
+      - GET_CARD_DETAILS: {"searchTerm": "nombre parcial de la tarea"} → Úsala cuando el usuario pregunte por una tarea específica o pida sus adjuntos/entregables. IMPORTANTE: Al usar esta herramienta, TÚ NO TIENES los datos de la tarjeta todavía. El sistema los buscará y enviará automáticamente. Por lo tanto, en tu etiqueta <respuesta> SOLAMENTE di que la estás buscando y NO INTENTES adivinar, explicar ni asumir su estado.
+      - AUTO_FIX_CODE: {"filePath": "ruta/al/archivo.ts", "newContent": "código completo corregido", "reason": "explicación breve"} → Úsala cuando detectes un bug o mejora clara en el código y quieras proponer un Pull Request.
 
       === EJEMPLO DE RESPUESTA CORRECTA ===
       Usuario: "Notifica a ALEX que revise el bug"
@@ -185,7 +188,14 @@ export class AiService {
       Fecha Fin Sprint: ${conocimiento.fecha_fin} | Hoy: ${hoy}
       Objetivo: ${conocimiento.objetivo_principal}
       
-      REGLA DE VERACIDAD DE SPRINT: Aunque encuentres documentos de otros sprints (ej. Sprint 5, Sprint 4) en la base de conocimiento, DEBES IGNORARLOS si contradicen el campo "Sprint Actual" de arriba. Actualmente estamos ÚNICAMENTE en el ${conocimiento.sprint_actual}. No menciones otros sprints como si fueran el presente.
+      === REGLA DE VERACIDAD DE SPRINT ===
+      Aunque encuentres documentos de otros sprints, DEBES IGNORARLOS si contradicen el "Sprint Actual". Actualmente estamos ÚNICAMENTE en el ${conocimiento.sprint_actual}. No menciones otros sprints como si fueran el presente.
+      
+      === REGLA DE ESTADOS DE TAREAS (ESTRICTA) ===
+      NUNCA confundas tareas "Pendientes" con tareas "En proceso".
+      - "Pendiente" (To Do): Significa que la tarea NO ha iniciado. No digas que está en proceso.
+      - "En proceso" (Doing / In Progress): Significa que la tarea se está trabajando activamente.
+      Si el usuario pregunta por tareas pendientes, MUESTRA SOLO LAS PENDIENTES. Si pregunta por tareas en proceso, MUESTRA SOLO LAS EN PROCESO. ¡Diferencia claramente las listas de Trello!
       
       === REGLAS APRENDIDAS (ÓRDENES DIRECTAS DEL PM) ===
       ${(conocimiento.reglas_aprendidas || []).map(r => `- RECHAZASTE: ${r.accion_rechazada} MOTIVO: ${r.motivo}`).join('\n') || 'Ninguna regla aprendida aún.'}
@@ -202,8 +212,8 @@ export class AiService {
       ESTADO TRELLO:
       ${trelloContext}
       
-      DOCUMENTACIÓN (BASE DE CONOCIMIENTO):
-      ${knowledgeBase}
+      DOCUMENTACIÓN RELEVANTE (RAG):
+      ${await this.docs.getRelevantContext(userMessage)}
 
       === REGLAS DE FORMATO (OBLIGATORIO) ===
       1. Tu respuesta DEBE estar contenida en etiquetas <respuesta></respuesta>.
@@ -255,16 +265,45 @@ export class AiService {
                 .replace(/<[^>]+>/g, '')          // Cualquier otra etiqueta HTML/XML
                 .trim();
 
-            // Extracción de acciones JSON (Soporte para múltiples etiquetas <accion>)
-            let actions: any[] = [];
-            const actionMatches = content.matchAll(/<accion>([\s\S]*?)<\/accion>/gi);
-            for (const match of actionMatches) {
-                try {
-                    const parsedAction = JSON.parse(match[1].trim());
-                    actions.push(parsedAction);
-                } catch (e) {
-                    console.error('Error al parsear JSON de acción:', e.message);
+            // Fallback si la IA puso su texto fuera de las etiquetas <respuesta>
+            if (!cleanText && match) {
+                let fallback = content.replace(/<respuesta>[\s\S]*?<\/respuesta>/i, '').trim();
+                fallback = fallback
+                    .replace(/<\/?accion>[\s\S]*?<\/accion>/gi, '')
+                    .replace(/<accion>[\s\S]*/gi, '')
+                    .replace(/<[^>]+>/g, '')
+                    .trim();
+                if (fallback) {
+                    cleanText = fallback;
                 }
+            }
+
+            // Extracción de acciones JSON (Soporte para múltiples formatos debido a alucinación de modelos gratuitos)
+            let actions: any[] = [];
+            
+            const extractAndPush = (regex: RegExp) => {
+                const matches = content.matchAll(regex);
+                for (const match of matches) {
+                    try {
+                        const parsed = JSON.parse(match[1].trim());
+                        // Adaptador universal para modelos que cambian tool/args por name/arguments
+                        if (parsed.name && parsed.arguments && !parsed.tool) {
+                            parsed.tool = parsed.name;
+                            parsed.args = parsed.arguments;
+                        }
+                        if (parsed.tool) actions.push(parsed);
+                    } catch (e) { }
+                }
+            };
+
+            extractAndPush(/<accion>([\s\S]*?)<\/accion>/gi);
+            extractAndPush(/<tool_call>([\s\S]*?)<\/tool_call>/gi);
+            extractAndPush(/```json\s*([\s\S]*?)\s*```/gi);
+            extractAndPush(/<code>([\s\S]*?)<\/code>/gi);
+            
+            // Si el modelo solo botó un JSON puro que empieza con {"tool"
+            if (actions.length === 0 && content.trim().startsWith('{"tool"')) {
+                 try { actions.push(JSON.parse(content.trim())); } catch (e) {}
             }
             
             memory.push({ role: 'assistant', content: cleanText });

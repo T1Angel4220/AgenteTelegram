@@ -96,7 +96,7 @@ export class GithubService {
   }
 
   // NUEVA FUNCIÓN: Obtener contenido de un archivo específico
-  async getFileContent(filePath: string): Promise<string> {
+  async getFileContent(filePath: string): Promise<{ content: string, sha: string }> {
     try {
       const { GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH } = process.env;
       const branch = GITHUB_BRANCH || 'develop';
@@ -106,9 +106,57 @@ export class GithubService {
       });
 
       const content = Buffer.from(response.data.content, 'base64').toString('utf-8');
-      return content.substring(0, 3000); // Máx 3000 chars por archivo
+      return { 
+        content: content.substring(0, 5000), 
+        sha: response.data.sha 
+      };
     } catch (error) {
-      return `No se pudo leer: ${filePath}`;
+      throw new Error(`No se pudo leer: ${filePath}`);
     }
   }
-}
+
+  // FLUJO COMPLETO DE AUTO-FIX
+  async createAutoFixPR(filePath: string, newContent: string, prTitle: string): Promise<string> {
+    try {
+      const { GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH } = process.env;
+      const baseBranch = GITHUB_BRANCH || 'develop';
+      const headers = { Authorization: `token ${GITHUB_TOKEN}` };
+      const repoUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}`;
+
+      // 1. Obtener el SHA de la rama base
+      const { data: refData } = await axios.get(`${repoUrl}/git/ref/heads/${baseBranch}`, { headers });
+      const baseSha = refData.object.sha;
+
+      // 2. Crear una nueva rama única
+      const newBranchName = `fix-${Date.now()}`;
+      await axios.post(`${repoUrl}/git/refs`, {
+        ref: `refs/heads/${newBranchName}`,
+        sha: baseSha
+      }, { headers });
+
+      // 3. Obtener el SHA actual del archivo para poder actualizarlo
+      const { sha: fileSha } = await this.getFileContent(filePath);
+
+      // 4. Actualizar el archivo en la nueva rama
+      await axios.put(`${repoUrl}/contents/${filePath}`, {
+        message: `LUPSI: Auto-fix en ${filePath}`,
+        content: Buffer.from(newContent).toString('base64'),
+        sha: fileSha,
+        branch: newBranchName
+      }, { headers });
+
+      // 5. Crear el Pull Request
+      const { data: prData } = await axios.post(`${repoUrl}/pulls`, {
+        title: prTitle,
+        head: newBranchName,
+        base: baseBranch,
+        body: `🤖 **LUPSI AUTO-FIX**\n\nHe detectado una posible mejora o error en \`${filePath}\` y he generado esta propuesta automáticamente.\n\nPor favor, revisa los cambios antes de fusionar.`
+      }, { headers });
+
+      return prData.html_url;
+    } catch (error) {
+      console.error('Error en flujo Auto-Fix:', error.response?.data || error.message);
+      throw new Error('No se pudo crear el Pull Request automático.');
+    }
+  }
+}

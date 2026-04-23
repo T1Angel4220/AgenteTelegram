@@ -12,7 +12,6 @@ import * as path from 'path';
 
 @Injectable()
 export class CronService {
-  private bot: Telegraf;
 
   constructor(
     private readonly aiService: AiService,
@@ -21,9 +20,7 @@ export class CronService {
     private readonly botService: BotService,
     private readonly trelloService: TrelloService,
     private readonly docsService: DocsService,
-  ) {
-    this.bot = new Telegraf(process.env.TELEGRAM_TOKEN as string);
-  }
+  ) {}
 
   // ══════════════════════════════════════════════════════
   // CICLO 1 — STANDUP MATUTINO (09:00 AM — Lunes a Viernes)
@@ -43,9 +40,10 @@ export class CronService {
 
     const hoy = new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
 
+    const bot = this.botService.getBotInstance();
     for (const miembro of equipo) {
       try {
-        await this.bot.telegram.sendMessage(
+        await bot.telegram.sendMessage(
           miembro.chatId,
           `👋 ¡Buenos días, *${miembro.trelloName}*!\n\n` +
           `Es el *${hoy}*. Soy LUPSI, tu gestor de proyecto.\n\n` +
@@ -62,7 +60,7 @@ export class CronService {
       }
     }
 
-    await this.bot.telegram.sendMessage(
+    await bot.telegram.sendMessage(
       adminChatId,
       `📢 *Standup enviado* al equipo (${equipo.length} miembro${equipo.length > 1 ? 's' : ''}).\nRecopilaré sus respuestas y te presentaré el resumen a las 10:00 AM.`,
       { parse_mode: 'Markdown' }
@@ -82,6 +80,7 @@ export class CronService {
       // Leer respuestas reales del standup si existen
       const standupPath = path.join(process.cwd(), 'standup_hoy.json');
       let resumenEquipo = '';
+      let climaEmocional = "Neutral (Sin datos)";
 
       if (fs.existsSync(standupPath)) {
         const respuestas: any[] = JSON.parse(fs.readFileSync(standupPath, 'utf-8'));
@@ -96,6 +95,19 @@ export class CronService {
         if (respuestasHoy.length > 0) {
           resumenEquipo = `\n\n*Respuestas del equipo:*\n` +
             respuestasHoy.map(r => `• *${r.nombre}:* ${r.respuesta}`).join('\n');
+          
+          // 1. ANÁLISIS DE SENTIMIENTO (Fase 3: Inteligencia Emocional)
+          const sentimentPrompt = `Analiza el tono emocional de estas respuestas de standup del equipo:
+          ${respuestasHoy.map(r => r.respuesta).join('\n')}
+          
+          Responde ÚNICAMENTE con una de estas opciones y un emoji:
+          - 🔋 Alta Energía (Positivo/Motivado)
+          - 😐 Estable (Neutral/Enfocado)
+          - ⚠️ Estrés Detectado (Cansancio/Frustración)
+          - 🆘 Alerta Crítica (Bloqueo emocional/Desmotivación)`;
+          
+          const sentimentResult = await this.aiService.chatWithAgent(sentimentPrompt);
+          climaEmocional = sentimentResult.text.trim();
         } else {
           resumenEquipo = '\n\n_Ningún miembro respondió el standup aún._';
         }
@@ -112,10 +124,13 @@ Revisa el tablero de Trello y genera un resumen matutino del proyecto con:
 Máximo 4 puntos concisos. Sin introducciones.`;
 
       const result = await this.aiService.chatWithAgent(prompt);
+      const bot = this.botService.getBotInstance();
 
-      await this.bot.telegram.sendMessage(
+      await bot.telegram.sendMessage(
         chatId,
-        this.escapeMarkdown(`☀️ *Resumen del Standup — ${new Date().toLocaleDateString('es-ES')}*\n\n${result.text}${resumenEquipo}`),
+        this.escapeMarkdown(`☀️ *Resumen del Standup — ${new Date().toLocaleDateString('es-ES')}*\n\n` +
+        `🌡 *Clima del Equipo:* ${climaEmocional}\n\n` +
+        `${result.text}${resumenEquipo}`),
         { parse_mode: 'Markdown' }
       );
 
@@ -149,7 +164,8 @@ Máximo 4 puntos concisos. Sin introducciones.`;
         .map(c => `• *${c.nombre}* (${c.lista})\n  👤 ${c.asignados} | 📅 Lleva *${c.diasBloqueada} día${c.diasBloqueada !== 1 ? 's' : ''}* sin actividad | Vence: ${c.vencimiento}`)
         .join('\n\n');
 
-      await this.bot.telegram.sendMessage(
+      const bot = this.botService.getBotInstance();
+      await bot.telegram.sendMessage(
         chatId,
         this.escapeMarkdown(`⚠️ *Watchdog LUPSI — Tareas Bloqueadas*\n\n${lista}\n\n💡 ¿Quieres que mueva o reasigne alguna? Dime.`),
         { parse_mode: 'Markdown' }
@@ -178,6 +194,77 @@ Máximo 4 puntos concisos. Sin introducciones.`;
 
 
   // ══════════════════════════════════════════════════════
+  // CICLO NUEVO — BALANCE DE CARGAS (15:00 — Lunes a Viernes)
+  // Evalúa autónomamente quién está sobrecargado y quién inactivo.
+  // ══════════════════════════════════════════════════════
+  @Cron('0 15 * * 1-5')
+  async analisisDeSobrecarga() {
+    console.log('⚖️ Evaluando balance de cargas del equipo...');
+    const chatId = process.env.TELEGRAM_CHAT_ID as string;
+    const bot = this.botService.getBotInstance();
+    
+    try {
+      const topologyRaw = await this.trelloService.getBoardTopologyForAI();
+      if (!topologyRaw || topologyRaw === '{}') return;
+      const topology = JSON.parse(topologyRaw);
+
+      const equipoPath = path.join(process.cwd(), 'equipo.json');
+      if (!fs.existsSync(equipoPath)) return;
+      const equipo: any[] = JSON.parse(fs.readFileSync(equipoPath, 'utf-8'));
+      
+      const listasProcesoIds = topology.listas
+        .filter((l: any) => /doing|progreso|proceso|wip/i.test(l.name))
+        .map((l: any) => l.id);
+        
+      const listasPendientesIds = topology.listas
+        .filter((l: any) => /todo|pendiente|backlog/i.test(l.name))
+        .map((l: any) => l.id);
+
+      const tareasPendientes = topology.tarjetas.filter((c: any) => listasPendientesIds.includes(c.idList)).length;
+
+      let mensajePM = `⚖️ *Auditoría de Cargas LUPSI (15:00)*\n\n`;
+      let alertasGeneradas = 0;
+
+      for (const miembro of equipo) {
+        // Encontrar ID de Trello del miembro basado en su nombre
+        const trelloMember = topology.miembros.find((m: any) => 
+            m.fullName.toLowerCase() === miembro.trelloName.toLowerCase().trim() ||
+            m.fullName.toLowerCase().includes(miembro.trelloName.toLowerCase().trim())
+        );
+
+        if (!trelloMember) continue;
+
+        const enProceso = topology.tarjetas.filter((c: any) => 
+            listasProcesoIds.includes(c.idList) && c.idMembers.includes(trelloMember.id)
+        );
+
+        mensajePM += `👤 *${miembro.trelloName}*: ${enProceso.length} en proceso\n`;
+
+        if (enProceso.length >= 3) {
+            await this.botService.notifyMember(
+                miembro.trelloName,
+                `⚠️ *ALERTA DE SOBRECARGA*\n\nHola ${miembro.nombre || miembro.trelloName}, soy LUPSI. He detectado que tienes *${enProceso.length} tareas activas simultáneamente*.\n\nPor favor, cierra o bloquea tareas actuales antes de empezar nuevas para evitar el context-switching. 🛑`
+            ).catch(() => {});
+            alertasGeneradas++;
+        } else if (enProceso.length === 0 && tareasPendientes > 0) {
+            await this.botService.notifyMember(
+                miembro.trelloName,
+                `🔔 *SUGERENCIA DE TRABAJO*\n\nHola ${miembro.nombre || miembro.trelloName}. Veo que no tienes tareas en progreso en este momento, pero hay *${tareasPendientes} tareas pendientes* en el tablero.\n\nPor favor, revisa el tablero y asígnate una nueva tarea. 🚀`
+            ).catch(() => {});
+            alertasGeneradas++;
+        }
+      }
+
+      mensajePM += `\n🤖 *Acciones Autónomas:* LUPSI ha enviado ${alertasGeneradas} mensajes directos (DMs) al equipo corrigiendo la carga laboral.`;
+
+      await bot.telegram.sendMessage(chatId, this.escapeMarkdown(mensajePM), { parse_mode: 'Markdown' });
+
+    } catch (e) {
+      console.error('Error en análisis de sobrecarga:', e.message);
+    }
+  }
+
+  // ══════════════════════════════════════════════════════
   // CICLO 4 — ALERTAS DE VENCIMIENTO (08:00 AM — Todos los días)
   // Si una tarjeta vence en las próximas 48h, LUPSI avisa al dev asignado.
   // ══════════════════════════════════════════════════════
@@ -193,7 +280,8 @@ Máximo 4 puntos concisos. Sin introducciones.`;
         .map(c => `• *${c.nombre}*\n  👤 ${c.asignados} | 🕐 ${c.horasRestantes}h restantes | 📅 ${c.vencimiento}`)
         .join('\n\n');
 
-      await this.bot.telegram.sendMessage(
+      const bot = this.botService.getBotInstance();
+      await bot.telegram.sendMessage(
         chatId,
         this.escapeMarkdown(`📅 *Vencimientos en 48h — LUPSI*\n\n${lista}`),
         { parse_mode: 'Markdown' }
@@ -231,7 +319,8 @@ Máximo 4 puntos concisos. Sin introducciones.`;
     const chatId = process.env.TELEGRAM_CHAT_ID as string;
 
     try {
-      await this.bot.telegram.sendMessage(chatId, '🔔 LUPSI iniciando auditoría de cierre de día...');
+      const bot = this.botService.getBotInstance();
+      await bot.telegram.sendMessage(chatId, '🔔 LUPSI iniciando auditoría de cierre de día...');
 
       // 1) REPORTE EJECUTIVO (PDF con gráficos)
       const promptReporte = `Actúa como PM experto para SKT Software Solution (Software, Knowledge, and Trust). 
@@ -243,18 +332,18 @@ ESTADO GENERAL:
 1. RESUMEN EJECUTIVO:
 [Incluye una lista de los Top 3 Hitos Alcanzados y una lista de Bloqueos Actuales].
 
-2. ANÁLISIS DE FLUJO DE TRABAJO:
+2. EVALUACIÓN DE RENDIMIENTO DEL EQUIPO (¡MUY IMPORTANTE!):
+[Sé MUY estricto y explícito. Menciona con NOMBRE Y APELLIDO a los miembros que están atrasando el flujo de trabajo o bloqueando tarjetas. También menciona a los que han cerrado tareas eficientemente. No seas diplomático, señala el rendimiento real].
+
+3. ANÁLISIS DE FLUJO DE TRABAJO:
 [Métricas del Periodo: Tareas Planificadas, Completadas y Pasadas.
 Distribución de Carga: Una lista por miembro indicando Rol, Miembro, Estado de Carga (Normal/Sobrecargado) y Tareas (Activas/Pendientes)].
 
-3. SALUD DEL CÓDIGO Y REPOSITORIO:
+4. SALUD DEL CÓDIGO Y REPOSITORIO:
 [Métricas de PRs (Abiertos/Fusionados), Issues (Reportados/Resueltos) y Estado de Ramas (Main/Develop)].
 
-4. AUDITORÍA DE DOCUMENTACIÓN:
-[Lista de documentos principales (Diccionario de Datos, API Endpoints, Manual de Despliegue). Formato: Documento | Estado | Acción].
-
 5. MATRIZ DE RIESGOS:
-[Lista de riesgos. Formato: Riesgo | Impacto | Mitigación | Responsable].
+[Lista de riesgos. Formato: Riesgo | Impacto | Mitigación | Responsable Directo asignado para solucionarlo hoy/mañana].
 
 6. RECOMENDACIONES Y PRÓXIMOS PASOS:
 [Ajustes al Proceso y Top 3 Prioridades para la próxima semana].
@@ -294,7 +383,7 @@ Sin emojis. Sin introducciones. Empieza exactamente con "ESTADO GENERAL:".`;
       const pdfBuffer = await this.pdfService.generateReport(resultReporte.text, metrics);
       const filename = `Reporte_LUPSI_${new Date().toISOString().split('T')[0]}.pdf`;
 
-      await this.bot.telegram.sendDocument(
+      await bot.telegram.sendDocument(
         chatId,
         Input.fromBuffer(pdfBuffer, filename),
         { caption: '📊 Reporte ejecutivo nocturno generado.' },
@@ -317,7 +406,7 @@ Sin emojis. Sin introducciones. Empieza exactamente con "ESTADO GENERAL:".`;
           ['🧪', 'PRUEBAS QUE FALTAN', test],
           ['🔧', 'DEUDA TÉCNICA', debt],
         ] as [string, string, any][]) {
-          await this.bot.telegram.sendMessage(
+          await bot.telegram.sendMessage(
             chatId,
             this.escapeMarkdown(`${emoji} *${titulo}*\n\n${res.text}`),
             { parse_mode: 'Markdown' }
@@ -329,12 +418,16 @@ Sin emojis. Sin introducciones. Empieza exactamente con "ESTADO GENERAL:".`;
 
       // 3) ANÁLISIS ESTRATÉGICO — Propone acción, espera aprobación del PM
       const resultDecision = await this.aiService.chatWithAgent(
-        `Eres LUPSI, Senior PM autónomo. ESPAÑOL.
-Revisa el tablero, los commits y la base de conocimiento del proyecto.
-¿Hay algún cuello de botella o riesgo que requiera una acción en Trello o GitHub?
-Si sí, genera <accion> JSON con la herramienta correspondiente.
-Si afecta a un miembro específico, incluye "notifyMember" con su nombre de Trello.
-Explica tu razón en la <respuesta> de forma muy concisa.`
+        `Eres LUPSI, Senior PM autónomo experto. ESPAÑOL.
+Revisa la base de conocimiento (sprint actual, fecha de fin) y la topología del tablero.
+Debes proponer UNA acción estratégica obligatoria evaluando estos 3 pilares:
+1. GESTIÓN DE TIEMPO (RENUNCIA ESTRATÉGICA): Si faltan pocos días para el fin del Sprint y hay tareas grandes/bloqueadas, PROPÓN APLAZARLAS al siguiente Sprint usando la herramienta MOVE_CARD para moverla al Backlog o lista futura.
+2. GESTIÓN DE RECURSOS (REASIGNACIÓN): Si detectas sobrecarga en un miembro, sugiere explícitamente reasignar su tarea a otro miembro disponible. Usa NOTIFY_MEMBER para avisarles del cambio propuesto.
+3. PRIORIZACIÓN: Si hay tareas críticas, sugiere pausar el resto.
+
+Genera SIEMPRE un JSON <accion> con la herramienta correspondiente (ej. MOVE_CARD, NOTIFY_MEMBER, CREATE_ISSUE).
+Si la acción afecta a alguien, incluye el campo extra "notifyMember": "Nombre del Trello" dentro del JSON para avisarle.
+En la <respuesta>, explica MUY brevemente tu razonamiento estratégico de forma autoritaria.`
       );
 
       const actions = (resultDecision as any).actions || [];
@@ -346,7 +439,7 @@ Explica tu razón en la <respuesta> de forma muy concisa.`
         const historialPath = path.join(process.cwd(), 'historial.txt');
         fs.appendFileSync(historialPath, `\n[${new Date().toLocaleDateString('es-ES')}] PROPUESTA: ${resultDecision.text}\n`);
 
-        await this.bot.telegram.sendMessage(
+        await bot.telegram.sendMessage(
           chatId,
           this.escapeMarkdown(`🧐 *ACCIÓN PROPUESTA POR LUPSI:*\n\n${resultDecision.text}\n\n👆 Tu aprobación es requerida. LUPSI no ejecutará nada hasta que confirmes.`),
           {
@@ -365,7 +458,7 @@ Explica tu razón en la <respuesta> de forma muy concisa.`
           );
         }
       } else {
-        await this.bot.telegram.sendMessage(chatId, `✅ Sin acciones estratégicas pendientes por hoy. ¡Buen trabajo equipo!`);
+        await bot.telegram.sendMessage(chatId, `✅ Sin acciones estratégicas pendientes por hoy. ¡Buen trabajo equipo!`);
       }
 
     } catch (error) {
@@ -403,7 +496,8 @@ Sin introducciones. Directo.`;
 
       const result = await this.aiService.chatWithAgent(prompt);
 
-      await this.bot.telegram.sendMessage(
+      const bot = this.botService.getBotInstance();
+      await bot.telegram.sendMessage(
         chatId,
         this.escapeMarkdown(`📋 *Resumen Semanal — ${new Date().toLocaleDateString('es-ES')}*\n\n${result.text}`),
         { parse_mode: 'Markdown' }
@@ -415,7 +509,7 @@ Sin introducciones. Directo.`;
         const equipo: any[] = JSON.parse(fs.readFileSync(equipoPath, 'utf-8'));
         for (const miembro of equipo) {
           try {
-            await this.bot.telegram.sendMessage(
+            await bot.telegram.sendMessage(
               miembro.chatId,
               `🎉 *¡Fin de semana, ${miembro.trelloName}!*\n\nSemana cerrada. Buen trabajo.\nEl lunes a las 9:00 AM te escribiré para el próximo standup. ¡Descansa! 💪`,
               { parse_mode: 'Markdown' }
@@ -461,6 +555,7 @@ Sin introducciones. Directo.`;
   }
 
   private escapeMarkdown(text: string): string {
-    return text.replace(/([_*\[\]()~`>#+\-=|{}.!\\])/g, '\\$1');
+    // Escapa solo caracteres que rompen el Markdown pero permite * para negritas y _ para cursivas
+    return text.replace(/([\[\]()~`>#+\-=|{}.!\\])/g, '\\$1');
   }
 }
