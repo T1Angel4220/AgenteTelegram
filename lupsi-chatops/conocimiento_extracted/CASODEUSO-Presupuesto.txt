@@ -1,0 +1,1012 @@
+
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+1.  Título
+Transformación Digital Médica (PWA)
+2.  Introducción
+La transformación digital en el sector salud se ha convertido en un factor cla-
+ve para mejorar la eficiencia operativa, la calidad del servicio y la experiencia del
+paciente. En la actualidad, muchos centros médicos continúan gestionando procesos
+críticos, como el agendamiento de citas, mediante canales informales o herramientas
+de mensajería instantánea. Aunque estos medios ofrecen rapidez en la comunicación,
+presentan limitaciones importantes relacionadas con la organización de la informa-
+ción, la trazabilidad de los registros, la verificación de identidad de los pacientes y
+la protección de datos sensibles.
+En este contexto, el presente documento desarrolla el caso de negocio para la
+implementación de un Ecosistema Móvil basado en tecnología Progressive Web App
+(PWA), orientado a modernizar el proceso de agendamiento de citas médicas y a
+establecer un canal digital oficial entre el centro médico y sus pacientes. Esta solución
+tecnológica permitirá automatizar la reserva de citas, verificar la identidad de los
+usuarios mediante algoritmos de validación de cédula ecuatoriana y proporcionar un
+repositorio digital de indicaciones médicas accesible desde dispositivos móviles.
+3.  Objetivo
+Desarrollar e implementar un Ecosistema Móvil sin Fricción basado en tecnología
+PWA (Progressive Web App) que funcione como el puente digital oficial entre pa-
+cientes y el centro médico. El sistema erradicará el ausentismo mediante verificación
+de identidad (Módulo 10), automatizará el agendamiento y proveerá un repositorio
+digital con capacidades offline para indicaciones médicas.
+4.  Alcance
+El presente proyecto tiene como finalidad desarrollar e implementar un sistema
+digital de agendamiento de citas médicas basado en tecnología Progressive Web App
+(PWA), orientado a optimizar la gestión de atención a pacientes en el centro médico.
+1
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+El alcance del proyecto define claramente las funcionalidades que serán desarrolladas
+durante la ejecución, así como aquellas actividades o características que no forman
+parte de la implementación en esta fase inicial.
+4.1.  Alcance Incluido
+Dentro del alcance del proyecto se contemplan las siguientes actividades y fun-
+cionalidades:
+Desarrollo de una plataforma web tipo PWA que permita a los pacientes ac-
+ceder desde sus dispositivos móviles y computadoras sin necesidad de instalar
+aplicaciones desde tiendas digitales.
+Implementación de un sistema de registro y autenticación de usuarios mediante
+validación de número de cédula ecuatoriana utilizando el algoritmo Módulo 10.
+Desarrollo de un motor de agendamiento de citas médicas que permita consul-
+tar disponibilidad de horarios y reservar turnos de manera automatizada.
+Implementación de notificaciones Push para recordar a los pacientes sobre sus
+citas médicas programadas.
+Creación de un repositorio digital donde los pacientes puedan consultar indi-
+caciones médicas o información asociada a sus consultas.
+Implementación de medidas básicas de seguridad informática, incluyendo ci-
+frado de comunicaciones mediante HTTPS y control de acceso a la información
+del sistema.
+Realización de pruebas funcionales y pruebas piloto con usuarios del centro
+médico para validar la usabilidad y funcionamiento del sistema.
+Capacitación básica al personal de recepción para el uso del sistema de gestión
+de citas.
+4.2.  Alcance No Incluido
+Las siguientes funcionalidades o actividades no forman parte del alcance del
+proyecto en esta etapa inicial:
+2
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+Desarrollo de aplicaciones móviles nativas para sistemas operativos Android o
+iOS.
+Integración con sistemas hospitalarios externos, historias clínicas electrónicas
+completas o sistemas de facturación médica.
+Implementación de telemedicina o videoconferencias médicas dentro de la pla-
+taforma.
+Integración con sistemas de pago en línea para consultas médicas.
+Migración de historiales médicos antiguos que se encuentren en formatos físicos
+o en sistemas externos.
+Desarrollo de módulos avanzados de analítica clínica o inteligencia artificial
+para diagnóstico médico.
+Implementación de infraestructura tecnológica compleja como centros de datos
+dedicados o arquitecturas de alta disponibilidad empresarial.
+4.3.  Límites del Proyecto
+El sistema será implementado inicialmente como un proyecto piloto dentro del
+centro médico con el objetivo de validar su funcionamiento, aceptación por parte de
+los usuarios y beneficios operativos. Posteriormente, el sistema podrá ser ampliado
+o mejorado en futuras fases para incorporar nuevas funcionalidades o integraciones
+tecnológicas de acuerdo con las necesidades institucionales.
+5.  Definiciones
+En esta sección se presentan las definiciones de los principales términos técnicos
+y conceptuales utilizados a lo largo del presente documento, con el fin de facilitar la
+comprensión del proyecto por parte de todos los actores involucrados.
+PWA (Progressive Web App): Tipo de aplicación web que utiliza tec-
+nologías modernas del navegador para ofrecer una experiencia similar a una
+aplicación móvil nativa. Permite instalarse en el dispositivo del usuario, fun-
+cionar parcialmente sin conexión a internet y enviar notificaciones.
+3
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+Agendamiento de citas médicas: Proceso mediante el cual los pacientes
+reservan un horario disponible para recibir atención médica con un profesional
+de salud dentro del centro médico.
+Algoritmo Módulo 10: Método matemático utilizado en el Ecuador para
+verificar la validez de los números de cédula de identidad, permitiendo com-
+probar si un número ingresado corresponde a una estructura válida.
+HTTPS (HyperText Transfer Protocol Secure): Protocolo de comuni-
+cación segura utilizado para proteger la información que se transmite entre el
+navegador del usuario y el servidor del sistema mediante cifrado. .
+Transformación digital: Proceso mediante el cual una organización adopta
+tecnologías digitales para mejorar sus procesos, optimizar la eficiencia opera-
+tiva y ofrecer mejores servicios a sus usuarios.
+6.  Responsabilidades
+La siguiente tabla describe las responsabilidades asignadas a cada uno de los
+integrantes del equipo de desarrollo del proyecto.
+4
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+RolResponsableDescripción de la responsabilidad
+Gestor del ProyectoAngel AyuquinaResponsable de la planificación general
+del proyecto, coordinación del equipo
+de trabajo y comunicación con los pa-
+trocinadores y la institución beneficia-
+ria.
+Desarrollador    Bac-
+kend
+Sebastián OrtizEncargado del diseño y desarrollo de la
+lógica del sistema y la gestión de la base
+de datos.
+Desarrollador   Fulls-
+tack
+Daniel LuisaResponsable de apoyar tanto en el de-
+sarrollo del frontend como del backend,
+integrando los distintos componentes
+del sistema.
+Desarrollador   Fron-
+tend
+Alex GuachiEncargado del diseño e implementación
+de la interfaz de usuario del sistema, ga-
+rantizando una experiencia de uso cla-
+ra, accesible e intuitiva para los pacien-
+tes y el personal del centro médico.
+Tabla 1: Responsabilidades del equipo de desarrollo del proyecto
+7.  Normativa Legal y Técnica Aplicable
+A continuación, se describen las principales disposiciones legales y técnicas apli-
+cables al proyecto.
+7.1.  Normativa Legal
+Ley Orgánica de Protección de Datos Personales del Ecuador (LOPDP):
+Establece el marco legal para el tratamiento, almacenamiento y protección de
+los datos personales de los ciudadanos. El sistema deberá garantizar la confi-
+dencialidad, integridad y seguridad de la información médica y personal de los
+pacientes.
+Constitución de la República del Ecuador: Reconoce el derecho a la
+privacidad, protección de datos personales y acceso seguro a la información,
+5
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+principios que deben ser respetados en el manejo de datos dentro del sistema
+propuesto.
+Ley Orgánica de Salud: Regula las actividades relacionadas con el sistema
+de salud en el país, incluyendo la gestión de información médica y la respon-
+sabilidad de las instituciones de salud en la protección de los datos de los
+pacientes.
+7.2.  Normativa Técnica
+Buenas prácticas de seguridad de la información: El sistema deberá
+implementar medidas básicas de seguridad informática que permitan proteger
+los datos almacenados y transmitidos dentro de la plataforma.
+Principios de desarrollo de software seguro: Durante el desarrollo del
+sistema se aplicarán buenas prácticas orientadas a garantizar la integridad
+del código, la protección frente a vulnerabilidades y el acceso controlado a la
+información.
+8.  Método / Política / Contenido
+8.1.  Metodología de Desarrollo
+Para la ejecución del proyecto se utilizará una metodología de desarrollo ágil
+basada en el marco de trabajo Scrum. Esta metodología permite organizar el trabajo
+en ciclos iterativos llamados sprints, los cuales facilitan la entrega progresiva de
+funcionalidades del sistema, la adaptación a cambios y la mejora continua durante
+el desarrollo.
+El enfoque ágil resulta adecuado para este proyecto debido a que permite man-
+tener una comunicación constante entre los integrantes del equipo, realizar eva-
+luaciones periódicas del progreso y ajustar los requerimientos conforme se obtenga
+retroalimentación de los usuarios del sistema.
+8.2.  Políticas
+Con el fin de garantizar el correcto funcionamiento del sistema y la protección
+de la información gestionada, se establecen las siguientes políticas que deberán ser
+cumplidas por los usuarios y responsables del proyecto:
+6
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+Toda la información relacionada con los pacientes y sus consultas médicas de-
+berá ser tratada de forma confidencial, evitando su divulgación no autorizada.
+El acceso al sistema estará restringido únicamente a los usuarios autorizados,
+quienes deberán utilizar sus credenciales de manera responsable y segura.
+El sistema deberá utilizarse exclusivamente para fines relacionados con la ges-
+tión de citas médicas y la administración de información del centro médico.
+El sistema deberá recibir mantenimiento periódico para garantizar su dispo-
+nibilidad, seguridad y correcto funcionamiento.
+8.3.  Contenido
+I Resumen Ejecutivo
+8.3.1.  Objetivo
+Desarrollar e implementar un sistema de agendamiento de citas médicas basado
+en tecnología PWA que permita optimizar la gestión de reservas, mejorar la comu-
+nicación entre pacientes y el centro médico, y garantizar un acceso seguro y eficiente
+a la información.
+8.3.2.  Propuesta de solución
+La propuesta consiste en el despliegue de una PWA. A diferencia de los sistemas
+web tradicionales que los pacientes olvidan, o las apps nativas que son pesadas y
+costosas, esta solución ofrece una instalación de cero fricción. Con un solo clic, el
+paciente instala la aplicación en su celular (pesando menos de 2MB y sin requerir
+Play Store). El sistema se estructura en tres módulos críticos:
+Módulo de Autenticación Ecuatoriana: Un portal que valida la identidad
+mediante el algoritmo del Módulo 10 para cédulas, garantizando la trazabilidad
+de usuarios y mitigando la saturación por perfiles falsos.
+Motor de Reservas Automatizado Un agendamiento en tiempo real sin-
+cronizado. Al ser una PWA, el sistema enviará notificaciones Push gratuitas
+al celular del paciente, eliminando los costos de recordatorio manual.
+7
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+A nivel de infraestructura, el sistema será desplegado inicialmente en un entorno
+de servidor local dentro del centro médico o mediante un servicio de alojamiento web
+estándar para su fase piloto. Se aplicarán protocolos de cifrado fundamentales para
+proteger los datos en tránsito, lo que permite validar el funcionamiento del sistema
+de forma ininterrumpida en un entorno controlado. Esto asegura el cumplimiento
+de las bases de seguridad para el manejo de información sensible sin incurrir en
+complejidades operativas innecesarias para la etapa de evaluación.
+8.3.3.  Beneficios esperados
+La implementación de la plataforma generará un impacto positivo en tres ejes
+fundamentales del centro médico:
+Eficiencia Operativa y Retención:Eliminación absoluta de cruces de ho-
+rarios. La PWA mantendrá el logo de la clínica en la pantalla del paciente,
+logrando fidelización a costo cero.
+Experiencia e Inclusión: Al no requerir correos complejos ni descargas pe-
+sadas, se garantiza la inclusión de adultos mayores y autogestión 24/7.
+Seguridad:  Cumplimiento de la Ley Orgánica de Protección de Datos Per-
+sonales del Ecuador mediante cifrado y auditoría.
+8.3.4.  Costo estimado
+De acuerdo con la planificación del proyecto, se estima una duración aproximada
+de 15 semanas, con una dedicación promedio de 8 horas diarias durante 5 días a
+la semana, lo que representa cerca de 560 horas de trabajo destinadas al análisis,
+diseño, desarrollo, pruebas e implementación del sistema.
+El equipo de desarrollo estará conformado por 4 integrantes. Para efectos de
+esta propuesta se ha establecido un costo referencial de $750 por integrante durante
+todo el periodo de ejecución del proyecto. En consecuencia, el cálculo del costo total
+estimado es el siguiente:
+4 integrantes× $750 = $3,000
+Por lo tanto, el costo total estimado de desarrollo e implementación del sistema
+asciende a $3,000. Este valor corresponde a una estimación académica del esfuerzo
+del equipo de desarrollo.
+8
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+Cabe señalar que el sistema será desarrollado utilizando herramientas de soft-
+ware libre y recursos tecnológicos disponibles, por lo que no se contemplan costos
+adicionales por licenciamiento de software ni adquisición de infraestructura tecnoló-
+gica.
+8.3.5.  Riesgos clave
+Para garantizar la viabilidad del proyecto, se han identificado cinco riesgos crí-
+ticos que requieren estrategias de mitigación activas:
+Resistencia al cambio y adopción temprana: La fricción que experimen-
+tarán los pacientes al transicionar de un canal pasivo y de "cero esfuerzo"
+como WhatsApp, hacia una plataforma web que exige un registro autónomo.
+Disponibilidad e interrupciones del servicio: Posibles caídas del entorno
+de alojamiento (hosting) o cortes de conectividad que inhabilitarían tanto el
+agendamiento de nuevas citas como el acceso a los historiales médicos.
+Vulneración de la seguridad informática: Exposición a ciberataques orien-
+tados a interceptar o extraer información de salud confidencial, comprometien-
+do la confianza en el centro médico.
+Falsificación en la verificación de identidad: Vulnerabilidades en el pro-
+ceso de registro que permitan la creación de perfiles falsos, derivando en "agen-
+damientos basura" que bloqueen horarios legítimos.
+Deficiencias en la dirección del proyecto: El riesgo de retrasos, desorga-
+nización o fallos en la ejecución debido a la inexperiencia en la gestión, lo que
+exige un control estricto mediante metodologías ágiles y supervisión académi-
+ca.
+II Descripción del problema / necesidad
+8.3.6.  Situación actual
+Actualmente, el centro médico gestiona el agendamiento de citas principalmente
+a través de WhatsApp. Aunque este medio facilita la comunicación con los pacientes,
+presenta varias limitaciones operativas, como la dificultad para verificar la identidad
+9
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+de los usuarios, la posibilidad de generar desorden en la asignación de turnos y la au-
+sencia de un sistema estructurado para registrar y consultar información relacionada
+con las citas médicas e indicaciones del paciente.
+8.3.7.  Necesidades del negocio
+El centro médico requiere optimizar el proceso de agendamiento de citas me-
+diante una solución tecnológica que reduzca la fricción en la gestión de reservas y
+mejore la organización de la información. No obstante, una página web tradicional
+suele presentar baja adopción por parte de los pacientes, mientras que el desarrollo
+de aplicaciones móviles nativas implica costos elevados de implementación y man-
+tenimiento. Por esta razón, se requiere una plataforma digital intermedia, accesible
+y de bajo costo que permita centralizar la comunicación, facilitar el acceso desde
+dispositivos móviles y mejorar la gestión del proceso de atención.
+8.3.8.  Consecuencias de no actuar
+Si se mantiene el modelo actual de agendamiento informal, el centro médico
+continuará enfrentando limitaciones en su capacidad operativa y en la organización
+de la información. Además, el uso de canales no estructurados incrementa el riesgo
+de errores en la asignación de citas, dificulta el seguimiento de los pacientes y puede
+generar vulnerabilidades en la protección de datos personales. A largo plazo, esta
+situación podría afectar la eficiencia administrativa y la calidad del servicio ofrecido
+por la institución.
+III Objetivos del proyecto
+8.3.9.  Metas y objetivos específicos
+Para medir el éxito del proyecto de forma objetiva, se han definido metas cuan-
+tificables orientadas a resolver las deficiencias operativas actuales:
+Automatización y Eficiencia: Implementar un motor de reservas que reduz-
+ca a cero la tasa de cruces de horarios y disminuya el tiempo de confirmación
+a menos de 3 minutos.
+Trazabilidad y Verificación: Garantizar mediante el algoritmo Módulo 10
+que el 100 % de las nuevas cuentas pertenezcan a pacientes reales.
+10
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+Digitalización y Disponibilidad: Desplegar un repositorio que permita di-
+gitalizar el 100 % de las nuevas indicaciones médicas con alta disponibilidad.
+Migración y Adopción PWA Lograr que al menos un 60 % de los pacien-
+tes recurrentes instalen la PWA en sus dispositivos ("Add to Home Screen")
+durante los primeros tres meses.
+8.3.10.  Alineación estratégica
+La implementación de este sistema trasciende la simple digitalización; actúa como
+un habilitador estratégico que se alinea directamente con los pilares comerciales y
+operativos del centro médico:
+Escalabilidad del Negocio: Elimina el "techo operativo" que impone la ges-
+tión manual por chat. Al automatizar la recepción de citas, la clínica adquiere
+la capacidad tecnológica para atender a un mayor volumen de pacientes sin
+necesidad de aumentar proporcionalmente su plantilla administrativa.
+Optimización de Recursos Humanos: Libera al personal de recepción de
+tareas operativas de bajo valor (como triangular mensajes para buscar huecos
+en la agenda), permitiéndoles reasignar esas horas a la atención presencial de
+calidad y a la facturación.
+Cumplimiento Normativo y Mitigación Legal: Cierra una brecha crítica
+de vulnerabilidad. Al centralizar la información bajo controles de acceso ba-
+sados en roles (RBAC) y bases de datos cifradas, el centro médico se alinea
+estrictamente con las exigencias de confidencialidad de la Ley Orgánica de
+Protección de Datos Personales del Ecuador.
+Fidelización y Experiencia del Paciente: Profesionaliza el primer punto
+de contacto. Entregar al usuario autonomía total sobre sus reservas y acceso
+inmediato a su historial de indicaciones mejora radicalmente la percepción de
+modernidad, seguridad y calidad de la institución.
+IV Análisis de opciones
+8.3.11.  Opción 1: Continuar como Estamos (No Hacer Nada)
+Continuar con el agendamiento por WhatsApp y presencial es ineficiente y poco
+profesional. Los mensajes se pierden, no existen confirmaciones automatizadas reales
+11
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+y la gestión manual del chat consume horas críticas del personal administrativo sin
+aportar valor al seguimiento clínico del paciente.
+8.3.12.  Opción 2: Desarrollo de App Móvil Nativa o Web Tradicional
+(Mejoras Incrementales)
+Una web tradicional no genera retención. Por otro lado, desarrollar una app
+nativa en Swift (iOS) y Kotlin (Android) es inviable financieramente para el centro
+médico y excluye a pacientes con teléfonos de gama baja o sin espacio.
+8.3.13.  Opción 3: Solución Propuesta (Tecnología PWA - Implementa-
+ción Completa)
+Es la solución definitiva. Mediante un único desarrollo (Single Codebase), se
+distribuye una aplicación que se instala en milisegundos eludiendo las tiendas de
+apps. Brinda capacidades offline y notificaciones push, resolviendo la retención sin
+el costo prohibitivo de la tecnología nativa.
+V Beneficios del proyecto
+8.3.14.  Beneficios Financieros
+La implementación del sistema permitirá optimizar el tiempo del personal de
+recepción al automatizar el proceso de agendamiento de citas. Además, se reducirán
+las pérdidas económicas ocasionadas por inasistencias mediante el envío de recorda-
+torios automáticos a los pacientes. El uso de una solución basada en software libre
+y un único desarrollo reducirá también los costos asociados al mantenimiento y a
+posibles licencias de aplicaciones.
+8.3.15.  Beneficios No Financieros
+El sistema contribuirá a mejorar la imagen institucional del centro médico al
+incorporar herramientas digitales modernas en la gestión de servicios. Asimismo,
+permitirá fortalecer la organización de la información, facilitar el acceso a indicacio-
+nes médicas y garantizar una mayor trazabilidad en la interacción entre pacientes y
+el personal de la institución.
+VI Estimación de costos y cronograma
+12
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+8.3.16.  Costos Directos
+Los costos directos del proyecto están asociados principalmente al esfuerzo del
+equipo de desarrollo encargado del análisis, diseño, implementación y pruebas del
+sistema. El proyecto se desarrollará utilizando herramientas de software libre, por
+lo que no se contemplan gastos por licenciamiento.
+De acuerdo con la planificación del proyecto, se estima una duración de 15 sema-
+nas (aproximadamente 3.5 meses), con una dedicación promedio de 8 horas diarias
+durante 5 días a la semana, lo que representa cerca de 560 horas de trabajo.
+Para el desarrollo se considera un equipo conformado por cuatro integrantes,
+quienes participarán en las distintas fases del proyecto. Se ha establecido un costo
+referencial de $750 por integrante durante todo el periodo de ejecución. En conse-
+cuencia, el cálculo del costo total directo del proyecto es el siguiente:
+4 integrantes× $750 = $3,000
+Por lo tanto, el costo total estimado para el desarrollo e implementación del
+sistema asciende a $3,000. Este valor corresponde únicamente al esfuerzo del equipo
+de desarrollo durante la fase de construcción del sistema. Los costos relacionados con
+la operación, mantenimiento y uso del sistema durante el primer año se consideran
+dentro de la sección de costos indirectos del proyecto.
+Adicionalmente, se contempla que el sistema será implementado utilizando in-
+fraestructura tecnológica disponible y herramientas de software libre, por lo que no
+se consideran costos adicionales por licenciamiento ni adquisición de hardware.
+8.3.17.  Costos Indirectos
+Los costos indirectos corresponden a aquellos necesarios para la adopción y ope-
+ración básica del sistema una vez implementado. Estos incluyen actividades de ca-
+pacitación, mantenimiento y servicios operativos.
+Capacitación básica al personal del centro médico: $200
+Mantenimiento y soporte técnico anual del sistema: $400
+Servicios operativos (electricidad e internet) — primer año:
+$50 mensuales× 12 = $600
+Total costos indirectos estimados (primer año):
+$200 + $400 + $600 = $1,200
+13
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+Por lo tanto, el costo indirecto estimado para la operación del sistema durante el pri-
+mer año asciende a $1,200. Estos costos corresponden a actividades de capacitación,
+mantenimiento y servicios operativos necesarios para el uso continuo del sistema.
+8.3.18.  Cronograma tentativo
+Se planteó un tiempo estimado de 15 semanas para la planificación, desarrollo y
+despliegue, el cual se distribuyó de la siguiente manera:
+Semana 1 — Aprobación del proyecto, definición del alcance, asignación de
+recursos.
+Semanas 2–3 — Levantamiento de requisitos y modelado del flujo de agen-
+damiento mediante reuniones con recepción, médicos y administración.
+Semanas 4–9 — Desarrollo del sistema (módulo de agendamiento, repositorio
+y puente digital) mediante iteraciones quincenales.
+Semanas 10–11 — Pruebas piloto de usabilidad con usuarios reales, recopi-
+lación de retroalimentación y corrección de errores críticos.
+Semana 12 — Ajustes funcionales y optimización del sistema.
+Semana 13 — Capacitación del personal (recepción y médicos) y entrega de
+manuales.
+Semana 14 — Pruebas finales de integración y preparación para despliegue.
+Semana 15 — Despliegue final, monitorización inicial y cierre del proyecto.
+VII Análisis de riesgos
+8.3.19.  Identificación de riesgos clave
+Se han identificado cinco riesgos principales que amenazan la viabilidad y ejecu-
+ción del proyecto:
+Resistencia al cambio tecnológico: Dificultad de los pacientes para tran-
+sicionar del agendamiento por WhatsApp hacia el uso autónomo de la nueva
+plataforma web.
+14
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+Interrupciones del servicio web: Caídas del servidor, del proveedor de
+nube o de la red local del centro médico.
+Vulneraciones de seguridad: Exposición de la base de datos a ciberataques
+orientados a interceptar o extraer historiales médicos confidenciales.
+Fallos de autenticación: Creación de perfiles de usuario falsos mediante
+vulnerabilidades en el registro, lo que genera "agendamientos basura".
+Deficiencias en la dirección del proyecto: Fallos operativos, retrasos o
+alcance deficiente derivados de la inexperiencia del equipo estudiantil en la
+gestión de proyectos de software reales.
+8.3.20.  Impacto y probabilidad
+El análisis de riesgos del proyecto se efectúa a través de una matriz que relaciona
+la probabilidad de ocurrencia con el nivel de impacto. Esta herramienta permite
+identificar qué tan posible es que se presente cada riesgo y evaluar las consecuencias
+que podría tener sobre el sistema.
+RiesgoProbabilidadImpactoNivel
+Resistencia al cambioAltaMedioMedio
+Interrupciones del servicioMediaAltoAlto
+Vulneraciones de seguridadBajaCríticoAlto
+Fallos de autenticaciónMediaAltoAlto
+Deficiencias en direcciónMediaAltoAlto
+Tabla 2: Matriz de impacto y probabilidad de riesgos
+8.3.21.  Plan de mitigación
+Con el propósito de disminuir el impacto de los riesgos identificados en el pro-
+yecto, se definen estrategias de mitigación enfocadas en prevenir, controlar y reducir
+los posibles efectos adversos que puedan presentarse durante el desarrollo y la im-
+plementación del sistema.
+15
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+RiesgoEstrategia de mitigación
+Resistencia al cambioImplementación de PWA para instalación con un clic.
+Proveer un código QR físico en recepción; el paciente lo
+escanea y la aplicación queda instalada al instante sin
+necesidad de acceder a tiendas de aplicaciones. (Respon-
+sable: Recepción)
+Interrupciones del ser-
+vicio
+Implementación de Service Workers en la PWA para
+permitir acceso offline a recetas médicas. Contratación
+de hosting en la nube con un SLA≥ 99.9 % y realización
+de copias de seguridad diarias. (Responsable: Adminis-
+trador de Sistemas)
+Vulneraciones de segu-
+ridad
+Aplicación de cifrado TLS 1.2/1.3 para comunicaciones
+seguras, cifrado AES-256 para la protección de datos
+en reposo y uso de control de acceso basado en roles
+(RBAC). (Responsable: Arquitecto de Seguridad)
+Fallos  de  autentica-
+ción
+Integración del algoritmo Módulo 10 para validación de
+números de cédula y monitoreo de direcciones IP para
+detectar accesos sospechosos. (Responsable: Equipo de
+Desarrollo)
+Dirección del proyectoAplicación del marco de trabajo ágil Scrum con revi-
+siones e hitos quincenales, además de auditoría y segui-
+miento por parte del docente tutor. (Responsable: Angel
+Ayuquina)
+Tabla 3: Estrategias de mitigación de riesgos del proyecto
+8.3.22.  Evaluación financiera
+La evaluación financiera del proyecto se realiza considerando una estimación
+preliminar del costo de desarrollo del sistema y los beneficios operativos que se
+espera obtener a partir de su implementación en el centro médico.
+El costo total estimado para el desarrollo del sistema de agendamiento de citas
+médicas es de aproximadamente $3,000, correspondiente principalmente al esfuerzo
+del equipo de desarrollo durante las fases de análisis, diseño, desarrollo, pruebas e
+implementación del sistema.
+De manera referencial, se estima que la inversión realizada podría recuperarse
+en un periodo aproximado de 10 a 12 meses a partir de la puesta en funcionamiento
+del sistema, gracias a la mejora en la eficiencia operativa, la reducción de ausencias
+16
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+de pacientes mediante recordatorios automáticos y la optimización de los recursos
+administrativos del centro médico.
+Estos valores corresponden a una estimación preliminar utilizada para efectos
+del caso de negocio del proyecto.
+VIII Conclusiones y recomendaciones
+8.3.23.  Conclusión general
+El desarrollo e implementación del Ecosistema Móvil PWA es técnica y opera-
+tivamente viable. La dependencia actual de canales informales genera ineficiencias
+críticas. Aunque el proyecto tiene una valoración de mercado de $4,724.50, al ser
+ejecutado académicamente, esta inversión es absorbida por el equipo. Esto reduce
+el desembolso real del centro médico a $200 iniciales, eliminando el riesgo financiero
+institucional y garantizando una plataforma moderna y escalable.
+8.3.24.  Recomendación
+Se recomienda proceder formalmente con la ejecución y despliegue del proyecto.
+El análisis demuestra que la PWA supera el riesgo de adopción gracias a su insta-
+lación sin fricción. Se aconseja al centro médico aprovechar esta sinergia académica
+para iniciar su transformación digital hacia un modelo Cero Papel, manteniendo
+estricta supervisión para cumplir la Ley de Protección de Datos Personales.
+8.3.25.  Aprobaciones de los patrocinadores
+Las siguientes firmas certifican la revisión, validación y aprobación del presente
+caso de negocio para el desarrollo e implementación del sistema de agendamiento de
+citas médicas destinado a optimizar la gestión de atención a pacientes en la clínica.
+17
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+PatrocinadorNombreFirma (QR)Fecha
+Directora Médica
+(Lupsi)
+Dra. Luz marina
+Saenz
+07/03/2026
+SaludSA
+Dr. Edgar José Lama
+von Buchwald
+07/03/2026
+Ecuasanitas
+Dr. Carlos Andrés
+Manzano
+07/03/2026
+Tabla 4: Aprobación de los patrocinadores del proyecto
+8.4.  Involucrados clave
+En el desarrollo del sistema participan diversos actores que cumplen roles espe-
+cíficos dentro del proyecto. Estos involucrados aportan desde diferentes áreas, ya sea
+en la implementación, uso, supervisión o mantenimiento del sistema. En la siguien-
+te tabla se presentan los principales actores involucrados, junto con sus respectivos
+roles y responsabilidades dentro del proyecto.
+18
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+InvolucradoRolResponsabilidad / Interés
+Clínica  beneficiaria  del
+sistema
+Institución  benefi-
+ciaria
+Proveer el entorno institucional donde
+será implementado el sistema de agen-
+damiento de citas médicas y beneficiar-
+se de la optimización en la gestión de
+atención a pacientes.
+Personal de recepción /
+admisión
+Usuario principalEncargados de gestionar el registro de
+pacientes, programación de citas y va-
+lidación de la información ingresada en
+el sistema para garantizar el correcto
+funcionamiento del proceso de atención
+médica.
+Pacientes de la clínicaUsuarios finalesUtilizar el sistema para consultar dis-
+ponibilidad de horarios, agendar citas
+médicas y recibir notificaciones relacio-
+nadas con sus consultas.
+Equipo de desarrollo (Es-
+tudiantes)
+Desarrolladores del
+sistema
+Responsables del análisis, diseño, de-
+sarrollo, pruebas e implementación del
+sistema de agendamiento de citas mé-
+dicas.
+Profesor / Tutor del pro-
+yecto
+Supervisor  acadé-
+mico
+Brindar orientación metodológica, su-
+pervisar el desarrollo del proyecto y ve-
+rificar el cumplimiento de los objetivos
+académicos y técnicos establecidos.
+Administrador de siste-
+mas de la clínica
+Soporte técnicoEncargado de la administración de la
+infraestructura  tecnológica,  manteni-
+miento del sistema y soporte técnico
+para garantizar la disponibilidad del
+servicio.
+Tabla 5: Actores involucrados en el proyecto
+19
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+9.  Firmas de responsabilidad
+RolNombre / Represen-
+tante
+Firma (QR)Fecha
+Gestor del ProyectoAngel Ayuquina28/02/2026
+Desarrollador Backend   Sebastián Ortiz28/02/2026
+Desarrollador Fullstack  Daniel Luisa
+28/02/2026
+Desarrollador Frontend  Alex Guachi28/02/2026
+20
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+10.  Control de cambios
+VersiónDescripción del cambioFecha
+1.0Creación inicial del documento del procedimiento
+para la Transformación Digital Médica mediante
+el ecosistema móvil basado en tecnología PWA.
+06/03/2026
+1.1Actualización del documento incorporando la ma-
+triz de riesgos, estrategias de mitigación y ajustes
+en la estructura del procedimiento.
+08/03/2026
+Tabla 6: Control de cambios del documento
+11.  Anexos
+En esta sección se presentan los anexos correspondientes al proyecto desarrollado.
+21
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+Figura 1: Área de recepción de la clínica donde se gestionan actualmente las citas
+médicas.
+22
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+Figura 2: Miembro del equipo de desarrollo junto a un médico de la clínica durante
+la visita de levantamiento de información.
+23
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+Figura 3: Camilla utilizada en los consultorios médicos para la atención de pacientes.
+24
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+Figura 4: Insumos y equipamiento médico disponibles en la clínica para la atención
+de pacientes.
+25
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+Figura 5: Médico en su consultorio durante una jornada de atención médica.
+26
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GAM-PRO-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.0
+Gestión de Agendamiento Médico
+ELABORACIÓN:
+08/03/2026
+Procedimiento del Ecosistema Móvil PWA
+ÚLTIMA
+REVISIÓN:
+08/03/2026
+Figura 6: Reunión entre un miembro del equipo de desarrollo y un médico de la
+clínica para la recopilación de requerimientos del sistema.
+27

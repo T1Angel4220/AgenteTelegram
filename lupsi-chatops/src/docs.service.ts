@@ -88,7 +88,7 @@ export class DocsService implements OnModuleInit {
     async getRelevantContext(query: string, limit: number = 5): Promise<string> {
         if (this.chunks.length === 0) await this.loadChunks();
         
-        const keywords = query.toLowerCase().split(/\s+/).filter(k => k.length > 3);
+        const keywords = query.toLowerCase().split(/\s+/).filter(k => k.length > 3 || /\d/.test(k));
         
         // Puntuación simple por coincidencia de palabras clave
         const scored = this.chunks.map(chunk => {
@@ -109,9 +109,11 @@ export class DocsService implements OnModuleInit {
 
         // Si no hay coincidencias, devolvemos los primeros para dar algo de contexto
         if (relevant.length === 0) {
+            console.log('⚠️ RAG: No se encontraron coincidencias. Usando fragmentos genéricos.');
             return this.chunks.slice(0, 3).map(c => `[Archivo: ${c.file}]\n${c.content}`).join('\n---\n');
         }
 
+        console.log(`🔍 RAG: Recuperados ${relevant.length} fragmentos para la consulta.`);
         return relevant.join('\n---\n');
     }
 

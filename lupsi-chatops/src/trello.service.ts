@@ -405,5 +405,50 @@ export class TrelloService {
       return { found: false };
     }
   }
+
+  // ── Obtener lista de miembros del tablero (para validar /vincular) ──────
+  async getBoardMembers(): Promise<{ id: string; fullName: string; username: string }[]> {
+    try {
+      const { BOARD_ID, TRELLO_KEY, TRELLO_TOKEN } = process.env;
+      const url = `https://api.trello.com/1/boards/${BOARD_ID}/members?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`;
+      const res = await axios.get(url);
+      return res.data.map(m => ({ id: m.id, fullName: m.fullName, username: m.username }));
+    } catch (e) {
+      console.error('Error obteniendo miembros del tablero:', e.message);
+      return [];
+    }
+  }
+
+  // ── Tarjetas completadas (dueComplete=true o en lista Done) para tracking de entregables ──
+  async getCompletedCardsThisSprint(): Promise<{ nombre: string; lista: string; asignados: string; completadaEn: string }[]> {
+    try {
+      const { BOARD_ID, TRELLO_KEY, TRELLO_TOKEN } = process.env;
+
+      const membersUrl = `https://api.trello.com/1/boards/${BOARD_ID}/members?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`;
+      const membersRes = await axios.get(membersUrl);
+      const membersMap: Record<string, string> = {};
+      membersRes.data.forEach(m => { membersMap[m.id] = m.fullName; });
+
+      const listsUrl = `https://api.trello.com/1/boards/${BOARD_ID}/lists?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`;
+      const listsRes = await axios.get(listsUrl);
+      const listsMap: Record<string, string> = {};
+      listsRes.data.forEach(l => { listsMap[l.id] = l.name; });
+
+      const cardsUrl = `https://api.trello.com/1/boards/${BOARD_ID}/cards?filter=all&fields=id,name,idList,idMembers,dueComplete,dateLastActivity&key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`;
+      const cardsRes = await axios.get(cardsUrl);
+
+      return cardsRes.data
+        .filter(c => c.dueComplete || /done|completado|terminado|hecho/i.test(listsMap[c.idList] || ''))
+        .map(c => ({
+          nombre: c.name,
+          lista: listsMap[c.idList] || 'Desconocida',
+          asignados: (c.idMembers || []).map(id => membersMap[id] || id).join(', ') || 'Sin asignar',
+          completadaEn: c.dateLastActivity ? new Date(c.dateLastActivity).toLocaleDateString('es-ES') : 'Desconocida',
+        }));
+    } catch (e) {
+      console.error('Error en getCompletedCardsThisSprint:', e.message);
+      return [];
+    }
+  }
 }
 

@@ -1,0 +1,250 @@
+
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+DI-GAM-ESP-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.1
+Levantamiento de Requisitos
+ELABORACIÓN:
+24/03/2026
+Análisis AS-IS y Especificación de Requisitos
+ÚLTIMA
+REVISIÓN:
+24/03/2026
+1.  Título del Documento
+Análisis de Procesos Actuales (AS-IS) y Especificación de Requisitos
+del Sistema Web Progresivo LUPSI
+2.  Contexto y Objetivo del Análisis
+El presente documento tiene como objetivo diagnosticar y evaluar exhaustiva-
+mente el flujo operativo actual (AS-IS) utilizado por el Centro Médico LUPSI para
+la gestión de su agenda clínica. Mediante técnicas de observación directa y entrevis-
+tas estructuradas, se busca mapear el ciclo de vida de una cita médica, identificar
+cuellos de botella tecnológicos, evaluar la eficiencia de los recursos humanos y funda-
+mentar con evidencia empírica la necesidad de transicionar hacia una arquitectura
+de software automatizada, definiendo sus requisitos funcionales y no funcionales.
+3.  Identificación de Actores Clave
+En el modelo operativo vigente, intervienen tres actores principales (Stakehol-
+ders), cuyas interacciones generan fricciones operativas:
+Paciente (Actor Externo): Requiere atención médica, busca inmediatez en
+la confirmación de su cita y facilidad de comunicación.
+Psicóloga / Recepcionista (Actor Interno Híbrido): Profesional de la
+salud que, por limitaciones de personal, absorbe la doble función de brindar
+atención clínica y gestionar la carga administrativa (recepción de mensajes,
+cuadre de horarios y confirmaciones).
+Administración LUPSI (Actor Interno): Encargados de la rentabilidad
+del centro, quienes actualmente carecen de métricas en tiempo real sobre la
+ocupación del consultorio.
+4.  Descripción Detallada del Flujo Operativo Ac-
+tual
+El ecosistema actual carece de integración tecnológica y depende de canales de
+comunicación informales. El proceso lineal (Agendamiento Manual) es el siguiente:
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+DI-GAM-ESP-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.1
+Levantamiento de Requisitos
+ELABORACIÓN:
+24/03/2026
+Análisis AS-IS y Especificación de Requisitos
+ÚLTIMA
+REVISIÓN:
+24/03/2026
+1. Fase 1: Solicitud de Agendamiento (Canal Asíncrono): El paciente con-
+tacta a la clínica utilizando canales de mensajería instantánea (WhatsApp) o
+llamadas telefónicas. Esta solicitud queda en una cola de espera no estructu-
+rada.
+2. Fase 2: Interrupción y Verificación Manual: La profesional de la sa-
+lud interrumpe sus labores clínicas para atender el dispositivo móvil. Revisa
+manualmente una agenda de papel o un cuadro de Excel básico para buscar
+espacios disponibles (huecos operativos).
+3. Fase 3: Recopilación de Datos No Validados: A través de un intercambio
+de mensajes, se solicitan los datos del paciente (Nombres completos y número
+de cédula). No se ejecuta ninguna validación contra algoritmos matemáticos,
+aceptando los datos a ciegas.
+4. Fase 4: Confirmación y Transcripción: La profesional transcribe los datos
+a la agenda física, bloquea el espacio y redacta un mensaje de confirmación
+manual para el paciente.
+5. Fase 5: Recepción Presencial: El día de la cita, el paciente llega a las insta-
+laciones y es recibido por la misma profesional, quien debe volver a interrumpir
+sus labores para anunciar el ingreso.
+5.  Línea Base Tecnológica (Estado Actual)
+El centro médico opera con un nivel de madurez digital bajo. Las herramientas
+utilizadas se limitan a:
+Dispositivo móvil (Hardware local) con WhatsApp Business.
+Cuadernos de registro físico (Agenda de papel).
+Hojas de cálculo aisladas (Sin conexión a bases de datos relacionales).
+Ausencia de integraciones en la nube, copias de seguridad automáticas (Bac-
+kups) y protección de datos ante pérdida del dispositivo.
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+DI-GAM-ESP-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.1
+Levantamiento de Requisitos
+ELABORACIÓN:
+24/03/2026
+Análisis AS-IS y Especificación de Requisitos
+ÚLTIMA
+REVISIÓN:
+24/03/2026
+6.  Diagnóstico de Cuellos de Botella y Fugas Finan-
+cieras
+El análisis revela que el modelo AS-IS es insostenible y genera pérdidas invisibles
+para el centro médico en cuatro frentes críticos:
+Fuga Financiera por Subutilización de Perfil (Lucro Cesante): Vulne-
+rabilidad crítica. El tiempo de una profesional médica especializada (Psicóloga)
+tiene un alto valor por hora facturable. Al desviar gran parte de su tiempo a ta-
+reas de secretariado, el centro médico pierde ingresos directos y genera "fatiga
+de rol".
+Riesgo de Concurrencia y Error Humano: Al carecer de bloqueos tran-
+saccionales en tiempo real, si dos pacientes escriben al mismo tiempo, existe
+un alto riesgo de agendar a ambos en el mismo horario por un error visual.
+Citas Fantasma e Ineficiencia del Embudo: La ausencia de un validador
+algorítmico (Módulo 10) permite la creación de registros falsos. Un "No-Show"
+con datos falsos representa tiempo muerto irrecuperable para la clínica.
+Ceguera Administrativa (Falta de Analítica): Al estar todo en papel o
+WhatsApp, la gerencia no puede extraer KPIs (Tasa de cancelación, horarios
+pico, volumen de pacientes nuevos), imposibilitando la toma de decisiones
+estratégicas.
+7.  Conclusión y Justificación del Modelo TO-BE
+El análisis AS-IS evidencia de manera concluyente que LUPSI ha superado la
+capacidad de su modelo de gestión manual. Se justifica la ejecución inmediata del
+proyecto de automatización (Modelo TO-BE) mediante el desarrollo de un Sistema
+Web Progresivo (PWA). Este sistema trasladará el esfuerzo de agendamiento di-
+rectamente al paciente (Self-Service), validará la identidad mediante el Módulo 10,
+manejará la concurrencia desde Supabase y, de forma prioritaria, devolverá horas
+productivas a la psicóloga, incrementando la rentabilidad del centro médico.
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+DI-GAM-ESP-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.1
+Levantamiento de Requisitos
+ELABORACIÓN:
+24/03/2026
+Análisis AS-IS y Especificación de Requisitos
+ÚLTIMA
+REVISIÓN:
+24/03/2026
+8.  Especificación de Requisitos del Sistema (TO-
+BE)
+Para dar solución a la problemática expuesta, el nuevo sistema debe cumplir con
+los siguientes requerimientos, alineados al Product Backlog del proyecto:
+8.1.  Requisitos Funcionales (RF)
+Definen el comportamiento explícito y las funcionalidades que el sistema debe
+proveer a los actores:
+RF-01 (Validación de Identidad): El sistema debe permitir el registro
+de pacientes obligando a la validación matemática de la cédula de identidad
+mediante el algoritmo ecuatoriano Módulo 10.
+RF-02 (Agendamiento Síncrono): El sistema debe proveer al paciente un
+portal de auto-servicio para visualizar horarios disponibles y reservar citas en
+tiempo real, evitando estrictamente la superposición o doble agendamiento.
+RF-03 (Gestión de Agenda): El sistema debe proporcionar un panel ad-
+ministrativo para que el personal de recepción o médico visualice la carga de
+pacientes diaria de forma ordenada.
+RF-04 (Gestión de Expedientes): El sistema debe permitir al profesional
+médico cargar y visualizar documentos clínicos y recetas médicas en formato
+PDF, asociados al perfil de cada paciente.
+RF-05 (Catálogos Paramétricos): El sistema debe ser capaz de gestionar
+servicios, especialidades y consultorios de forma dinámica para alimentar los
+formularios.
+8.2.  Requisitos No Funcionales (RNF)
+Definen los atributos de calidad, rendimiento, arquitectura y seguridad del sis-
+tema:
+RNF-01 (Seguridad y Privacidad): La protección de datos debe regirse
+por Políticas de Seguridad a Nivel de Fila (RLS en Supabase) y Control de
+Acceso Basado en Roles (RBAC), asegurando que un recepcionista no pueda
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+DI-GAM-ESP-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.1
+Levantamiento de Requisitos
+ELABORACIÓN:
+24/03/2026
+Análisis AS-IS y Especificación de Requisitos
+ÚLTIMA
+REVISIÓN:
+24/03/2026
+leer historial clínico. El control de sesión debe manejarse mediante tokens
+JWT.
+RNF-02 (Usabilidad y Movilidad): El frontend debe construirse bajo el
+estándar de Aplicación Web Progresiva (PWA) utilizando Angular y Tailwind
+CSS, garantizando un diseño Mobile-First y capacidades de instalación en
+dispositivos móviles.
+RNF-03 (Arquitectura e Integración): El sistema debe regirse por una
+arquitectura Cliente-Servidor separada (Backend en NestJS y Frontend en
+Angular) comunicados estrictamente mediante API REST.
+RNF-04 (Persistencia e Integridad): La base de datos debe ser de tipo
+relacional (PostgreSQL), normalizada hasta la Tercera Forma Normal (3FN),
+garantizando la integridad de las relaciones entre pacientes y citas.
+RNF-05 (Despliegue y Disponibilidad): El sistema debe ser desplegado
+en servicios de infraestructura Cloud (Supabase para base de datos y Ren-
+der/Vercel para los aplicativos), garantizando alta disponibilidad sin requerir
+servidores físicos locales en la clínica.
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+DI-GAM-ESP-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.1
+Levantamiento de Requisitos
+ELABORACIÓN:
+24/03/2026
+Análisis AS-IS y Especificación de Requisitos
+ÚLTIMA
+REVISIÓN:
+24/03/2026
+9.  Firmas de Responsabilidad
+RolNombre / Represen-
+tante
+Firma (QR)Fecha
+Gestor del ProyectoAngel Ayuquina24/03/2026
+Desarrollador Backend   Sebastián Ortiz24/03/2026
+Desarrollador Fullstack  Daniel Luisa
+24/03/2026
+Desarrollador Frontend  Alex Guachi
+24/03/2026
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+DI-GAM-ESP-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.1
+Levantamiento de Requisitos
+ELABORACIÓN:
+24/03/2026
+Análisis AS-IS y Especificación de Requisitos
+ÚLTIMA
+REVISIÓN:
+24/03/2026
+10.  Control de Cambios
+Versión  FechaDescripción del CambioResponsable
+1.024/03/2026   Levantamiento de requerimientos
+y elaboración del análisis AS-IS.
+Alex Guachi
+1.124/03/2026   Inclusión de la sección de Espe-
+cificación de Requisitos Funciona-
+les y No Funcionales (Modelo TO-
+BE).
+Alex Guachi

@@ -1,0 +1,308 @@
+
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-002
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.3
+Planificación Sprint 1
+ELABORACIÓN:
+02/03/2026
+Requisitos, Arquitectura y Modelado de
+Datos
+ÚLTIMA
+REVISIÓN:
+20/03/2026
+1.  Título
+Planificación del Sprint 1: Requisitos, Arquitectura y Modelado de Datos - LUPSI
+2.  Introducción
+El presente documento formaliza la planificación del primer sprint del proyecto
+LUPSI. Su propósito es dejar claramente definidos el objetivo del sprint, el alcance
+técnico, las actividades prioritarias, los entregables esperados y la relación de este
+incremento con el desarrollo posterior del sistema.
+De acuerdo con el Product Backlog y el cronograma de Microsoft Project, el
+Sprint 1 corresponde a un backlog técnico e ingenieril habilitador. En esta etapa se
+establecen los cimientos teóricos y de diseño del producto mediante la definición de
+historias de usuario, diseño de prototipos UX/UI, modelado del esquema de base de
+datos relacional (ER), definición de la arquitectura de software y la inicialización de
+los repositorios de trabajo.
+3.  Objetivo
+Establecer la base de ingeniería y diseño necesaria para que el sistema LUPSI
+pueda iniciar su desarrollo de codificación de forma ordenada y sin ambigüedades,
+dejando validados los requerimientos funcionales, las interfaces gráficas, el modelo
+de datos y los repositorios base.
+4.  Alcance del Sprint 1
+El Sprint 1 se centra exclusivamente en tareas de análisis, diseño y arquitectura.
+No incluye desarrollo de código backend o frontend, ya que su función es preparar
+el "plano maestro" sobre el cual se construirán las historias funcionales en el Sprint
+2.
+4.1.  Incluye
+Entrevistas y levantamiento de requerimientos con el cliente.
+Definición de Historias de Usuario y Product Backlog.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-002
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.3
+Planificación Sprint 1
+ELABORACIÓN:
+02/03/2026
+Requisitos, Arquitectura y Modelado de
+Datos
+ÚLTIMA
+REVISIÓN:
+20/03/2026
+Diseño de wireframes y prototipos de alta fidelidad (UX/UI).
+Modelado del esquema relacional central en PostgreSQL (Diagrama ER).
+Definición de la arquitectura del sistema y endpoints de las APIs.
+Configuración de repositorios GitHub, ramas de trabajo y base de CI/CD.
+4.2.  No incluye (Asignado al Sprint 2)
+Creación física de la base de datos en Supabase y políticas RLS.
+Inicialización del proyecto backend (NestJS) y frontend (Angular PWA).
+Implementación del validador Módulo 10.
+Gestión de Catálogos Paramétricos o JWT.
+5.  Definiciones
+Sprint: periodo de trabajo definido dentro de Scrum para entregar un conjunto
+acotado de tareas.
+Product Backlog: listado ordenado y priorizado de requerimientos macro.
+Sprint Backlog: desglose de tareas operativas seleccionadas para ejecutarse
+en el sprint actual.
+UX/UI: Diseño de Experiencia de Usuario e Interfaz de Usuario para garan-
+tizar la facilidad de uso.
+ER / DDL: Diagrama Entidad-Relación y Lenguaje de Definición de Datos
+para modelar la base de datos.
+Repositorio: Entorno de control de versiones centralizado (GitHub) para
+organizar el código fuente.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-002
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.3
+Planificación Sprint 1
+ELABORACIÓN:
+02/03/2026
+Requisitos, Arquitectura y Modelado de
+Datos
+ÚLTIMA
+REVISIÓN:
+20/03/2026
+6.  Planificación del Sprint 1
+6.1.  Objetivo específico del sprint
+Aprobar formalmente los prototipos visuales y el modelo de base de datos con
+el cliente, y dejar los repositorios operativos para garantizar que el equipo inicie la
+codificación en el siguiente sprint sin riesgos de reprocesos.
+6.2.  Entregables del Sprint
+EntregableResponsableFechaAceptado
+1. Documento de Requisitos y Prototipos
+UX/UI Validados
+Angel Ayuquina13/03/2026
+2. Modelado de Base de Datos y Definición de
+Arquitectura
+Sebastián Ortiz17/03/2026
+3. Base de datos estructurada y repositorios
+operativos
+Alex Guachi20/03/2026
+6.3.  Backlog del Sprint 1 (Desglose de Tareas)
+La siguiente tabla detalla las tareas operativas específicas (T-XX) a ejecutar
+durante este sprint y su trazabilidad directa con los requerimientos aprobados en el
+Product Backlog (PB-XX).
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-002
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.3
+Planificación Sprint 1
+ELABORACIÓN:
+02/03/2026
+Requisitos, Arquitectura y Modelado de
+Datos
+ÚLTIMA
+REVISIÓN:
+20/03/2026
+TareaOrigenActividad (Sprint Bac-
+klog)
+ResponsableEstado
+T-01PB-01Ejecutar  entrevistas  con
+profesional médico y do-
+cumentar flujo de agenda-
+miento.
+Angel / DanielHecho
+T-02PB-02Definición formal de histo-
+rias de usuario y creación
+de matriz en el Backlog.
+Angel / DanielHecho
+T-03PB-03Inicializar repositorios en
+GitHub, ramas y configu-
+rar contenedores Docker.
+Alex / DanielHecho
+T-04PB-04Diseñar wireframes de na-
+vegación y elaborar proto-
+tipos de alta fidelidad.
+DanielHecho
+T-05PB-05Construir   el   diagrama
+Entidad-Relación (ER) y
+el diccionario de datos.
+SebastiánHecho
+T-06PB-06Estructurar la arquitectura
+técnica del proyecto y dise-
+ñar los endpoints API.
+AlexHecho
+T-07PB-07Realizar  sesión  de  vali-
+dación técnica y obtener
+aprobación final del cliente.
+AngelHecho
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-002
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.3
+Planificación Sprint 1
+ELABORACIÓN:
+02/03/2026
+Requisitos, Arquitectura y Modelado de
+Datos
+ÚLTIMA
+REVISIÓN:
+20/03/2026
+6.4.  Cronograma Detallado
+TareaDíasInicioFinHorasHitoEntregableResponsable
+Análisis y
+Backlog
+1002/0313/0340Hito 1Requisitos va-
+lidados
+Angel, Daniel
+Diseño
+UX/UI
+416/0319/0332Hito 1PrototiposDaniel
+Modelado
+BD
+216/0317/0316Hito 2Diagrama ERSebastián
+Arquitectura/APIs218/0319/0316Hito 2Doc. Arquitec-
+tura
+Alex
+Repositorios
+y CI/CD
+219/0320/0316Hito 3Repositorios
+Git
+Alex, Daniel
+Validación
+Final
+120/0320/038Hito 3Aprobación
+cliente
+Angel
+7.  Criterios de aceptación del Sprint 1
+El sprint se considerará aprobado cuando se cumpla lo siguiente:
+El Product Backlog cuenta con las historias de usuario correctamente priori-
+zadas.
+Los prototipos UX/UI reflejan los flujos de navegación del paciente y la recep-
+cionista, y han sido validados.
+El modelo relacional de la base de datos está normalizado (3NF) y documen-
+tado.
+Los repositorios quedan operativos y listos para trabajo colaborativo mediante
+flujo de ramas (GitFlow).
+8.  Trazabilidad con las historias de usuario
+Aunque el Sprint 1 no entrega código fuente funcional, habilita la base teórica e
+ingenieril para todo el producto. Su relación con el backlog futuro es la siguiente:
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-002
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.3
+Planificación Sprint 1
+ELABORACIÓN:
+02/03/2026
+Requisitos, Arquitectura y Modelado de
+Datos
+ÚLTIMA
+REVISIÓN:
+20/03/2026
+Las historias US-01 a US-05 han sido planificadas y cuentan con su respectivo
+soporte visual (prototipos) y estructural (base de datos), garantizando que en
+el Sprint 2 el equipo inicie el desarrollo de NestJS y Angular sin bloqueos de
+diseño.
+9.  Riesgos del Sprint 1
+Ambigüedad en la definición de historias de usuario que provoque reprocesos
+futuros.
+Diseño de un modelo de base de datos que no contemple las relaciones de
+agendamiento y disponibilidad.
+Falta de validación de los prototipos por parte del cliente, retrasando el inicio
+de la programación en frontend.
+10.  Criterios generales de calidad
+Para considerar el sprint como correctamente ejecutado, la solución debe cumplir
+con los siguientes criterios:
+Los requerimientos deben estar alineados con las necesidades reales de la clí-
+nica.
+La arquitectura propuesta debe ser escalable para los próximos sprints.
+El diseño visual debe ser intuitivo y estar adaptado para dispositivos móviles
+(enfoque PWA).
+11.  Conclusiones
+El Sprint 1 constituye la base de la ingeniería de software del proyecto LUPSI.
+Su principal valor radica en la reducción de la incertidumbre técnica mediante una
+planificación sólida, un diseño centrado en el usuario y una arquitectura de base de
+datos bien estructurada.
+Al dejar operativos los repositorios y validados los modelos y diseños, el equipo
+asegura que el Sprint 2 pueda enfocarse directamente en la codificación de NestJS,
+Angular y Supabase en un entorno predefinido y seguro.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-002
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.3
+Planificación Sprint 1
+ELABORACIÓN:
+02/03/2026
+Requisitos, Arquitectura y Modelado de
+Datos
+ÚLTIMA
+REVISIÓN:
+20/03/2026
+12.  Firmas de Responsabilidad
+RolNombre / Represen-
+tante
+Firma (QR)Fecha
+Gestor del ProyectoAngel Ayuquina20/03/2026
+Desarrollador Backend   Sebastián Ortiz20/03/2026
+Desarrollador Fullstack  Daniel Luisa
+20/03/2026
+Desarrollador Frontend  Alex Guachi
+20/03/2026
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-002
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.3
+Planificación Sprint 1
+ELABORACIÓN:
+02/03/2026
+Requisitos, Arquitectura y Modelado de
+Datos
+ÚLTIMA
+REVISIÓN:
+20/03/2026
+13.  Control de cambios
+VersiónDescripción del CambioResponsabledel
+Cambio
+Fechade
+Aprobación
+1.0Planificación  inicial  general
+del proyecto.
+Sebastián Ortiz02/10/2025
+1.3Alineación de la trazabilidad
+entre el Sprint Backlog (Ta-
+reas) y el Product Backlog.
+Daniel Luisa20/03/2026

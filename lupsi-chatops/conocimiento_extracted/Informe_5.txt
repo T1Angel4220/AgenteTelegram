@@ -1,0 +1,171 @@
+
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-RGI-005
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de inicialización de frontend
+Angular PWA
+ELABORACIÓN:
+09/09/2025
+Sprint 1 – Infraestructura Base
+ÚLTIMA
+REVISIÓN:
+09/09/2025
+1.  Título
+Informe de inicialización de frontend Angular como PWA base con SCSS/Tailwind
+2.  Introducción
+El frontend del sistema LUPSI se construye con Angular, configurado como una
+Aplicación Web Progresiva (PWA) para ofrecer experiencia similar a una app nativa
+en dispositivos móviles. Este informe documenta la creación del proyecto, la habili-
+tación del service worker, la integración de SCSS y Tailwind CSS, y el estado actual
+del desarrollo hasta la fecha de presentación (08/09/2025).
+3.  Objetivo
+Disponer de una base de frontend funcional, responsive, con capacidades offline
+básicas (PWA) y una estructura de estilos moderna que acelere el desarrollo de las
+próximas historias de usuario.
+4.  Definiciones
+Angular: Framework de desarrollo frontend basado en TypeScript.
+PWA (Progressive Web App): Aplicación web que utiliza tecnologías mo-
+dernas para ofrecer una experiencia similar a una app nativa (instalable, offline,
+notificaciones).
+Service Worker: Script que actúa como proxy entre el navegador y la red,
+permitiendo cacheo y funcionamiento offline.
+Tailwind CSS: Framework CSS utility-first para diseñar interfaces rápida-
+mente.
+5.  Actividades realizadas
+Creación del proyecto Angular con Angular CLI: ng new frontend-lupsi
+–style=scss –routing.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-RGI-005
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de inicialización de frontend
+Angular PWA
+ELABORACIÓN:
+09/09/2025
+Sprint 1 – Infraestructura Base
+ÚLTIMA
+REVISIÓN:
+09/09/2025
+Adición de soporte PWA mediante ng add @angular/pwa (genera manifest,
+service worker, e íconos).
+Configuración de Tailwind CSS siguiendo la guía oficial para Angular.
+Creación de estructura base de carpetas: core, shared, features, layouts.
+Implementación de componentes base: header, footer, home.
+Configuración de rutas principales (home, login, registro).
+Prueba de funcionamiento offline y capacidad de instalación en dispositivo
+móvil.
+6.  Herramientas utilizadas
+Angular CLI 17
+Node.js v20
+Visual Studio Code
+Chrome DevTools (modo dispositivo, auditoría PWA)
+7.  Resultados obtenidos
+Proyecto Angular funcional con comando ng serve.
+Aplicación instalable en Android y Chrome Desktop (opción "Instalar app").
+Service worker activo que cachea los assets estáticos.
+Estilos base con SCSS y Tailwind: paleta de colores corporativa definida.
+Estado a fecha 08/09/2025: 80 % completado. Pendiente ajuste de rutas
+dinámicas, pruebas completas de PWA en diferentes navegadores y generación
+de build de producción.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-RGI-005
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de inicialización de frontend
+Angular PWA
+ELABORACIÓN:
+09/09/2025
+Sprint 1 – Infraestructura Base
+ÚLTIMA
+REVISIÓN:
+09/09/2025
+8.  Evidencias
+Se adjuntan las siguientes capturas de pantalla:
+8.1.  Pantalla de inicio de la PWA en móvil
+Figura 1: Pantalla de inicio de la PWA en dispositivo móvil
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-RGI-005
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de inicialización de frontend
+Angular PWA
+ELABORACIÓN:
+09/09/2025
+Sprint 1 – Infraestructura Base
+ÚLTIMA
+REVISIÓN:
+09/09/2025
+8.2.  Mensaje de instalación de la app
+Figura 2: Mensaje de instalación de la aplicación
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-RGI-005
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de inicialización de frontend
+Angular PWA
+ELABORACIÓN:
+09/09/2025
+Sprint 1 – Infraestructura Base
+ÚLTIMA
+REVISIÓN:
+09/09/2025
+8.3.  Service worker registrado
+Figura 3: Service worker registrado en herramientas de desarrollo
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-RGI-005
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de inicialización de frontend
+Angular PWA
+ELABORACIÓN:
+09/09/2025
+Sprint 1 – Infraestructura Base
+ÚLTIMA
+REVISIÓN:
+09/09/2025
+8.4.  Estructura de componentes
+Figura 4: Estructura de componentes en el editor
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-RGI-005
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de inicialización de frontend
+Angular PWA
+ELABORACIÓN:
+09/09/2025
+Sprint 1 – Infraestructura Base
+ÚLTIMA
+REVISIÓN:
+09/09/2025
+9.  Firmas de Responsabilidad
+RolNombre / Represen-
+tante
+Firma (QR)Fecha
+Gestor del ProyectoAngel Ayuquina09/09/2025
+Desarrollador Backend   Sebastián Ortiz09/09/2025
+Desarrollador Fullstack  Daniel Luisa
+09/09/2025
+Desarrollador Frontend  Alex Guachi
+09/09/2025

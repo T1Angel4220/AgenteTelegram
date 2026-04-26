@@ -1,0 +1,152 @@
+
+
+LISTA DE TAREAS PENDIENTES
+LupsiFECHA22/4/2026
+Saenz Días Luz Marina de Jesús REVISIÓN1
+1AUTORSKT Software Solution
+AltaMediaBajaTOTAL% TOTAL
+Pendiente
+1060
+15
+50%
+En progreso
+100
+1
+3%
+Completada
+932
+14
+47%
+Atrasada
+000
+0
+0%
+ RISK TOTAL
+209230
+IDTareaRESPONSABLEPRIORIDADFECHA LÍMITEESTADO
+1
+Entrevista con profesional médico
+Angel Ayuquina - 
+Sebastián Ortiz
+Media
+3/3/2026 19:00
+Completada
+2
+Análisis de procesos actuales
+Angel AyuquinaAlta
+6/3/2026 19:00
+Completada
+3
+Definición de historias de usuario
+Angel AyuquinaAlta
+11/3/2026 19:00
+Completada
+4
+Creación del Product Backlog
+Angel AyuquinaAlta
+13/3/2026 19:00
+Completada
+5
+Modelado de Base de Datos
+Sebastián OrtizAlta
+17/3/2026 19:00
+Completada
+6
+Definición arquitectura y APIs
+Angel Ayuquina, Daniel 
+Luisa, Sebastián Ortiz, 
+Alta
+19/3/2026 19:00
+Completada
+7
+Diseño wireframes y navegación,
+Alex HuachiMedia
+17/3/2026 19:00
+Completada
+8
+Prototipos de alta fidelidad
+Alex HuachiBaja
+19/3/2026 19:00
+Completada
+9
+Validación de interfaces
+Alex HuachiBaja
+20/3/2026 19:00
+Completada
+10
+Configuración entorno (Git/Docker)
+Alex HuachiMedia
+20/3/2026 19:00
+Completada
+11
+Creación de BD y seguridad
+Sebastián OrtizAlta
+25/3/2026 19:00
+Completada
+12
+Backend: Autenticación y Cédula
+Sebastián OrtizAlta
+7/4/2026 19:00
+Completada
+13
+Backend: Motor de Reservas
+Sebastián Ortiz - Daniel 
+Luisa
+Alta
+21/4/2026 19:00
+Completada
+14
+Backend: Repositorio RBAC
+Daniel LuisaAlta
+30/4/2026 19:00
+En progreso
+15
+Frontend: Portal del Paciente
+Alex HuachiAlta
+30/4/2026 19:00
+Pendiente
+PROYECTO
+CLIENTE
+Nº PEDIDO
+COMENTARIOS
+
+16
+Frontend: Panel Administrativo
+Alex HuachiMedia
+30/4/2026 19:00
+Pendiente
+17
+Integración Frontend-Backend
+Alex Huachi - Daniel 
+Luisa - Sebastián Ortiz
+Alta
+8/5/2026 19:00
+Pendiente
+18
+Pruebas de estrés y concurrencia
+Sebastián OrtizAlta
+13/5/2026 19:00
+Pendiente
+19
+Despliegue versión Beta (Piloto)
+Alex Huachi - Daniel 
+Luisa - Sebastián Ortiz
+Alta
+15/5/2026 19:00
+Pendiente
+20
+Pruebas de usabilidad con paciente
+Angel AyuquinaMedia
+20/5/2026 19:00
+Pendiente
+21
+Depuración de errores y parches
+Daniel LuisaAlta
+27/5/2026 19:00
+Pendiente
+22
+Pruebas de estrés superadas y 
+versión piloto estable.
+Sebastián OrtizMedia
+27/5/2026 19:00
+Pendiente

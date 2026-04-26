@@ -1,0 +1,120 @@
+
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-RGI-004
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de inicialización de backend NestJS
+con Docker
+ELABORACIÓN:
+06/09/2025
+Sprint 1 – Infraestructura Base
+ÚLTIMA
+REVISIÓN:
+06/09/2025
+1.  Título
+Informe de inicialización de backend NestJS con Docker y despliegue en Render
+2.  Introducción
+El backend del sistema LUPSI se desarrolla con el framework NestJS, que pro-
+porciona una arquitectura modular y escalable. Este informe cubre la creación del
+proyecto base, su contenerización con Docker, la conexión a Supabase y el despliegue
+inicial en la plataforma Render.
+3.  Objetivo
+Contar con una API funcional, ejecutable en cualquier entorno mediante Docker,
+y disponible en la nube (Render) para ser consumida por el frontend y realizar
+pruebas de integración tempranas.
+4.  Definiciones
+NestJS: Framework de Node.js para construir aplicaciones del lado del servi-
+dor eficientes y confiables.
+Docker: Plataforma de contenedores que permite empaquetar aplicaciones
+con sus dependencias.
+Render: Servicio de nube utilizado para desplegar el backend de forma gra-
+tuita en un entorno de prueba.
+5.  Actividades realizadas
+Inicialización del proyecto NestJS con el CLI oficial: nest new backend-lupsi.
+Configuración de módulos básicos: AppModule, controlador de salud (health).
+Instalación de dependencias: @nestjs/config, @nestjs/typeorm, typeorm,
+pg, @supabase/supabase-js.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-RGI-004
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de inicialización de backend NestJS
+con Docker
+ELABORACIÓN:
+06/09/2025
+Sprint 1 – Infraestructura Base
+ÚLTIMA
+REVISIÓN:
+06/09/2025
+Configuración de variables de entorno usando archivo .env y validación con
+Joi.
+Creación del Dockerfile multi-etapa para construir y ejecutar la app.
+Construcción de la imagen y prueba local con docker-compose.yml.
+Despliegue en Render conectando el repositorio de GitHub y configurando
+variables de entorno (URL de Supabase, clave anónima, etc.).
+6.  Herramientas utilizadas
+Node.js v20, NestJS CLI
+Docker y Docker Compose
+Render (dashboard y CLI)
+Postman para pruebas de API
+7.  Resultados obtenidos
+API base ejecutable localmente con npm run start:dev y dentro de contene-
+dor Docker.
+Endpoint de salud disponible en GET /health que retorna 200 OK.
+Despliegue exitoso en Render: URL pública https://lupsi-backend.onrender.com.
+Conexión a Supabase validada mediante un módulo simple que consulta la
+tabla usuarios.
+8.  Evidencias
+Se adjuntan capturas de pantalla de:
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-RGI-004
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de inicialización de backend NestJS
+con Docker
+ELABORACIÓN:
+06/09/2025
+Sprint 1 – Infraestructura Base
+ÚLTIMA
+REVISIÓN:
+06/09/2025
+Salida del contenedor Docker corriendo localmente.
+Figura 1: Estado de los contenedores de LUPSI (Backend y Frontend) corriendo
+localmente.
+Prueba del endpoint /health desde Postman.
+Figura 2: Prueba de disponibilidad del servicio mediante el endpoint de salud
+(/health) desde Postman.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-RGI-004
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de inicialización de backend NestJS
+con Docker
+ELABORACIÓN:
+06/09/2025
+Sprint 1 – Infraestructura Base
+ÚLTIMA
+REVISIÓN:
+06/09/2025
+9.  Firmas de Responsabilidad
+RolNombre / Represen-
+tante
+Firma (QR)Fecha
+Gestor del ProyectoAngel Ayuquina06/09/2025
+Desarrollador Backend   Sebastián Ortiz06/09/2025
+Desarrollador Fullstack  Daniel Luisa
+06/09/2025
+Desarrollador Frontend  Alex Huachi
+06/09/2025

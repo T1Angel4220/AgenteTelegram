@@ -1,0 +1,136 @@
+
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-CFG-001
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de Configuración de Repositorios y
+Entorno Base
+ELABORACIÓN:
+20/03/2026
+Sprint 1 – Arquitectura y Diseño
+ÚLTIMA
+REVISIÓN:
+20/03/2026
+1.  Título
+Informe de Configuración de Repositorios (GitHub) y Entorno Base (Docker).
+2.  Introducción
+Este informe documenta la culminación técnica del Sprint 1 del proyecto LUPSI.
+Una vez validados los requerimientos, los prototipos visuales y el modelo de base de
+datos, el paso final previo a la codificación (Sprint 2) es la preparación del entorno
+de trabajo colaborativo. Este documento certifica la creación de los repositorios de
+control de versiones y la estructuración de las ramas de desarrollo.
+3.  Objetivo
+Establecer una base de control de versiones centralizada, segura y ordenada (Git-
+Flow), junto con los cascarones de configuración inicial (Docker), garantizando que el
+equipo de desarrollo cuente con la infraestructura necesaria para integrar su código
+a partir del Sprint 2 sin conflictos ni bloqueos operativos.
+4.  Definiciones
+Control de Versiones (Git): Sistema que registra los cambios realizados en
+los archivos del proyecto a lo largo del tiempo.
+GitHub: Plataforma de alojamiento en la nube utilizada para centralizar los
+repositorios del equipo.
+GitFlow (Ramas): Estrategia de ramificación que separa el código en pro-
+ducción (main) del código en desarrollo (develop).
+Docker: Plataforma de contenedores que empaqueta el software y sus depen-
+dencias para garantizar que funcione uniformemente en cualquier equipo.
+5.  Actividades realizadas
+Creación de los repositorios oficiales para el proyecto en la plataforma GitHub.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-CFG-001
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de Configuración de Repositorios y
+Entorno Base
+ELABORACIÓN:
+20/03/2026
+Sprint 1 – Arquitectura y Diseño
+ÚLTIMA
+REVISIÓN:
+20/03/2026
+Configuración de la estrategia de ramas (GitFlow) estableciendo main para
+producción y develop para integración continua.
+Habilitación de reglas de protección de ramas, exigiendo revisión por pares
+(Pull Requests) antes de fusionar código a producción.
+Creación de los archivos base docker-compose.yml y Dockerfile (cascarón)
+para estandarizar el entorno local de los programadores.
+6.  Herramientas utilizadas
+GitHub (Alojamiento y gestión de repositorios)
+Git (Control de versiones en entornos locales)
+Docker Desktop (Preparación del entorno de contenedores)
+7.  Resultados obtenidos
+Repositorios operativos y disponibles para la clonación por parte del equipo
+técnico.
+Estructura de ramas protegida para evitar despliegues accidentales.
+Entorno base listo para iniciar la inicialización de frameworks (NestJS y An-
+gular) programada para el Sprint 2.
+8.  Evidencias Técnicas
+A continuación, se presentan las capturas de respaldo de la configuración del
+entorno:
+Evidencia 1: Creación de Repositorios y Estructura de Ramas.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-CFG-001
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de Configuración de Repositorios y
+Entorno Base
+ELABORACIÓN:
+20/03/2026
+Sprint 1 – Arquitectura y Diseño
+ÚLTIMA
+REVISIÓN:
+20/03/2026
+Figura 1: Vista del repositorio en GitHub con las ramas principales configuradas.
+Evidencia 2: Reglas de Protección de Ramas.
+Figura 2: Configuración de Pull Requests obligatorios para la rama main.
+Evidencia 3: Archivos base de entorno (Cascarón Docker).
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-CFG-001
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de Configuración de Repositorios y
+Entorno Base
+ELABORACIÓN:
+20/03/2026
+Sprint 1 – Arquitectura y Diseño
+ÚLTIMA
+REVISIÓN:
+20/03/2026
+Figura 3: Estructura base de archivos de contenerización para el entorno de desa-
+rrollo.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-CFG-001
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de Configuración de Repositorios y
+Entorno Base
+ELABORACIÓN:
+20/03/2026
+Sprint 1 – Arquitectura y Diseño
+ÚLTIMA
+REVISIÓN:
+20/03/2026
+9.  Firmas de Responsabilidad
+RolNombre / Represen-
+tante
+Firma (QR)Fecha
+Gestor del ProyectoAngel Ayuquina20/03/2026
+Desarrollador Backend   Sebastián Ortiz20/03/2026
+Desarrollador Fullstack  Daniel Luisa
+20/03/2026
+Desarrollador Frontend  Alex Guachi
+20/03/2026

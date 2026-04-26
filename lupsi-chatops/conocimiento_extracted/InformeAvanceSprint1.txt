@@ -1,0 +1,85 @@
+
+
+INFORME DE AVANCE DEL
+PROYECTO
+PROYECTO:   Sistema Web PWA LUPSIREFERENCIA:   Avance Sprint 1
+CLIENTE:Centro M ́edico LUPSIREVISI
+ ́
+ON:1.0
+AUTOR:Angel Ayuquina (PM)FECHA:20/03/2026
+DISTRIBUCI
+ ́
+ON:
+1. Patrocinador Acad ́emico: Ing. Paulo Torres, Mg.
+2. Directorio y Administraci ́on del Centro M ́edico LUPSI (Dra. Karen Topa)
+3. Equipo de Desarrollo SKT Software Solution (S. Ortiz, D. Luisa, A. Guachi)
+Cuadro 1: Distribuci ́on del informe
+SITUACI
+ ́
+ON CRONOGRAMA
+Atraso:S ́ı [ ]No [X]Plazo: 20/03/2026
+COMENTARIOS
+El progreso hasta la fecha de corte (20/03/2026) reporta la finalizaci ́on exitosa del Sprint
+1, aline ́andose a la l ́ınea base del archivo Microsoft Project. Los objetivos de Planificaci ́on,
+Dise ̃no UX/UI, Infraestructura Base y Modelado de BD fueron alcanzados a tiempo.
+Cuadro 2: Comentarios sobre el cronograma
+Figura 1: Vista de Gantt MS Project - Fase 1 y Fase 2 (Sprint 1)
+1
+
+SITUACI
+ ́
+ON FINANZAS
+COSTE ACTUAL$825.00Sobrecoste:S ́ıNoXValor:
+$0.00
+Cantidad  factura-
+da
+$0.00Pagospen-
+dientes:
+S ́ıNoX
+Cuadro 3: Resumen de situaci ́on financiera
+COMENTARIOS
+El Coste Actual de$825.00 USD refleja el costo valorizado proporcional de las horas de
+ingenier ́ıa (talento humano) invertidas por el equipo de desarrollo durante las primeras 3
+semanas correspondientes al Sprint 1. No representa un desembolso en efectivo por parte
+de la  cl ́ınica. En infraestructura  Cloud, el gasto  real es  de$0.00 al  aprovechar  las capas
+gratuitas de los proveedores.
+Cuadro 4: Comentarios sobre las finanzas
+SITUACI
+ ́
+ON ALCANCE
+ENTREGABLEFECHAACEPTADO
+1.  Documento  de  Requisitos  y  Prototipos
+UX/UI Validados
+13/03/2026
+2.  Modelado  de  Base  de  Datos  y  Definici ́on
+de Arquitectura
+17/03/2026
+3. Base de datos estructurada y repositorios
+operativos
+20/03/2026
+Cuadro 5: Entregables del Sprint 1 seg ́un MS Project
+PRINCIPALES PUNTOS ABIERTOS
+DESCRIPCI
+ ́
+ONFECHAESPE-
+RADA
+RESPONSABLE
+Creaci ́on de BD en entorno Cloud y Pol ́ıti-
+cas de Seguridad (RLS).
+25/03/2026Sebasti ́an Ortiz
+Desarrollo de Backend: M ́odulo de Auten-
+ticaci ́on y Validaci ́on de C ́edula.
+07/04/2026Alex Guachi
+Desarrollo de Backend: Gesti ́on de Cat ́alo-
+gos Param ́etricos del Sistema.
+08/04/2026Alex Guachi
+Cuadro 6: Puntos abiertos hacia el Sprint 2
+OTROS
+2
+
+El  progreso  del  Sprint  1  ha  cumplido  sus  objetivos  al  100 %.  La  arquitectura  base  y  el
+modelado relacional est ́an definidos. El equipo cuenta con la viabilidad t ́ecnica total para
+continuar sin bloqueos hacia el Sprint 2, donde se abordar ́a la capa de Seguridad, Autenti-
+caci ́on y Cat ́alogos.
+Cuadro 7: Otros aspectos a considerar
+3

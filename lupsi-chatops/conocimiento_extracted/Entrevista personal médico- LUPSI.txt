@@ -1,0 +1,228 @@
+
+
+UNIVERSIDAD TÉCNICA DE AMBATO 
+FACULTAD DE INGENIERÍA EN SISTEMAS ELECTRÓNICA E INDUSTRIAL 
+CARRERA DE SOFTWARE 
+CICLO ACADÉMICO: ENERO – JULIO 2026 
+ 
+Entrevista 
+ 
+Tema:      Entrevista al Personal del Centro Médico 
+Unidad de Organización Curricular: PROFESIONAL 
+Nivel y Paralelo:   7 – “A” 
+Alumnos participantes:   Ayuquina Chimborazo Angel Israel 
+     Luisa Calapiña Daniel Alexander 
+     Guachi Aucapiña Alex Fabricio 
+     Rodríguez Nuñez Johan Gabriel 
+Asignatura:    Auditoría de Sistemas de Información 
+Docente:    Ing. Paulo Torres, Mg. 
+ 
+1. ¿Cuánto  tiempo  efectivo  estima  que  invierte  el  personal  de  recepción  diariamente 
+solo  en  coordinar,  confirmar,  reagendar  o buscar  espacios  disponibles  a  través  de 
+WhatsApp? 
+Depende, si es por Whatsapp y el paciente escribe para una cita por primera vez puede demorar 
+de  10  a  30  minutos  por  la  demora  de  preguntar,  en  dónde  está  ubicado  el  centro  médico,  que 
+servicio desea, disponibilidad, cambio de horarios, coordinación de horarios ,etc. y en ocasiones 
+demoran en escribir y confirmar, cuando llaman es más rápido entre unos 3 a 7 minutos aunque 
+en llamadas  no siempre confirman la cita y son más preguntas de costos y horarios disponibles y 
+la encargada de recepción también realiza otras actividades 
+2. ¿Con qué frecuencia ocurren errores humanos, como cruces de horarios o citas no 
+anotadas, y cómo resuelven actualmente esos conflictos frente al paciente? 
+A la semana de 2 a 3 veces (de lunes a sábado) dependiendo de la capacidad de organización de 
+la persona encargada de receptar las citas, también depende de cuanto se demora el profesional 
+en  atender  al  paciente, al paciente  se  lo  deja  en  la  sala  de  espera  y  la  recepcionista  va  con  el 
+profesional  de  manera  personal,  y  le  lleva  al  profesional  a  un  consultorio  vacío  y  luego  la 
+recepcionista se dirige al paciente para informarle el consultorio al que está designado. 
+3. ¿Cuál es el  impacto económico u operativo de las "citas fantasma" (pacientes que 
+agendan  por  mensaje  y  no  asisten),  y  existen  reglas  actuales  para  penalizar  o 
+bloquear a estos usuarios? 
+El impacto es la pérdida de tiempo el cuál puede ser usado en otras actividades o para atender a 
+otros pacientes, además de la molestia causada al profesional y también el tiempo que le toma a 
+la recepcionista por agendar estas citas, No existen al momento ni reglas ni nada para penalizar a 
+estos usuarios o bloquearlos. 
+4. Actualmente, ¿cómo garantizan que quede un respaldo auditable de las indicaciones 
+médicas emitidas post-consulta, y qué sucede operativamente si un paciente pierde 
+su receta física y solicita una copia?  
+Se tiene las indicaciones en físico en las historias clínicas del usuario, y un pequeño respaldo en 
+digital pero que muchos de los profesionales del centro médico no ocupan porque no les agrada 
+la forma de hacerlo, si el paciente pierde su receta física y solicita una copia, el profesional debe 
+anotar  de  nuevo  lo  anotado  previamente  en  la  historia  clínica  del  paciente  para  posteriormente 
+enviarle la copia al paciente 
+
+UNIVERSIDAD TÉCNICA DE AMBATO 
+FACULTAD DE INGENIERÍA EN SISTEMAS ELECTRÓNICA E INDUSTRIAL 
+CARRERA DE SOFTWARE 
+CICLO ACADÉMICO: ENERO – JULIO 2026 
+ 
+5. Desde  el  punto  de  vista  médico,  ¿qué  tan ágil  sería  su  trabajo  si  tuviera  acceso  al 
+historial de indicaciones previas del paciente con solo un par de clics antes de que 
+ingrese al consultorio? 
+Sería bien útil porque actualmente primero se debe buscar las indicaciones previamente anotadas 
+a mano en la historia clínica, al momento se tiene un sistema poco útil debido a que no se puede 
+buscar ni por nombre ni por cédula y es una pérdida de tiempo. 
+6. Dado que el nuevo sistema manejará datos sensibles, ¿qué información clínica debe 
+ser de acceso exclusivo para el médico y estar estrictamente oculta para el personal 
+de recepción o administrativo?  
+Lo que debe  estar  oculto  sería  los  antecedentes patológicos  personales, familiares, quirúrgicos, 
+ginecobstétricos,   alergias,  hábitos,  motivo  de  consulta,  enfermedad  actual,  diagnóstico  y 
+tratamiento  
+7. ¿Cómo validan hoy en día que la persona que escribe por WhatsApp es realmente 
+el paciente que dice ser, y qué problemas han tenido por la falta de verificación de 
+identidad? 
+No se valida nada de eso actualmente, solo ha ocurrido un problema que más se ha repetido que 
+el paciente que escribe resulta ser menor de edad y obligatoriamente debe ir con un representante 
+8. Sabiendo  que  WhatsApp  no  requiere  esfuerzo  por  parte  del  paciente,  ¿qué 
+porcentaje de sus usuarios recurrentes cree que mostrará resistencia a registrarse 
+en una plataforma web autónoma, y qué estrategia sugiere para convencerlos en la 
+sala de espera? 
+Entre un 60 0 70%, que sea de fácil acceso para una persona que quiere agendar una cita, que no 
+tome tanto tiempo ni sea tedioso porque la gente siempre requiere que sea rápido el agendar una 
+cita 
+9. ¿Están dispuestos los médicos y el personal de recepción a participar activamente 
+en  las  pruebas  piloto,  comprendiendo  que  el  sistema  estará  en  fase  de  ajuste  y 
+requerirá su retroalimentación? 
+Estamos totalmente dispuestos. 
+10. Para usted, ¿qué es lo más importante que debe lograr este sistema para que sienta 
+que  realmente  valió  la  pena  dejar  de  usar  WhatsApp, el  papel,  y  el  sistema  que 
+actualmente usan en su día a día? 
+Especialmente que sea más rápido y fácil la organización de expedientes y su búsqueda para el 
+personal médico y de recepción, agilizando esos procesos  
+11. Actualmente, ¿dónde anotan las citas de los pacientes y de cuántos minutos calculan 
+cada turno para organizar el día? 
+Actualmente  se  registra  las  citas  de  los  pacientes  en  el  calendario  de  Google  porque  permite 
+dividirlas  por  horas,  en  medicina  en  promedio  unos  45  minutos,  el  tiempo  puede  variar 
+dependiendo la patología, pero en psicología es un promedio de 90 minutos. 
+
+UNIVERSIDAD TÉCNICA DE AMBATO 
+FACULTAD DE INGENIERÍA EN SISTEMAS ELECTRÓNICA E INDUSTRIAL 
+CARRERA DE SOFTWARE 
+CICLO ACADÉMICO: ENERO – JULIO 2026 
+ 
+Anexos 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+UNIVERSIDAD TÉCNICA DE AMBATO 
+FACULTAD DE INGENIERÍA EN SISTEMAS ELECTRÓNICA E INDUSTRIAL 
+CARRERA DE SOFTWARE 
+CICLO ACADÉMICO: ENERO – JULIO 2026 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+UNIVERSIDAD TÉCNICA DE AMBATO 
+FACULTAD DE INGENIERÍA EN SISTEMAS ELECTRÓNICA E INDUSTRIAL 
+CARRERA DE SOFTWARE 
+CICLO ACADÉMICO: ENERO – JULIO 2026 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

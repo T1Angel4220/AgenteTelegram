@@ -1,9 +1,76 @@
 {
-  "proyecto": "LUPSI",
+  "proyecto": "LUPSI - Sistema Web PWA de Gestión de Agendamiento Médico",
+  "empresa": "SKT Software Solution",
+  "cliente": "Centro Médico LUPSI",
+  "directora_medica": "Dra. Luz Marina Saenz Díaz de Jesús",
+  "patrocinador_academico": "Ing. Paulo Torres, Mg. — UTA",
   "sprint_actual": "Sprint 3: Motor de Agendamiento e Interfaces Frontend",
   "fecha_inicio": "2026-04-08",
   "fecha_fin": "2026-04-30",
-  "objetivo_principal": "Desarrollar e integrar el Motor de Reservas en el backend para prevenir cruces de horarios y construir los portales PWA para pacientes y administración, incluido el repositorio RBAC.",
+  "objetivo_principal": "Desarrollar e integrar el Motor de Reservas en el backend para prevenir cruces de horarios y construir los portales PWA para pacientes y administración.",
+  "stack_tecnologico": {
+    "backend": "NestJS (Node.js + TypeScript)",
+    "frontend": "Angular (PWA)",
+    "base_de_datos": "Supabase (PostgreSQL + RLS)",
+    "autenticacion": "JWT + Módulo 10 (validación cédula ecuatoriana)",
+    "storage": "Cloudinary (PDFs médicos)",
+    "control_versiones": "GitHub (GitFlow)",
+    "gestion_tareas": "Trello (Scrum)",
+    "produccion": "Render (server cloud)",
+    "seguridad": "RBAC + TLS 1.3 + AES-256"
+  },
+  "equipo": {
+    "Angel_Ayuquina": "Gestor del Proyecto (PM)",
+    "Sebastian_Ortiz": "Desarrollador Backend",
+    "Daniel_Luisa": "Desarrollador Fullstack",
+    "Alex_Guachi": "Desarrollador Frontend (también Huachi)"
+  },
+  "regla_equipo": "SOLO EXISTEN 4 PERSONAS EN EL EQUIPO. No hay más desarrolladores. No inventes nombres.",
+  "presupuesto": {
+    "valoracion_mercado": "$4,724.50 USD",
+    "costo_estimado_base": "$3,000 USD",
+    "desembolso_real_clinica": "$200 USD iniciales (solo infraestructura básica)",
+    "costo_infraestructura_cloud": "$0.00 (capas gratuitas de Supabase, Cloudinary y Render)",
+    "roi_estimado": "10 a 12 meses",
+    "modelo_financiamiento": "El equipo académico absorbe el costo de talento humano. La clínica no invierte en desarrollo.",
+    "costo_indirecto_primer_anio": "$1,640 USD (capacitación + soporte + servicios operativos)",
+    "costo_acumulado_sprint4": "$4,690.40 USD (valor de horas de ingeniería, NO dinero en efectivo)",
+    "costo_acumulado_final": "$5,850.00 USD (cierre Sprint 5)"
+  },
+  "cronograma": {
+    "sprint1": {
+      "inicio": "2026-03-02",
+      "fin": "2026-03-20",
+      "estado": "Completado"
+    },
+    "sprint2": {
+      "inicio": "2026-03-23",
+      "fin": "2026-04-07",
+      "estado": "Completado"
+    },
+    "sprint3": {
+      "inicio": "2026-04-08",
+      "fin": "2026-04-30",
+      "estado": "En Curso"
+    },
+    "sprint4": {
+      "inicio": "2026-05-04",
+      "fin": "2026-05-27",
+      "estado": "Pendiente"
+    },
+    "sprint5": {
+      "inicio": "2026-05-28",
+      "fin": "2026-06-10",
+      "estado": "Pendiente"
+    }
+  },
+  "historias_de_usuario": {
+    "US-01": "Registro e Identificación Segura — Sprint 2 — COMPLETADA",
+    "US-02": "Agendamiento Médico Sin Conflictos — Sprint 3 — EN CURSO",
+    "US-03": "Visualización de Agenda Administrativa — Sprint 3 — EN CURSO",
+    "US-04": "Digitalización de Expedientes en Nube (Cloudinary) — Sprint 4 — PENDIENTE",
+    "US-05": "Restricción de Privacidad y Data Médica (RBAC) — Sprint 4 — PENDIENTE"
+  },
   "riesgos_conocidos": "Resistencia al cambio, caídas del servidor, ciberataques, perfiles falsos, fallos en la dirección del proyecto e incompatibilidades tecnológicas.",
   "reglas_aprendidas": [
     {
@@ -11,5 +78,54 @@
       "accion_rechazada": "NOTIFY_MEMBER",
       "motivo": "Listo muy bien"
     }
-  ]
+  ],
+  "presupuesto_y_financiamiento": "Valoración de mercado $4,724.50. Desembolso real del centro médico: $200 iniciales. El equipo académico absorbe el costo de talento humano. ROI estimado: 10-12 meses. Infraestructura cloud: $0 en fase inicial.",
+  "entregables": {
+    "Sprint 3: Motor de Agendamiento e Interfaces Frontend": [
+      {
+        "nombre": "Backend: Motor de Reservas y control de Concurrencia",
+        "responsable": "Sebastián Ortiz",
+        "fecha": "2026-04-21"
+      },
+      {
+        "nombre": "Frontend: Portal del Paciente (PWA)",
+        "responsable": "Daniel Luisa",
+        "fecha": "2026-04-30"
+      },
+      {
+        "nombre": "Frontend: Panel Administrativo",
+        "responsable": "Alex Guachi",
+        "fecha": "2026-04-30"
+      },
+      {
+        "nombre": "Integración Auth-Frontend (Deuda Técnica S2)",
+        "responsable": "Alex Guachi",
+        "fecha": "2026-04-15"
+      }
+    ]
+  },
+  "kpis_oficiales": [
+    {
+      "nombre": "Cumplimiento de Tareas Críticas por Sprint",
+      "formula": "(Tareas críticas completadas / Total críticas planificadas) * 100"
+    },
+    {
+      "nombre": "Velocidad de Sprint",
+      "formula": "(Tareas completadas / Total planificadas) * 100"
+    },
+    {
+      "nombre": "Distribución de Esfuerzo de Código",
+      "formula": "(Commits miembro / Total commits equipo) * 100"
+    },
+    {
+      "nombre": "Avance por Fase del Ciclo de Vida",
+      "formula": "(Tareas completadas en fase / Total tareas de la fase) * 100"
+    },
+    {
+      "nombre": "Tasa de Defectos del Software",
+      "formula": "(Número de defectos / Número de funcionalidades desarrolladas) * 100"
+    }
+  ],
+  "regla_veracidad": "PROHIBIDO ALUCINAR. Si un dato no está en este archivo o en /conocimiento/base_conocimiento.md, di que no lo sabes. No inventes fechas, nombres, costos ni tecnologías.",
+  "doc_maestro": "Para contrastar cualquier dato, lee /conocimiento/base_conocimiento.md. Ese archivo tiene prioridad sobre cualquier PDF si hay conflictos."
 }

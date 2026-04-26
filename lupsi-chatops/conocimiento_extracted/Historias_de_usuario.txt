@@ -1,0 +1,340 @@
+
+
+SKT Software Solution
+CÓDIGO:
+MI-GAM-PRO-002
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Historias de usuario
+ELABORACIÓN:
+25/03/2026
+Definición de historias de usuario y
+trazabilidad por sprint
+ÚLTIMA
+REVISIÓN:
+25/03/2026
+1.  Título
+Definición formal de historias de usuario y trazabilidad por sprint para el Sistema
+Web Progresivo LUPSI
+2.  Introducción
+Las historias de usuario constituyen una forma estructurada de expresar necesi-
+dades funcionales desde la perspectiva de los actores que interactúan con el sistema.
+En un proyecto ágil como LUPSI, este mecanismo permite organizar el trabajo por
+valor de negocio, priorizar entregables y verificar de manera objetiva cuándo una
+funcionalidad se considera completa.
+El presente documento formaliza las historias de usuario del Sistema Web Progre-
+sivo LUPSI y las vincula con su planificación por sprints. La versión actual incorpora
+de forma explícita el Sprint 1 como base de ingeniería del producto, ya que en esa
+etapa se establecen los requerimientos funcionales, el diseño de interfaces (UX/UI),
+la arquitectura del sistema, el modelado relacional de la base de datos y la iniciali-
+zación de repositorios. A partir del Sprint 2, se aborda la codificación del backend,
+frontend, políticas de seguridad y validaciones como el algoritmo Módulo 10.
+Este documento tiene un alcance descriptivo y funcional. Su finalidad es dejar
+claramente establecidas las necesidades de los usuarios, las condiciones de aceptación
+y la relación entre dichas necesidades y el backlog técnico del proyecto.
+3.  Objetivo
+Definir de manera clara y formal las historias de usuario del sistema LUPSI,
+relacionándolas con los sprints de desarrollo y con los criterios de aceptación que
+permitirán verificar su cumplimiento durante la construcción del producto.
+4.  Definiciones
+Historia de usuario: descripción breve de una necesidad funcional expresada
+desde la perspectiva de un actor del sistema, acompañada de un resultado
+esperado y criterios de aceptación.
+
+SKT Software Solution
+CÓDIGO:
+MI-GAM-PRO-002
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Historias de usuario
+ELABORACIÓN:
+25/03/2026
+Definición de historias de usuario y
+trazabilidad por sprint
+ÚLTIMA
+REVISIÓN:
+25/03/2026
+Criterios de aceptación: condiciones específicas que debe cumplir una fun-
+cionalidad para considerarse terminada y aprobada.
+Epic: agrupación de funcionalidades relacionadas que representan un objetivo
+de mayor alcance dentro del producto.
+Sprint: periodo de trabajo definido dentro de Scrum para construir un con-
+junto acotado de funcionalidades.
+Actor: rol o perfil que interactúa con el sistema y cuya necesidad origina una
+historia de usuario.
+Backlog técnico: conjunto de tareas habilitadoras que permiten construir la
+base tecnológica del producto y sostener sus historias funcionales.
+5.  Historias de Usuario del Sistema LUPSI
+5.1.  US-01: Registro y Validación Oficial
+Rol: Paciente.
+Descripción: Como paciente, quiero registrarme en el sistema validando mi docu-
+mento de identidad para acceder de forma ágil.
+Propósito funcional: Esta historia permite formalizar el acceso inicial del pa-
+ciente al sistema mediante la validación de su identidad. Con ello se asegura que el
+registro solo sea aceptado cuando el documento cumpla con el formato y la lógica
+de verificación definida por el sistema.
+Criterios de aceptación:
+El sistema invoca correctamente el algoritmo Módulo 10 para la validación de
+cédulas.
+El sistema rechaza cédulas irregulares o inválidas.
+La transacción de alta del usuario se persiste correctamente.
+El sistema genera y entrega un JWT activo al completar el registro.
+La interfaz PWA ofrece una experiencia fluida y sin fricción al usuario.
+
+SKT Software Solution
+CÓDIGO:
+MI-GAM-PRO-002
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Historias de usuario
+ELABORACIÓN:
+25/03/2026
+Definición de historias de usuario y
+trazabilidad por sprint
+ÚLTIMA
+REVISIÓN:
+25/03/2026
+5.2.  US-02: Agendamiento de Citas Síncrono
+Rol: Paciente.
+Descripción: Como paciente, quiero visualizar los horarios médicos y reservar mi
+cita sin demoras de autorización.
+Propósito funcional: Esta historia habilita la reserva de citas médicas desde la
+interfaz del paciente, garantizando que la información de disponibilidad se mantenga
+consistente en tiempo real y evitando conflictos de agenda.
+Criterios de aceptación:
+El sistema deniega estrictamente la superposición de citas.
+No se permite el doble agendamiento sobre un mismo horario.
+La reserva se persiste automáticamente en la base de datos.
+El horario ocupado deja de estar disponible para otros usuarios concurrentes.
+5.3.  US-03: Visualización de Agenda Administrativa
+Rol: Recepcionista.
+Descripción: Como recepcionista, quiero previsualizar el calendario médico general
+para conocer la carga diaria.
+Propósito funcional: Esta historia permite al personal administrativo consul-
+tar la agenda general sin comprometer la privacidad de los datos clínicos, facilitando
+la organización operativa del centro médico.
+Criterios de aceptación:
+La agenda refleja en tiempo de ejecución los horarios reservados.
+La vista presenta únicamente detalles primarios y demográficos.
+El acceso respeta las restricciones de seguridad y no expone información clínica
+sensible.
+5.4.  US-04: Digitalización de Expedientes en Nube
+Rol: Médico.
+Descripción: Como médico, quiero subir recetas y reportes clínicos en formato
+PDF asociado a mis pacientes.
+
+SKT Software Solution
+CÓDIGO:
+MI-GAM-PRO-002
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Historias de usuario
+ELABORACIÓN:
+25/03/2026
+Definición de historias de usuario y
+trazabilidad por sprint
+ÚLTIMA
+REVISIÓN:
+25/03/2026
+Propósito funcional: Esta historia permite almacenar documentación clínica
+digital de forma ordenada y segura, evitando que los archivos pesen sobre la base
+de datos y manteniendo el acceso vinculado al paciente correspondiente.
+Criterios de aceptación:
+El sistema bloquea cargas con cualquier tipo de archivo distinto de PDF.
+El almacenamiento masivo de documentos se delega a Cloudinary.
+El médico puede visualizar los documentos cargados desde su panel.
+La asociación entre documento y paciente se mantiene correcta.
+5.5.  US-05: Restricción de Privacidad y Data Médica
+Rol: Centro clínico.
+Descripción: Como centro clínico, requiero que el sistema proteja a toda costa la
+privacidad del paciente del personal de secretaría.
+Propósito funcional: Esta historia establece las medidas de control de acceso
+necesarias para proteger la información médica sensible, limitando el acceso según
+rol y nivel de autorización.
+Criterios de aceptación:
+Se aplican políticas estrictas de acceso a nivel de base de datos.
+Se respeta el modelo RLS y RBAC definido para el sistema.
+Todo intento no autorizado desde un token del rol Recepcion hacia la tabla
+Historias es rechazado con error 403 o 401.
+La información clínica permanece restringida únicamente a los perfiles permi-
+tidos.
+6.  Backlog Técnico Habilitador del Sprint 1
+El Sprint 1 no corresponde a una historia de usuario final, sino al conjunto de
+tareas de análisis y arquitectura que hacen posible el desarrollo posterior del sistema
+evitando reprocesos y deuda técnica.
+Objetivo del Sprint 1: establecer el diseño visual, la arquitectura de software
+y el modelado de la base de datos antes de iniciar la etapa de codificación.
+
+SKT Software Solution
+CÓDIGO:
+MI-GAM-PRO-002
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Historias de usuario
+ELABORACIÓN:
+25/03/2026
+Definición de historias de usuario y
+trazabilidad por sprint
+ÚLTIMA
+REVISIÓN:
+25/03/2026
+Entregable esperado: documento de requerimientos aprobado, prototipos UX/UI
+validados por el cliente, diagrama relacional de base de datos (ER) y repositorios de
+código inicializados.
+Levantamiento de requerimientos y definición de Historias de Usuario.
+Diseño de wireframes y prototipos de alta fidelidad centrados en el paciente.
+Definición de la arquitectura del sistema y estructura de las APIs.
+Modelado del esquema relacional central en PostgreSQL (Diccionario de Da-
+tos).
+Configuración inicial de repositorios en GitHub y ramas de trabajo (GitFlow).
+
+SKT Software Solution
+CÓDIGO:
+MI-GAM-PRO-002
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Historias de usuario
+ELABORACIÓN:
+25/03/2026
+Definición de historias de usuario y
+trazabilidad por sprint
+ÚLTIMA
+REVISIÓN:
+25/03/2026
+7.  Trazabilidad entre Historias y Sprints
+Cuadro 1: Relación funcional entre historias de usuario y sprints
+SprintEnfoqueRelación con las historias
+Sprint 1Diseño UX/UI,
+Arquitectura y
+Modelado
+Habilita la base teórica y de diseño para
+todas las historias. Incluye el
+levantamiento de requisitos, prototipado
+de interfaces, modelado de la base de
+datos relacional y configuración de
+repositorios.
+Sprint 2Identidad, seguridad y
+catálogos
+Consolida US-01 y US-05 mediante
+inicialización de NestJS, Angular,
+Supabase (BD y RLS), autenticación,
+JWT y validador Módulo 10.
+Sprint 3Motor de
+agendamiento y
+concurrencia
+Implementa US-02 y US-03 con control
+de cruces, disponibilidad en tiempo real
+y acceso administrativo restringido.
+Sprint 4Historia clínica digital
+y storage médico
+Materializa US-04 y refuerza US-05
+mediante almacenamiento externo de
+PDFs, control de roles y protección de
+acceso.
+Sprint 5Estabilización, QA y
+pase a producción
+Verifica y endurece todas las historias,
+corrige incidencias y valida la salida
+controlada del sistema.
+8.  Criterios generales de calidad
+Para considerar una historia de usuario como terminada, el sistema debe cumplir
+con los siguientes criterios generales:
+la funcionalidad responde al rol y necesidad descritos;
+los criterios de aceptación están cubiertos y verificados;
+
+SKT Software Solution
+CÓDIGO:
+MI-GAM-PRO-002
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Historias de usuario
+ELABORACIÓN:
+25/03/2026
+Definición de historias de usuario y
+trazabilidad por sprint
+ÚLTIMA
+REVISIÓN:
+25/03/2026
+la implementación conserva la seguridad y privacidad del sistema;
+la experiencia de usuario se mantiene clara y funcional;
+la historia puede ser probada de forma individual y dentro del flujo general.
+9.  Conclusiones
+Las historias de usuario constituyen la base funcional del sistema LUPSI, ya
+que traducen las necesidades de los actores del negocio en requisitos concretos y
+verificables. Su definición permite orientar el desarrollo hacia el valor real esperado
+por el proyecto, al mismo tiempo que establece una guía clara para la construcción,
+prueba y validación de cada incremento.
+La incorporación explícita del Sprint 1 como fase de diseño y arquitectura permite
+reconocer que, antes de la codificación, existe una etapa de análisis indispensable
+que sostiene el producto. De esta forma, el documento refleja la madurez técnica del
+equipo para avanzar de manera ordenada hacia la fase de desarrollo en el Sprint 2.
+
+SKT Software Solution
+CÓDIGO:
+MI-GAM-PRO-002
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Historias de usuario
+ELABORACIÓN:
+25/03/2026
+Definición de historias de usuario y
+trazabilidad por sprint
+ÚLTIMA
+REVISIÓN:
+25/03/2026
+10.  Firmas de Responsabilidad
+RolNombre / Represen-
+tante
+Firma (QR)Fecha
+Gestor del ProyectoAngel Ayuquina25/03/2026
+Desarrollador Backend   Sebastián Ortiz25/03/2026
+Desarrollador Fullstack  Daniel Luisa
+25/03/2026
+Desarrollador Frontend  Alex Guachi
+25/03/2026
+
+SKT Software Solution
+CÓDIGO:
+MI-GAM-PRO-002
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Historias de usuario
+ELABORACIÓN:
+25/03/2026
+Definición de historias de usuario y
+trazabilidad por sprint
+ÚLTIMA
+REVISIÓN:
+25/03/2026
+11.  Control de Cambios
+Versión  FechaDescripción del CambioResponsable
+1.024/03/2026   Redacción inicial del documento
+con la definición de historias de
+usuario del sistema LUPSI.
+Equipo de desa-
+rrollo
+1.225/03/2026   Depuración del Sprint 1 para re-
+flejar exclusivamente tareas de
+Arquitectura, Requisitos y Dise-
+ño UX/UI, alineando el desarrollo
+de código al Sprint 2.
+Equipo de desa-
+rrollo

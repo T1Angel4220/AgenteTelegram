@@ -1,0 +1,92 @@
+
+
+INFORME DE AVANCE DEL
+PROYECTO
+PROYECTO:   Sistema Web PWA LUPSIREFERENCIA:   Avance Sprint 3
+CLIENTE:Centro M ́edico LUPSIREVISI
+ ́
+ON:1.0
+AUTOR:Angel Ayuquina (PM)FECHA:30/04/2026
+DISTRIBUCI
+ ́
+ON:
+1. Patrocinador Acad ́emico: Ing. Paulo Torres, Mg.
+2. Directorio y Administraci ́on del Centro M ́edico LUPSI (Dra. Saenz D ́ıaz Luz Marina de
+Jes ́us)
+3. Equipo de Desarrollo SKT Software Solution (S. Ortiz, D. Luisa, A. Guachi)
+Cuadro 1: Distribuci ́on del informe
+SITUACI
+ ́
+ON CRONOGRAMA
+Atraso:S ́ı [ ]No [X]Plazo: 30/04/2026
+COMENTARIOS
+El progreso hasta la fecha de corte (30/04/2026) reporta la finalizaci ́on exitosa del Sprint
+3, cumpliendo con la l ́ınea base del proyecto. Se logr ́o resolver el n ́ucleo (core) del negocio
+mediante la implementaci ́on del Motor de Reservas S ́ıncrono en el backend. Adicionalmente,
+se sald ́o la deuda t ́ecnica integrando la autenticaci ́on JWT con el frontend, lo que permiti ́o
+conectar  de  forma  segura  las  nuevas  interfaces  PWA  del  Portal  del  Paciente  y  el  Panel
+Administrativo.
+Cuadro 2: Comentarios sobre el cronograma
+1
+
+Figura 1: Vista de Gantt MS Project - Fase 3 (Motor de Reservas y PWA)
+SITUACI
+ ́
+ON FINANZAS
+COSTE ACTUAL$2,650.40Sobrecoste:S ́ıNoXValor:
+$0.00
+Cantidad  factura-
+da
+$0.00Pagospen-
+dientes:
+S ́ıNoX
+Cuadro 3: Resumen de situaci ́on financiera
+COMENTARIOS
+El Coste Actual de$2,650.40 USD refleja el costo valorizado ACUMULADO de las horas
+de ingenier ́ıa invertidas por el equipo de desarrollo hasta el cierre del Sprint 3. Se reitera
+que este rubro  es una estimaci ́on del valor del desarrollo y no representa un desembolso
+en efectivo. En cuanto a infraestructura en la nube, el gasto real se mantiene en$0.00 al
+operar dentro de los l ́ımites de la capa gratuita.
+Cuadro 4: Comentarios sobre las finanzas
+SITUACI
+ ́
+ON ALCANCE
+ENTREGABLE (Artefacto de Softwa-
+re)
+FECHAACEPTADO
+1. Integraci ́on Auth-Frontend (Deuda T ́ecni-
+ca S2).
+15/04/2026
+2
+
+2. Backend: Motor de Reservas y control de
+Concurrencia.
+21/04/2026
+3. Frontend: Portal del Paciente (PWA).30/04/2026
+4. Frontend: Panel Administrativo web.30/04/2026
+Cuadro 5: Entregables formales del Sprint 3
+PRINCIPALES PUNTOS ABIERTOS
+DESCRIPCI
+ ́
+ON (Hacia el Sprint 4)FECHAESPE-
+RADA
+RESPONSABLE
+Backend: Repositorio RBAC y manejo de
+indicaciones m ́edicas post-consulta.
+10/05/2026Sebasti ́an Ortiz
+Integraci ́on  Cloud:  Conexi ́on  con  Clou-
+dinary  para  almacenamiento  de  recetas
+PDF.
+15/05/2026Daniel / Alex
+QA:  Inicio  de  planificaci ́on  para  pruebas
+de estr ́es y validaci ́on piloto.
+11/05/2026Angel Ayuquina
+Cuadro 6: Puntos abiertos hacia el Sprint 4
+OTROS
+El progreso del Sprint 3 ha sido un hito cr ́ıtico. El sistema ahora permite el flujo principal
+de valor: los pacientes pueden autenticarse, revisar la disponibilidad de horarios y realizar
+reservas validadas estrictamente por el backend. Adem ́as, el equipo Frontend logr ́o solventar
+la  integraci ́on  del  Login  a  tiempo.  El  equipo  se  encuentra  listo  para  iniciar  el  Sprint  4,
+enfocado en la Historia Cl ́ınica Digital y el almacenamiento en la nube.
+Cuadro 7: Otros aspectos a considerar
+3

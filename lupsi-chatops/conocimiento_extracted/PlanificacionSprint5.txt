@@ -1,0 +1,257 @@
+
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-006
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 5
+ELABORACIÓN:
+11/04/2026
+QA, Estabilización y Despliegue
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+1.  Título
+Planificación del Sprint 5: Pruebas de Calidad (QA), Estabilización y Despliegue
+a Producción - LUPSI
+2.  Introducción
+El presente documento formaliza la planificación del quinto y último sprint del
+proyecto LUPSI. Esta fase representa la culminación del ciclo de desarrollo de softwa-
+re, donde el enfoque del equipo transiciona de la creación de nuevas funcionalidades
+("Feature Freeze") hacia el aseguramiento de la calidad, la corrección de errores
+(debugging), la capacitación de los usuarios y la puesta en marcha del sistema.
+De acuerdo con el Product Backlog (PB-16, PB-17, PB-18) y el tablero Kanban
+del proyecto, este sprint abarca la validación operativa del Motor de Agendamiento
+mediante pruebas de estrés, la ejecución de pruebas piloto con pacientes reales, la
+redacción de manuales y el despliegue final del backend y frontend en servidores de
+producción (Render) con certificados de seguridad SSL.
+3.  Objetivo
+Garantizar la estabilidad, seguridad y usabilidad del Sistema Web PWA LUP-
+SI mediante un riguroso proceso de Quality Assurance (QA), preparar al personal
+médico para la adopción tecnológica y desplegar el producto final en un entorno de
+producción de alta disponibilidad para el cierre oficial y auditoría del proyecto.
+4.  Alcance del Sprint 5
+El Sprint 5 se centra exclusivamente en pruebas, documentación y operaciones
+de infraestructura (DevOps).
+4.1.  Incluye
+Ejecución de pruebas de estrés y concurrencia contra el cruce de horarios.
+Despliegue de la versión Beta (Fase Piloto) y pruebas de usabilidad con pa-
+cientes reales.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-006
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 5
+ELABORACIÓN:
+11/04/2026
+QA, Estabilización y Despliegue
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+Depuración de código fuente y aplicación de parches de seguridad/rendimiento.
+Elaboración de manuales de usuario y talleres de capacitación para el personal
+médico.
+Configuración de servidor en producción (Render) y emisión de certificados
+SSL.
+Monitoreo inicial, auditoría y levantamiento del acta de cierre.
+4.2.  No incluye
+Desarrollo de nuevas funcionalidades, módulos o historias de usuario no con-
+templadas en los Sprints 1 al 4.
+5.  Definiciones
+QA (Quality Assurance): Conjunto de actividades planificadas para asegu-
+rar que el software cumple con los requisitos de calidad exigidos.
+Pruebas de Estrés: Evaluación de la robustez del sistema sometiéndolo a
+cargas de trabajo extremas (ej. múltiples usuarios reservando al mismo tiem-
+po).
+Render: Plataforma de alojamiento en la nube (PaaS) utilizada para el des-
+pliegue del backend y frontend en producción.
+SSL (Secure Sockets Layer): Protocolo criptográfico que proporciona co-
+municaciones seguras por una red, esencial para proteger datos médicos.
+6.  Planificación del Sprint 5
+6.1.  Objetivo específico del sprint
+Lograr una versión estable del sistema ("Release Candidate") con cero errores
+críticos, capacitar al cliente en su uso y dejar la aplicación operativa en una URL
+pública y segura antes del 10 de junio.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-006
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 5
+ELABORACIÓN:
+11/04/2026
+QA, Estabilización y Despliegue
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+6.2.  Entregables del Sprint
+EntregableResponsableFechaAceptado
+1. Reporte de Pruebas de Estrés y Versión
+Piloto Estable (Cero Bugs Críticos)
+Sebastián Ortiz27/05/2026
+2. Manuales de Usuario y Evidencia de
+Capacitación Médica
+Angel Ayuquina02/06/2026
+3. Sistema LUPSI desplegado en Producción
+(Render + SSL)
+Daniel / Alex10/06/2026
+6.3.  Backlog del Sprint 5 (Desglose de Tareas)
+La siguiente tabla detalla las tareas operativas a ejecutar basándose en las Fases
+4, 5 y 6 del tablero Kanban del proyecto y su trazabilidad con el Product Backlog.
+TareaOrigenActividad (Sprint Bac-
+klog)
+ResponsableEstado
+T-01PB-16Ejecutar pruebas de estrés
+contra el cruce de horarios
+y depurar código (parches).
+SebastiánPendiente
+T-02PB-16Desplegar versión beta y
+ejecutar pruebas de usabi-
+lidad con paciente real.
+AlexPendiente
+T-03PB-17Diseñar estrategia de adop-
+ción, elaborar manuales y
+dictar taller médico.
+AngelPendiente
+T-04PB-18Configurar servidor de pro-
+ducción en Render e imple-
+mentar certificados SSL.
+DanielPendiente
+T-05PB-18Despliegue final, monitoreo
+inicial, auditoría y acta de
+cierre.
+Equipo SKTPendiente
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-006
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 5
+ELABORACIÓN:
+11/04/2026
+QA, Estabilización y Despliegue
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+6.4.  Cronograma Detallado (Mayo - Junio 2026)
+TareaDíasInicioFinHHitoEntregableResponsable
+Pruebas
+Estrés
+1216/0527/0548Hito 1Piloto EstableSebastián
+Pruebas
+Usab.
+1216/0527/0548Hito 1Reporte
+UI/UX
+Alex
+Capacitación628/0502/0624Hito 2ManualesAngel
+Infra.
+(Render)
+403/0606/0616Hito 3Entorno ProdDaniel
+Cierre Oficial407/0610/0616Hito 3Acta de CierreEquipo
+7.  Criterios de aceptación del Sprint 5
+El sprint y el proyecto se considerarán completados y listos para la defensa
+cuando:
+El sistema pasa exitosamente las pruebas de concurrencia sin permitir la so-
+breescritura de citas médicas.
+La interfaz de usuario no presenta errores bloqueantes ("Crash") durante la
+navegación del paciente.
+El personal médico del Centro LUPSI aprueba la capacitación y recibe los
+manuales de usuario.
+Las APIs del backend y la PWA del frontend operan fluidamente bajo un
+dominio con HTTPS (SSL) activo.
+8.  Riesgos del Sprint 5
+Aparición de cuellos de botella (Bottlenecks) en la base de datos durante las
+pruebas de estrés que obliguen a reescribir consultas SQL.
+Incompatibilidades de entorno entre las máquinas locales de desarrollo y los
+contenedores del servidor de producción (Render).
+Retrasos en la disponibilidad del personal médico para asistir a los talleres de
+capacitación planificados.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-006
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 5
+ELABORACIÓN:
+11/04/2026
+QA, Estabilización y Despliegue
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+9.  Criterios generales de calidad
+Al ser la fase de cierre, la calidad es imperativa:
+Cumplimiento estricto de las directrices de seguridad en la nube (variables de
+entorno protegidas).
+Tiempos de carga inicial de la PWA optimizados para conexiones de red mó-
+viles (3G/4G).
+Toda incidencia reportada durante la fase piloto debe registrarse y cerrarse
+antes del pase a producción.
+10.  Conclusiones
+El Sprint 5 constituye el puente entre un producto de software funcional a nivel
+de ingeniería y una solución operativa comercial. Al destinar tres semanas ente-
+ras exclusivamente a la garantía de calidad (QA), estabilización y transferencia de
+conocimiento (Capacitación), el equipo mitiga los riesgos de fallos críticos post-
+lanzamiento.
+La conclusión exitosa de este sprint, marcada por la auditoría y el acta de cierre
+del 10 de junio, certifica que el Sistema Web PWA LUPSI cumple a cabalidad con los
+objetivos planteados al inicio del proyecto, entregando valor real al Centro Médico
+y marcando el fin del ciclo de desarrollo del equipo SKT Software Solution.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-006
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 5
+ELABORACIÓN:
+11/04/2026
+QA, Estabilización y Despliegue
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+11.  Firmas de Responsabilidad
+RolNombre / Represen-
+tante
+Firma (QR)Fecha
+Gestor del ProyectoAngel Ayuquina11/04/2026
+Desarrollador Backend   Sebastián Ortiz11/04/2026
+Desarrollador Fullstack  Daniel Luisa
+11/04/2026
+Desarrollador Frontend  Alex Guachi
+11/04/2026
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-006
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 5
+ELABORACIÓN:
+11/04/2026
+QA, Estabilización y Despliegue
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+12.  Control de cambios
+VersiónDescripción del CambioResponsabledel
+Cambio
+Fechade
+Aprobación
+1.0Elaboración de la planifica-
+ción final para el Sprint 5
+(QA, Capacitación y Desplie-
+gue en Producción).
+Angel Ayuquina11/04/2026

@@ -1,0 +1,266 @@
+
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-005
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 4
+ELABORACIÓN:
+11/04/2026
+Historia Clínica Digital y Seguridad RBAC
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+1.  Título
+Planificación del Sprint 4: Historia Clínica Digital, Almacenamiento Cloud y
+Seguridad RBAC - LUPSI
+2.  Introducción
+El presente documento formaliza la planificación del cuarto sprint del proyec-
+to LUPSI. Su propósito es definir el alcance, actividades y entregables de la fase
+enfocada en la gestión documental y privacidad médica.
+Tras haber consolidado el motor de agendamiento en el Sprint 3, el Sprint 4
+se concentra en la materialización de las historias de usuario US-04 y US-05. Esta
+etapa dota al sistema de la capacidad de almacenar expedientes clínicos en formato
+PDF de manera externalizada (Cloudinary), y establece un control de acceso basado
+en roles (RBAC) estricto para garantizar que la información médica permanezca
+completamente aislada del personal administrativo.
+3.  Objetivo
+Implementar el almacenamiento seguro y la recuperación de documentos clínicos
+digitales (PDFs) mediante la plataforma Cloudinary, y reforzar las políticas de priva-
+cidad del sistema mediante un modelo RBAC que restrinja el acceso a la información
+sensible exclusivamente al personal médico autorizado.
+4.  Alcance del Sprint 4
+El Sprint 4 se centra en la gestión de archivos y en la capa de autorización de
+usuarios.
+4.1.  Incluye
+Configuración e integración de la API de Cloudinary con el backend (NestJS).
+Lógica de validación para restringir la carga de archivos exclusivamente a
+formato PDF.
+Implementación del repositorio RBAC para el manejo de indicaciones médicas.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-005
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 4
+ELABORACIÓN:
+11/04/2026
+Historia Clínica Digital y Seguridad RBAC
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+Desarrollo Frontend de la vista del Médico para la carga y asociación de recetas
+a pacientes.
+Pruebas de restricción de endpoints (Errores 401/403) para roles no autoriza-
+dos.
+4.2.  No incluye (Asignado al Sprint 5)
+Pruebas de estrés y concurrencia finales.
+Despliegue en servidor de producción (Render).
+Pruebas de usabilidad (piloto) con pacientes reales.
+Capacitación y manuales de usuario.
+5.  Definiciones
+Sprint: periodo de trabajo definido dentro de Scrum para entregar un conjunto
+acotado de tareas.
+Cloudinary: Servicio de almacenamiento en la nube especializado en la ges-
+tión de imágenes y documentos.
+RBAC (Role-Based Access Control): Modelo de seguridad que restringe
+el acceso al sistema basándose en los roles de los usuarios individuales.
+Expediente Digital: Archivo en formato PDF que contiene recetas o reportes
+clínicos de un paciente.
+6.  Planificación del Sprint 4
+6.1.  Objetivo específico del sprint
+Lograr que un usuario con rol "Médico" pueda subir de forma exitosa una receta
+en PDF y asociarla a un paciente, garantizando que un usuario con rol "Recepcio-
+nista" no pueda acceder a dicho documento bajo ninguna circunstancia.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-005
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 4
+ELABORACIÓN:
+11/04/2026
+Historia Clínica Digital y Seguridad RBAC
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+6.2.  Entregables del Sprint
+EntregableResponsableFechaAceptado
+1. Backend: Módulo RBAC y protección
+estricta de rutas médicas
+Sebastián Ortiz10/05/2026
+2. Integración Backend: Conexión API
+Cloudinary para subida de PDFs
+Daniel Luisa12/05/2026
+3. Frontend: Interfaz del Médico (Carga y
+visualización de expedientes)
+Alex Guachi15/05/2026
+6.3.  Backlog del Sprint 4 (Desglose de Tareas)
+La siguiente tabla detalla las tareas operativas (T-XX) a ejecutar durante este
+sprint y su trazabilidad directa con el Product Backlog (PB-XX).
+TareaOrigenActividad (Sprint Bac-
+klog)
+ResponsableEstado
+T-01PB-14Desarrollarrepositorio
+RBAC  y  políticas  de
+privacidad clínica.
+SebastiánPendiente
+T-02PB-15Configurar cuenta de Clou-
+dinary y programar servi-
+cio de carga en NestJS.
+DanielPendiente
+T-03PB-15Construir validadores para
+restringir la subida de ar-
+chivos a formato PDF.
+DanielPendiente
+T-04US-04Desarrollar vista Frontend
+para que el médico suba ar-
+chivos.
+AlexPendiente
+T-05US-05Realizar auditoría de end-
+points para validar recha-
+zos (403/401).
+DanielPendiente
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-005
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 4
+ELABORACIÓN:
+11/04/2026
+Historia Clínica Digital y Seguridad RBAC
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+6.4.  Cronograma Detallado
+TareaDíasInicioFinHHitoEntregableResponsable
+Backend
+RBAC
+1001/0510/0540Hito 1Módulo RolesSebastián
+API
+Cloudinary
+1201/0512/0548Hito 1Servicio    de
+Carga
+Daniel
+Vistas
+Médico
+1005/0515/0540Hito 2Frontend  Mé-
+dico
+Alex
+Auditoría
+RLS
+214/0515/058Hito 2Reporte Segu-
+ridad
+Angel
+7.  Criterios de aceptación del Sprint 4
+El sprint se considerará aprobado cuando se cumpla lo siguiente:
+El sistema bloquea de forma nativa intentos de carga de archivos que no sean
+PDF (US-04).
+Los archivos se alojan exitosamente en Cloudinary, aligerando la carga de la
+base de datos principal de Supabase.
+El médico puede visualizar los documentos históricos desde su panel asocián-
+dolos correctamente al paciente.
+Todo intento no autorizado desde un token del rol "Recepcionista" hacia la
+información clínica es rechazado (Error 403) (US-05).
+8.  Trazabilidad con las historias de usuario
+Este sprint entrega valor directo relacionado con la privacidad y la digitalización
+de la información:
+US-04 (Digitalización de Expedientes en Nube): Implementado a través
+de la integración con Cloudinary (PB-15).
+US-05 (Restricción de Privacidad y Data Médica): Implementado a
+través del desarrollo del repositorio RBAC (PB-14).
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-005
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 4
+ELABORACIÓN:
+11/04/2026
+Historia Clínica Digital y Seguridad RBAC
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+9.  Riesgos del Sprint 4
+Límite de cuota o de almacenamiento en la capa gratuita (Free Tier) de Clou-
+dinary durante las pruebas intensivas.
+Complejidades técnicas al vincular de manera segura las URLs públicas gene-
+radas por Cloudinary con la base de datos de Supabase.
+Fallos en la propagación de tokens JWT que resulten en bloqueos erróneos a
+usuarios que sí cuentan con permisos médicos.
+10.  Criterios generales de calidad
+Para considerar el sprint como correctamente ejecutado, la solución debe cumplir
+con los siguientes criterios:
+El proceso de subida del archivo PDF no debe exceder tiempos de espera
+razonables y debe mostrar indicadores de carga en la UI.
+Las URLs de los archivos PDF no deben ser indexables por motores de bús-
+queda externos (privacidad).
+El código integrado debe estar cubierto por pruebas unitarias en sus módulos
+críticos de seguridad.
+11.  Conclusiones
+El Sprint 4 sella la propuesta de valor médico del proyecto LUPSI. La imple-
+mentación exitosa de la gestión documental externa evita la sobrecarga de la base
+de datos relacional y cumple con el requerimiento clave de digitalizar las recetas.
+De igual manera, el endurecimiento de la seguridad a través de RBAC garantiza
+que el producto final sea apto para un entorno clínico real, protegiendo la confiden-
+cialidad médico-paciente y dejando el sistema preparado para entrar en su fase final
+de pruebas y aseguramiento de calidad (QA) en el Sprint 5.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-005
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 4
+ELABORACIÓN:
+11/04/2026
+Historia Clínica Digital y Seguridad RBAC
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+12.  Firmas de Responsabilidad
+RolNombre / Represen-
+tante
+Firma (QR)Fecha
+Gestor del ProyectoAngel Ayuquina11/04/2026
+Desarrollador Backend   Sebastián Ortiz11/04/2026
+Desarrollador Fullstack  Daniel Luisa
+11/04/2026
+Desarrollador Frontend  Alex Guachi
+11/04/2026
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-PLA-005
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Planificación Sprint 4
+ELABORACIÓN:
+11/04/2026
+Historia Clínica Digital y Seguridad RBAC
+ÚLTIMA
+REVISIÓN:
+11/04/2026
+13.  Control de cambios
+VersiónDescripción del CambioResponsabledel
+Cambio
+Fechade
+Aprobación
+1.0Elaboración de la planifica-
+ción específica para el Sprint
+4 (Integración Cloud y Segu-
+ridad RBAC).
+Angel Ayuquina11/04/2026

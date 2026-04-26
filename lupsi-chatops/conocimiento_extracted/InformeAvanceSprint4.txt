@@ -1,0 +1,93 @@
+
+
+INFORME DE AVANCE DEL
+PROYECTO
+PROYECTO:   Sistema Web PWA LUPSIREFERENCIA:   Avance Sprint 4
+CLIENTE:Centro M ́edico LUPSIREVISI
+ ́
+ON:1.0
+AUTOR:Angel Ayuquina (PM)FECHA:15/05/2026
+DISTRIBUCI
+ ́
+ON:
+1. Patrocinador Acad ́emico: Ing. Paulo Torres, Mg.
+2. Directorio y Administraci ́on del Centro M ́edico LUPSI (Dra. Saenz D ́ıaz Luz Marina de
+Jes ́us)
+3. Equipo de Desarrollo SKT Software Solution (S. Ortiz, D. Luisa, A. Guachi)
+Cuadro 1: Distribuci ́on del informe
+SITUACI
+ ́
+ON CRONOGRAMA
+Atraso:S ́ı [ ]No [X]Plazo: 15/05/2026
+COMENTARIOS
+El progreso hasta la fecha de corte (15/05/2026) reporta la finalizaci ́on exitosa del Sprint
+4.  Se  ha  cumplido  con  el  objetivo  de  digitalizar  el  almacenamiento  m ́edico  mediante  la
+integraci ́on exitosa de la API de Cloudinary, permitiendo la carga y visualizaci ́on de recetas
+en formato PDF. Paralelamente, se implement ́o un estricto control de acceso basado en roles
+(RBAC), garantizando que la informaci ́on m ́edica permanezca completamente aislada de
+roles administrativos, cumpliendo as ́ı con las historias US-04 y US-05.
+Cuadro 2: Comentarios sobre el cronograma
+Figura 1: Vista de Gantt MS Project - Fase 4 (Historia Cl ́ınica Cloud y RBAC)
+SITUACI
+ ́
+ON FINANZAS
+1
+
+COSTE ACTUAL$4,690.40Sobrecoste:S ́ıNoXValor:
+$0.00
+Cantidad  factura-
+da
+$0.00Pagospen-
+dientes:
+S ́ıNoX
+Cuadro 3: Resumen de situaci ́on financiera
+COMENTARIOS
+El Coste Actual de$4,690.40 USD refleja el costo valorizado ACUMULADO de las horas
+de ingenier ́ıa invertidas por el equipo de desarrollo hasta el cierre del Sprint 4. Este rubro
+sigue siendo una estimaci ́on del valor del desarrollo y no un desembolso en efectivo. El equipo
+ha logrado mantener el gasto de infraestructura en$0.00, aprovechando eficientemente las
+capas gratuitas de Supabase y Cloudinary sin exceder las cuotas de almacenamiento.
+Cuadro 4: Comentarios sobre las finanzas
+SITUACI
+ ́
+ON ALCANCE
+ENTREGABLE (Artefacto de Softwa-
+re)
+FECHAACEPTADO
+1. Backend: M ́odulo RBAC y protecci ́on es-
+tricta de rutas m ́edicas.
+10/05/2026
+2. Integraci ́on Backend: Conexi ́on API Clou-
+dinary para subida de PDFs.
+12/05/2026
+3. Frontend: Interfaz del M ́edico (Carga y vi-
+sualizaci ́on de expedientes).
+15/05/2026
+Cuadro 5: Entregables formales del Sprint 4
+PRINCIPALES PUNTOS ABIERTOS
+DESCRIPCI
+ ́
+ON (Hacia el Sprint 5)FECHAESPE-
+RADA
+RESPONSABLE
+QA: Ejecuci ́on de pruebas de estr ́es y va-
+lidaci ́on de concurrencia final.
+18/05/2026Sebasti ́an Ortiz
+QA:  Pruebas  de  usabilidad  (piloto)  con
+pacientes en entorno real.
+20/05/2026Alex Guachi
+Despliegue: Pase a producci ́on en servidor
+final (Render) y ajustes de dominio.
+25/05/2026Angel / Daniel
+Cuadro 6: Puntos abiertos hacia el Sprint 5
+OTROS
+2
+
+Con el cierre del Sprint 4, el proyecto LUPSI ha completado formalmente el desarrollo de
+todas sus historias de usuario y l ́ogica de negocio core (Feature Complete). El sistema agen-
+da, asegura la informaci ́on mediante tokens JWT y RBAC, y almacena documentos cl ́ınicos
+en la nube. El equipo se encuentra en una posici ́on excelente para dedicar la totalidad del
+Sprint 5 ( ́ultima quincena de mayo) exclusivamente a tareas de estabilizaci ́on, control de
+calidad (QA), correcci ́on de errores (Bug fixing) y el despliegue final para la defensa.
+Cuadro 7: Otros aspectos a considerar
+3

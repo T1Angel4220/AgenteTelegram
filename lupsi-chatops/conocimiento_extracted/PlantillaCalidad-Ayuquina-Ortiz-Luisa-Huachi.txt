@@ -1,0 +1,481 @@
+
+
+EMPRESA DE DESARROLLO E
+INNOVACIÓN
+CÓDIGO:
+MI-DES-MAN-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Gestión de Identidad Visual
+ELABORACIÓN:
+01/03/2026
+Procedimiento Para La Gestión De Activos
+De Identidad Visual
+ÚLTIMA
+REVISIÓN:
+01/03/2026
+1.  Título
+Creación del logo de la empresa de software SKT Software Solution:
+Fundamentos Visuales, Normativa Internacional y Gestión Técnica Apli-
+cada
+2.  Introducción
+El presente documento describe el proceso técnico y metodológico aplicado en la
+creación del logotipo de la empresa SKT Software Solution (Software, Knowledge &
+Technology).
+El desarrollo del logo fue ejecutado en un sprint intensivo de una semana, apli-
+cando principios de gestión ágil, control documental y alineación conceptual con
+estándares internacionales de calidad, seguridad y confiabilidad tecnológica.
+La identidad visual fue concebida como un activo estratégico que representa
+seguridad funcional, robustez estructural, transformación digital y mejora continua.
+3.  Objetivo
+Documentar la aplicación de estándares internacionales, metodologías ágiles y
+principios de calidad en el proceso de creación del logotipo de SKT, garantizando
+trazabilidad, coherencia técnica y alineación con buenas prácticas de ingeniería.
+4.  Alcance
+Este documento comprende:
+Definición estratégica del acrónimo SKT.
+Diseño conceptual y técnico del isotipo.
+Aplicación conceptual de normas IEC, ISO y NIST.
+Gestión del proyecto mediante Sprint único de una semana.
+Documentación, validación y control de cambios.
+
+EMPRESA DE DESARROLLO E
+INNOVACIÓN
+CÓDIGO:
+MI-DES-MAN-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Gestión de Identidad Visual
+ELABORACIÓN:
+01/03/2026
+Procedimiento Para La Gestión De Activos
+De Identidad Visual
+ÚLTIMA
+REVISIÓN:
+01/03/2026
+5.  Definiciones
+SKT: Software, Knowledge & Technology.
+Isotipo: Representación gráfica independiente del texto que simboliza la identi-
+dad visual.
+Sprint: Iteración corta de trabajo utilizada en metodologías ágiles.
+Norma: Documento técnico que establece reglas y directrices para garantizar
+calidad y orden.
+Estándar: Conjunto de criterios técnicos adoptados para asegurar compatibili-
+dad, seguridad y eficiencia.
+6.  Diseño del Isotipo
+6.1.  Objetivo del diseño
+Documentar las decisiones conceptuales y las especificaciones visuales mínimas
+del isotipoSKT, de forma que el equipo de desarrollo y QA pueda aplicar los activos
+con coherencia, accesibilidad y trazabilidad durante el ciclo de entrega.
+6.2.  Principios de diseño
+Legibilidad: el isotipo y la tipografía que acompañe deben ser fácilmente
+legibles en tamaños pequeños.
+Consistencia técnica: aplicar la paleta definida y las reglas de uso para
+mantener coherencia en productos digitales e impresos.
+Accesibilidad: las combinaciones de color deben cumplir WCAG mínimo AA
+para texto e interfaces críticas.
+6.3.  Especificaciones del isotipo
+Tamaños mínimos: uso en pantalla: 32 px, para impresión: 12 mm. Si el isotipo
+se reduce por debajo de estos valores, usar la versión simplificada.
+Área de protección / clear-space: respetar un espacio libre alrededor del isoti-
+po equivalente a la altura de la letra “K” del logotipo. No ubicar elementos
+gráficos, tipográficos o cortes dentro de ese espacio.
+
+EMPRESA DE DESARROLLO E
+INNOVACIÓN
+CÓDIGO:
+MI-DES-MAN-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Gestión de Identidad Visual
+ELABORACIÓN:
+01/03/2026
+Procedimiento Para La Gestión De Activos
+De Identidad Visual
+ÚLTIMA
+REVISIÓN:
+01/03/2026
+Proporciones: conservar la relación de aspecto del isotipo; nunca estirar o com-
+primir en un eje.
+6.4.  Paleta resumida (uso en cuerpo)
+Color primario    #3F4A4F — usar en fondos principa-
+les del isotipo y elementos de marca
+dominante.
+Color secundario  #242B2E — para sombreados, textos
+de marca y fondos oscuros.
+Acento / detalle   #979C9D — para acentos, iconografía
+secundaria y estados.
+Claro / fondo     #CDCFD2 — fondos de secciones y se-
+paradores.
+6.5.  Reglas de uso (resumidas)
+1. Fondo sobre color primario: usar elementos en blanco porque ofrecen con-
+traste aceptable; evitar texto negro sobre fondos primarios oscuros.
+2. Contraste: verificar combinaciones críticas con las pruebas del Anexo (WCAG).
+Priorizar contraste≥ 4.5 : 1 para texto normal en interfaces.
+3. Versiones monocromas: en soportes donde no es posible color, usar la ver-
+sión monocroma negra o invertida según sea necesario. No añadir degradados
+o efectos al isotipo en su uso monocromo.
+4. Impresión: confirmar equivalencias CMYK / Pantone en Anexo antes de
+producción masiva.
+5. No hacer: no recolorear el isotipo fuera de la paleta; no aplicar sombras
+externas, contornos ni texturas que alteren la silueta a menos que exista una
+versión aprobada.
+6.6.  Ejemplos de aplicación
+Cabecera web: isotipo a la izquierda, margen superior/inferior 16 px, uso de
+variante full-color sobre fondo claro o invertida sobre fondo oscuro.
+
+EMPRESA DE DESARROLLO E
+INNOVACIÓN
+CÓDIGO:
+MI-DES-MAN-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Gestión de Identidad Visual
+ELABORACIÓN:
+01/03/2026
+Procedimiento Para La Gestión De Activos
+De Identidad Visual
+ÚLTIMA
+REVISIÓN:
+01/03/2026
+Icono de app/launcher: recortar a la silueta del emblema; usar versión
+simplificada si el espacio es reducido.
+Presentaciones / documentos: cabeceras con isotipo y bloque de color
+primario para slides de portada.
+6.7.  Notas finales
+Los datos técnicos completos (valores CMYK/Pantone, pruebas de contraste de-
+talladas y assets) se documentan en el Anexo B — Paleta de colores y archivos
+fuente.
+7.  Responsabilidades y Recursos
+7.1.  Responsabilidades
+RolResponsabilidades
+Angel  Ayuquina  –
+Gestor del Proyecto
+Planificación del sprint, control documental, verificación
+normativa y validación final.
+Sebastián Ortiz – Di-
+señador BD
+Coherencia estructural del significado estratégico SKT
+y revisión técnica conceptual.
+Daniel  Luisa  –  Dev
+Fullstack
+Validación del alineamiento con estándares de calidad
+del software.
+Alex  Huachi  –  Dev
+Frontend
+Implementación visual, ajustes tipográficos y documen-
+tación del manual básico de marca.
+
+EMPRESA DE DESARROLLO E
+INNOVACIÓN
+CÓDIGO:
+MI-DES-MAN-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Gestión de Identidad Visual
+ELABORACIÓN:
+01/03/2026
+Procedimiento Para La Gestión De Activos
+De Identidad Visual
+ÚLTIMA
+REVISIÓN:
+01/03/2026
+7.2.  Recursos
+CategoríaDetalle
+HumanosEquipo multidisciplinario organizado bajo marco Scrum.
+Tecnológicos
+Estaciones de trabajo de alto rendimiento.
+Adobe Illustrator y Photoshop.
+Repositorio digital con control de versiones.
+Normativos
+ISO 9000
+ISO/IEC 27001
+ISO/IEC 25010
+IEC 61508
+IEC 62443
+8.  Normativa Legal y Técnica Aplicable
+8.1.  Aplicación Técnica de IEC 61508
+La norma IEC 61508 establece un marco internacional para la seguridad funcional
+en sistemas eléctricos, electrónicos y programables que ejecutan funciones críticas.
+Su enfoque se basa en la reducción sistemática del riesgo mediante la asignación
+de Niveles de Integridad de Seguridad (SIL), garantizando confiabilidad y control
+estructurado del ciclo de vida.
+En el desarrollo del logo, su adopción conceptual permitió aplicar principios como
+gestión estructurada del proceso, validación progresiva del entregable, identificación
+de riesgos reputacionales y trazabilidad documental.
+8.2.  Aplicación Técnica de IEC 62443
+IEC 62443 establece lineamientos de ciberseguridad basados en segmentación por
+zonas y niveles de protección.
+
+EMPRESA DE DESARROLLO E
+INNOVACIÓN
+CÓDIGO:
+MI-DES-MAN-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Gestión de Identidad Visual
+ELABORACIÓN:
+01/03/2026
+Procedimiento Para La Gestión De Activos
+De Identidad Visual
+ÚLTIMA
+REVISIÓN:
+01/03/2026
+En el proyecto del logo se aplicó conceptualmente mediante protección de archi-
+vos fuente, control de accesos, separación de entornos de edición y respaldo seguro
+de entregables.
+8.3.  Aplicación de ISO 9000
+Se aplicaron principios de gestión de calidad como documentación formal, control
+de versiones y mejora continua dentro del sprint.
+8.4.  Aplicación de ISO/IEC 27001
+Se implementaron controles básicos de seguridad de la información y protección
+de activos digitales.
+8.5.  Aplicación de ISO/IEC 25010
+Se evaluó que la identidad visual represente atributos de calidad como:
+Fiabilidad
+Seguridad
+Usabilidad
+Mantenibilidad
+Compatibilidad
+9.  Método / Políticas
+9.1.  Metodología
+El proyecto fue desarrollado en un Sprint único de una semana:
+Día 1–2: Conceptualización estratégica.
+Día 3–4: Diseño y prototipado.
+Día 5: Validación técnica.
+
+EMPRESA DE DESARROLLO E
+INNOVACIÓN
+CÓDIGO:
+MI-DES-MAN-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Gestión de Identidad Visual
+ELABORACIÓN:
+01/03/2026
+Procedimiento Para La Gestión De Activos
+De Identidad Visual
+ÚLTIMA
+REVISIÓN:
+01/03/2026
+Día 6: Ajustes finales.
+Día 7: Documentación y cierre.
+9.2.  Políticas
+Cumplimiento conceptual de estándares internacionales.
+Priorizar seguridad de la información.
+Garantizar trazabilidad documental.
+Fomentar mejora continua.
+
+EMPRESA DE DESARROLLO E
+INNOVACIÓN
+CÓDIGO:
+MI-DES-MAN-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Gestión de Identidad Visual
+ELABORACIÓN:
+01/03/2026
+Procedimiento Para La Gestión De Activos
+De Identidad Visual
+ÚLTIMA
+REVISIÓN:
+01/03/2026
+10.  Firmas de Responsabilidad
+RolNombre / Represen-
+tante
+Firma (QR)Fecha
+Gestor del ProyectoAngel Ayuquina28/02/2026
+Desarrollador Backend   Sebastián Ortiz28/02/2026
+Desarrollador Fullstack  Daniel Luisa
+28/02/2026
+Desarrollador Frontend  Alex Huachi
+28/02/2026
+
+EMPRESA DE DESARROLLO E
+INNOVACIÓN
+CÓDIGO:
+MI-DES-MAN-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Gestión de Identidad Visual
+ELABORACIÓN:
+01/03/2026
+Procedimiento Para La Gestión De Activos
+De Identidad Visual
+ÚLTIMA
+REVISIÓN:
+01/03/2026
+11.  Control de Cambios
+Versión  FechaDescripción del CambioResponsable
+1.0Semana 1Creación inicial del logo.Sebastián Ortiz
+1.1Semana 1Ajustes cromáticos y tipográficos.  Daniel Luisa
+1.2Semana 1Validación y documentación final.  Alex Huachi
+12.  Anexos
+A. Codificación del documento
+A.1 Definición
+La codificación es el sistema alfanumérico estructurado que identifica de forma
+única cada documento dentro del proyecto, permitiendo clasificar, ordenar, recuperar
+y dar trazabilidad a los documentos.
+A.2 Estructura de codificación
+La estructura utilizada en el proyecto es la siguiente:
+XX-YYY-ZZZ-NNN
+XX — Tipo de proceso (2 letras).
+YYY — Nombre del proceso o subproceso (3 letras).
+ZZZ — Tipo documental (3 letras).
+NNN — Número secuencial (3 dígitos, con relleno a la izquierda).
+A.3 Catálogo de códigos
+A.4 Ejemplo de código final
+Aplicando las selecciones resumidas:
+Tipo de proceso: MI (Misional)
+
+EMPRESA DE DESARROLLO E
+INNOVACIÓN
+CÓDIGO:
+MI-DES-MAN-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Gestión de Identidad Visual
+ELABORACIÓN:
+01/03/2026
+Procedimiento Para La Gestión De Activos
+De Identidad Visual
+ÚLTIMA
+REVISIÓN:
+01/03/2026
+CampoOpciones (código)
+Tipo de proceso (XX)Directivo (DI), Misional (MI), Asesor (AS), Apoyo (AP).
+Nombre del proceso (YYY)  Desarrollo SW (DES), Gestión de Requisitos (GDR), Imple-
+mentación del Sistema Clínico (ISC), Gestión de Seguridad
+de la Información (GSI), Gestión de Agendamiento Médico
+(GAM), Gestión de Indicaciones Médicas (GIM).
+Tipo de documento (ZZZ)   Cronograma  (CRO),  Especificación  (ESP),  Instructivo
+(INS), Manual (MAN), Memorando (MEM), Oficio (OFI),
+Plan (PLA), Procedimiento (PRO), Registro (RGI), Bitáco-
+ra (BIT), Protocolo (PTC), Guía (GUI).
+Número secuencial (NNN)   001, 002, . . . (numeración incremental según la combinación
+anterior).
+Listado resumido de códigos importantes.
+Proceso / Subproceso: GAM (Gestión de Agendamiento Médico)
+Tipo de documento: PRO (Procedimiento)
+Secuencial: 001
+Código resultante: MI-GAM-PRO-001
+A.5 Plantilla corta de registro (para control y trazabilidad)
+Incluye siempre al crear o modificar un documento una entrada como la siguiente
+en el índice de control:
+
+EMPRESA DE DESARROLLO E
+INNOVACIÓN
+CÓDIGO:
+MI-DES-MAN-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Gestión de Identidad Visual
+ELABORACIÓN:
+01/03/2026
+Procedimiento Para La Gestión De Activos
+De Identidad Visual
+ÚLTIMA
+REVISIÓN:
+01/03/2026
+CampoValor / Ejemplo
+Código documento   MI-GAM-PRO-001
+TítuloNombre breve del documento
+Versiónv1..1
+Fecha emisión / mo-
+dificación
+YYYY-MM-DD
+Autor / Responsa-
+ble
+Nombre (rol)
+Motivo del cambio   Texto corto (ej.: ajuste procedimiento)
+AprobaciónNombre / Fecha / Observaciones
+Ubicación archivo    Ruta en repositorio / carpeta de activos
+Plantilla mínima para registro de cada documento.
+A.6 Notas sobre uso
+El número secuencial se incrementa para cada nuevo documento dentro de la
+misma combinación XX-YYY-ZZZ.
+Mantener el registro de cambios vinculado al repositorio o al sistema docu-
+mental para garantizar trazabilidad.
+B. Paleta de colores y archivos fuente
+B.1 Introducción
+Este anexo contiene la paleta de color muestreada a partir del archivo raster
+recibido, la especificación técnica básica (HEX / RGB / CMYK), y resultados de
+contraste WCAG frente a blanco y negro.
+
+EMPRESA DE DESARROLLO E
+INNOVACIÓN
+CÓDIGO:
+MI-DES-MAN-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Gestión de Identidad Visual
+ELABORACIÓN:
+01/03/2026
+Procedimiento Para La Gestión De Activos
+De Identidad Visual
+ÚLTIMA
+REVISIÓN:
+01/03/2026
+B.2 Imagen fuente
+Figura 1: Logo del equipo SKT Software Solution
+B.3 Tabla técnica — paleta
+NombreMuestra   HEXRGBCMYK (%)
+Primario (sugerido)#3F4A4F    (63,74,79)(20,6,0,69)
+Secundario (oscuro)
+#242B2E    (36,43,46)(22,7,0,82)
+Matiz medio#6E7375  (110,115,117)(6,2,0,54)
+Acento
+#979C9D  (151,156,157)(4,1,0,38)
+Claro (detalle)#CDCFD2  (205,207,210)(2,1,0,18)
+B.4 Interpretación de contraste WCAG
+Ratios mostrados siguen la fórmula WCAG (relativa a luminancias sRGB li-
+nealizadas).
+Regla práctica: para texto normal, se recomienda contraste≥ 4.5 : 1 (AA).
+Para texto grande,≥ 3 : 1.
+De la paleta muestreada: texto blanco sobre el color Primario (#3F4A4F)
+cumple AA (9.12), mientras que texto negro sobre ese mismo fondo no
+
+EMPRESA DE DESARROLLO E
+INNOVACIÓN
+CÓDIGO:
+MI-DES-MAN-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.2
+Gestión de Identidad Visual
+ELABORACIÓN:
+01/03/2026
+Procedimiento Para La Gestión De Activos
+De Identidad Visual
+ÚLTIMA
+REVISIÓN:
+01/03/2026
+cumple (2.30). Eso implica que en fondos oscuros del isotipo es preferible usar
+texto/elementos en blanco o variantes claras.
+Colores muy claros como #CDCFD2 no son adecuados para texto claro enci-
+ma; verificar siempre combinaciones en contexto.

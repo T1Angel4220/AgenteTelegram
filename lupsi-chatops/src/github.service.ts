@@ -3,41 +3,40 @@ import axios from 'axios';
 
 @Injectable()
 export class GithubService {
-  async getLatestCommits(): Promise<string> {
+  async getLatestCommits(since?: string, until?: string): Promise<string> {
     try {
       const { GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH } = process.env;
       const branch = GITHUB_BRANCH || 'develop';
-      const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/commits?sha=${branch}&per_page=30`; 
+      let url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/commits?sha=${branch}&per_page=100`; 
       
+      if (since) url += `&since=${since}`;
+      if (until) url += `&until=${until}`;
+
       const response = await axios.get(url, {
         headers: { Authorization: `token ${GITHUB_TOKEN}` }
       });
 
       const commits = response.data;
-      let report = '🚀 *CARGA DE TRABAJO EN GITHUB (Últimos 30 commits)*\n\n';
+      const periodo = since && until ? ` del periodo ${since} al ${until}` : ' (últimos 100)';
+      let report = `🚀 *ESFUERZO EN GITHUB${periodo}*\n\n`;
+
+      if (commits.length === 0) return report + '_No se encontró actividad en este periodo._';
 
       // Diccionario para contar los commits por desarrollador
       const commitCounts: Record<string, number> = {};
 
       commits.forEach(c => {
         const autor = c.commit.author.name;
-        if (commitCounts[autor]) {
-          commitCounts[autor]++;
-        } else {
-          commitCounts[autor] = 1;
-        }
+        commitCounts[autor] = (commitCounts[autor] || 0) + 1;
       });
 
       // Transformamos los datos a un texto bonito para Telegram
       for (const [autor, cantidad] of Object.entries(commitCounts)) {
-        // Calculamos el porcentaje de aporte
         const porcentaje = Math.round((cantidad as number / commits.length) * 100);
-        
         let icono = '👤';
-        if (porcentaje > 50) icono = '🔥'; // Si alguien hace más del 50%, está on fire (o sobrecargado)
-        if (porcentaje < 10) icono = '⚠️'; // Si alguien hace menos del 10%, advertencia
-        
-        report += `${icono} *${autor}*: ${cantidad} commits (${porcentaje}% del esfuerzo reciente)\n`;
+        if (porcentaje > 40) icono = '🔥';
+        if (porcentaje < 5) icono = '⚠️';
+        report += `${icono} *${autor}*: ${cantidad} commits (${porcentaje}% del esfuerzo)\n`;
       }
 
       return report;

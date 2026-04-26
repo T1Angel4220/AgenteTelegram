@@ -1,0 +1,160 @@
+
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-REQ-001
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de Levantamiento de Requisitos y
+Prototipos UX/UI
+ELABORACIÓN:
+13/03/2026
+Sprint 1 – Arquitectura y Diseño
+ÚLTIMA
+REVISIÓN:
+13/03/2026
+1.  Título
+Informe de Levantamiento de Requisitos, Product Backlog y Prototipos UX/UI
+Validados.
+2.  Introducción
+Este informe documenta la primera fase operativa del proyecto LUPSI corres-
+pondiente al Sprint 1. Detalla las actividades de levantamiento de información con
+el cliente, la definición formal de los requerimientos a través del Product Backlog,
+y la materialización de dichas necesidades en prototipos de alta fidelidad (UX/UI).
+Este documento sirve como constancia de la aprobación visual y funcional por parte
+del Centro Médico.
+3.  Objetivo
+Definir el alcance funcional del sistema mediante la redacción de Historias de
+Usuario y validar la experiencia de navegación del paciente y personal médico me-
+diante interfaces gráficas (PWA) antes de iniciar la fase de codificación, mitigando
+así el riesgo de reprocesos.
+4.  Definiciones
+Product Backlog: Inventario priorizado de todas las funcionalidades y re-
+quisitos que el sistema debe poseer.
+UX/UI: Diseño de Experiencia de Usuario e Interfaz de Usuario, enfocado en
+la usabilidad y accesibilidad móvil (PWA).
+Wireframe: Boceto estructural de baja fidelidad que define la distribución
+de los elementos en pantalla.
+Prototipo de Alta Fidelidad: Representación visual interactiva y detallada
+de cómo se verá el software terminado.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-REQ-001
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de Levantamiento de Requisitos y
+Prototipos UX/UI
+ELABORACIÓN:
+13/03/2026
+Sprint 1 – Arquitectura y Diseño
+ÚLTIMA
+REVISIÓN:
+13/03/2026
+5.  Actividades realizadas
+Entrevistas con el personal médico y administrativo para mapear el flujo de
+agendamiento actual.
+Redacción y priorización de las Historias de Usuario en el Product Backlog.
+Diseño de wireframes y flujos de navegación para los roles: Paciente, Médico
+y Recepcionista.
+Construcción de prototipos interactivos de alta fidelidad aplicando la paleta
+de colores y branding de LUPSI.
+Sesión de validación y ajustes de las interfaces con los stakeholders de la clínica.
+6.  Herramientas utilizadas
+Stack de Code-based Wireframing: En lugar de herramientas de diseño
+gráfico tradicionales, se utilizó React / Next.js junto con Tailwind CSS
+para construir prototipos interactivos y wireframes basados en código real,
+acelerando la transición hacia la fase de desarrollo.
+Trello: Para el registro, priorización y seguimiento de las Historias de Usuario
+del Product Backlog.
+Google Meet / Zoom: Para las sesiones de levantamiento de requisitos y
+validación de las interfaces con el cliente.
+7.  Resultados obtenidos
+Product Backlog oficial aprobado y dimensionado.
+Interfaz gráfica (UI) completamente diseñada bajo los estándares de una PWA
+(Mobile-first).
+Aprobación formal del cliente sobre el aspecto visual y la navegación del sis-
+tema.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-REQ-001
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de Levantamiento de Requisitos y
+Prototipos UX/UI
+ELABORACIÓN:
+13/03/2026
+Sprint 1 – Arquitectura y Diseño
+ÚLTIMA
+REVISIÓN:
+13/03/2026
+8.  Evidencias
+A continuación, se presentan las capturas de respaldo del trabajo realizado:
+Evidencia 1: Product Backlog e Historias de Usuario.
+Figura 1: Tablero de gestión evidenciando las historias de usuario priorizadas.
+Evidencia 2: Prototipos de Alta Fidelidad.
+Figura 2: Presentación al cliente de los Diseños UI.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-REQ-001
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de Levantamiento de Requisitos y
+Prototipos UX/UI
+ELABORACIÓN:
+13/03/2026
+Sprint 1 – Arquitectura y Diseño
+ÚLTIMA
+REVISIÓN:
+13/03/2026
+Figura 3: Presentación al cliente de los Diseños UI parte 2.
+Figura 4: Presentación al cliente de los Diseños UI parte 3.
+Evidencia 3: Flujo de Navegación y Componentes.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-REQ-001
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de Levantamiento de Requisitos y
+Prototipos UX/UI
+ELABORACIÓN:
+13/03/2026
+Sprint 1 – Arquitectura y Diseño
+ÚLTIMA
+REVISIÓN:
+13/03/2026
+CapturaFigma2.png
+Figura 5: Mapa de interacciones y vista del panel administrativo (Desktop).
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-REQ-001
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de Levantamiento de Requisitos y
+Prototipos UX/UI
+ELABORACIÓN:
+13/03/2026
+Sprint 1 – Arquitectura y Diseño
+ÚLTIMA
+REVISIÓN:
+13/03/2026
+9.  Firmas de Responsabilidad
+RolNombre / Represen-
+tante
+Firma (QR)Fecha
+Gestor del ProyectoAngel Ayuquina13/03/2026
+Desarrollador Backend   Sebastián Ortiz13/03/2026
+Desarrollador Fullstack  Daniel Luisa
+13/03/2026
+Desarrollador Frontend  Alex Guachi
+13/03/2026

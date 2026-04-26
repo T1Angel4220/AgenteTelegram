@@ -1,0 +1,305 @@
+
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GDR-ESP-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.1
+Product Backlog
+ELABORACIÓN:
+25/03/2026
+Definición del Product Backlog
+ÚLTIMA
+REVISIÓN:
+25/03/2026
+1.  Título
+Definición del Product Backlog del Sistema Web Progresivo LUPSI
+2.  Introducción
+El Product Backlog constituye el artefacto central en la gestión ágil del proyecto,
+ya que organiza y prioriza todas las funcionalidades, mejoras y tareas necesarias para
+la construcción del sistema. A partir de las historias de usuario previamente definidas,
+se estructura un listado ordenado por valor de negocio, permitiendo una planificación
+iterativa y adaptable.
+En el contexto del sistema LUPSI, el Product Backlog integra tanto las necesidades
+funcionales de los actores como las tareas técnicas habilitadoras, asegurando una visión
+completa del producto a desarrollar. Además, permite establecer una relación clara entre
+los objetivos del negocio, las historias de usuario y los sprints de desarrollo, facilitando la
+trazabilidad, el control del avance y la entrega continua de valor.
+3.  Objetivo
+Establecer un listado priorizado de funcionalidades y tareas del sistema LUPSI, ali-
+neado con las historias de usuario definidas y preparado para su ejecución progresiva en
+los diferentes sprints del proyecto.
+4.  Definiciones
+Product Backlog: listado ordenado y priorizado de todas las funcionalidades, me-
+joras y tareas necesarias para el desarrollo del sistema.
+Historia de usuario: descripción breve de una necesidad funcional expresada desde
+la perspectiva de un actor del sistema, enfocada en el valor que se desea obtener.
+Sprint: periodo de tiempo definido dentro de la metodología ágil en el cual se
+desarrolla un conjunto específico de funcionalidades del sistema.
+Prioridad: nivel de importancia asignado a un ítem del backlog en función de su
+valor de negocio, urgencia o dependencia técnica.
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GDR-ESP-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.1
+Product Backlog
+ELABORACIÓN:
+25/03/2026
+Definición del Product Backlog
+ÚLTIMA
+REVISIÓN:
+25/03/2026
+Ítem del backlog: elemento individual dentro del Product Backlog que puede
+representar una historia de usuario, tarea técnica o mejora.
+Incremento: resultado funcional entregado al final de un sprint, que añade valor
+al producto y puede ser validado por los usuarios.
+Criterios de aceptación: conjunto de condiciones que debe cumplir una funcio-
+nalidad para considerarse completada y aprobada.
+Valor de negocio: beneficio que una funcionalidad aporta al usuario final o a la
+organización.
+Dependencia técnica: relación entre tareas o funcionalidades que requieren que
+una se complete antes de iniciar otra.
+Backlog técnico: conjunto de tareas relacionadas con la infraestructura, arquitec-
+tura y configuración del sistema que soportan el desarrollo funcional.
+5.  Definición del Product Backlog
+Cuadro 1: Product Backlog del sistema LUPSI
+IDHistoria / Ítem   Prioridad Sprint    Descripción
+PB-01   Análisis de
+procesos y
+Entrevistas
+AltaSprint 1
+Entrevistas con profesionales
+y análisis del flujo de
+agendamiento actual.
+PB-02   Historias de
+usuario y Backlog
+AltaSprint 1
+Definición formal de
+requerimientos y priorización
+en el Product Backlog.
+PB-03   Configuración de
+entorno base
+AltaSprint 1
+Inicialización de repositorios
+(Git) y configuración de
+contenedores Docker.
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GDR-ESP-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.1
+Product Backlog
+ELABORACIÓN:
+25/03/2026
+Definición del Product Backlog
+ÚLTIMA
+REVISIÓN:
+25/03/2026
+IDHistoria / Ítem   Prioridad Sprint    Descripción
+PB-04   Diseño UX/UI y
+Prototipado
+AltaSprint 1
+Creación de wireframes,
+navegación y prototipos de
+alta fidelidad.
+PB-05   Modelado de Base
+de Datos
+AltaSprint 1
+Diseño del diagrama ER y
+diccionario de datos del
+esquema relacional.
+PB-06   Arquitectura y
+definición de APIs
+AltaSprint 1
+Estructuración técnica del
+proyecto y diseño de
+endpoints.
+PB-07   Validación de
+interfaces
+AltaSprint 1
+Aprobación final de los
+diseños y pantallas con el
+cliente.
+PB-08   Creación de BD y
+seguridad (RLS)
+AltaSprint 2
+Implementación física en
+Supabase y políticas de
+seguridad a nivel de fila.
+PB-09   Backend:
+Autenticación y
+Cédula
+AltaSprint 2
+Desarrollo del login, control
+JWT y validador de identidad
+(Módulo 10).
+PB-10   Backend: Gestión
+de Catálogos
+MediaSprint 2
+Creación de servicios para la
+gestión de catálogos
+paramétricos.
+PB-11   Backend: Motor de
+Reservas
+AltaSprint 3
+Lógica de agendamiento
+síncrono previniendo el cruce
+de horarios.
+PB-12   Frontend: Portal
+del Paciente
+AltaSprint 3
+Interfaces PWA para que el
+paciente reserve y consulte sus
+citas.
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GDR-ESP-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.1
+Product Backlog
+ELABORACIÓN:
+25/03/2026
+Definición del Product Backlog
+ÚLTIMA
+REVISIÓN:
+25/03/2026
+IDHistoria / Ítem   Prioridad Sprint    Descripción
+PB-13   Frontend: Panel
+Administrativo
+MediaSprint 3
+Vista de agenda diaria y
+administración para el
+personal de recepción.
+PB-14   Backend:
+Repositorio RBAC
+AltaSprint 4
+Módulo para el manejo seguro
+de indicaciones médicas
+post-consulta.
+PB-15   Integración Cloud
+para PDFs
+MediaSprint 4
+Conexión con Cloudinary
+para el almacenamiento de
+recetas médicas.
+PB-16   Pruebas de
+usabilidad y QA
+AltaSprint 5
+Ejecución de pruebas piloto
+con pacientes reales y
+depuración de código.
+PB-17   Capacitación y
+Manuales
+MediaSprint 5
+Diseño de estrategia de
+adopción y taller para el
+personal médico.
+PB-18   Despliegue a
+Producción
+AltaSprint 5
+Certificados de seguridad,
+pase a servidor productivo y
+liberación.
+6.  Criterios de priorización
+La priorización del Product Backlog se ha realizado considerando los siguientes facto-
+res:
+Valor de negocio para el usuario final;
+Dependencia técnica entre funcionalidades (Fase de Arquitectura antes que el códi-
+go);
+Riesgo asociado a la implementación;
+Necesidad de establecer bases tecnológicas tempranas;
+Impacto en la experiencia de usuario.
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GDR-ESP-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.1
+Product Backlog
+ELABORACIÓN:
+25/03/2026
+Definición del Product Backlog
+ÚLTIMA
+REVISIÓN:
+25/03/2026
+7.  Conclusiones
+El Product Backlog permite organizar de manera estructurada el desarrollo del sistema
+LUPSI, asegurando que cada iteración entregue valor incremental al proyecto. Su correcta
+definición facilita la planificación de los sprints, mejora la trazabilidad entre requerimientos
+y desarrollo, y garantiza que tanto los aspectos funcionales como técnicos sean abordados
+de forma coherente.
+Asimismo, el Product Backlog actúa como un mecanismo de comunicación entre los
+diferentes actores del proyecto, permitiendo que el equipo de desarrollo, los stakeholders
+y los responsables del negocio mantengan una visión compartida del progreso y las prio-
+ridades del sistema. Esto contribuye a una toma de decisiones más informada y alineada
+con los objetivos del proyecto.
+Adicionalmente, su carácter dinámico permite adaptarse a cambios en los requeri-
+mientos, incorporar mejoras continuas y responder de manera ágil a nuevas necesidades
+identificadas durante el desarrollo. De esta manera, se promueve una gestión eficiente
+del proyecto, orientada a la calidad del producto final, la optimización de recursos y la
+satisfacción de los usuarios.
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GDR-ESP-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.1
+Product Backlog
+ELABORACIÓN:
+25/03/2026
+Definición del Product Backlog
+ÚLTIMA
+REVISIÓN:
+25/03/2026
+8.  Firmas de Responsabilidad
+RolNombre  /  Represen-
+tante
+Firma (QR)Fecha
+Gestor del ProyectoAngel Ayuquina25/03/2026
+Desarrollador Backend    Sebastián Ortiz25/03/2026
+Desarrollador Fullstack   Daniel Luisa
+25/03/2026
+Desarrollador Frontend   Alex Guachi25/03/2026
+
+SKT SOFTWARE SOLUTION
+CÓDIGO:
+MI-GDR-ESP-001
+PROCESO: DESARROLLO DE
+SOFTWARE
+VERSIÓN:
+1.1
+Product Backlog
+ELABORACIÓN:
+25/03/2026
+Definición del Product Backlog
+ÚLTIMA
+REVISIÓN:
+25/03/2026
+9.  Control de Cambios
+Versión  FechaDescripción del CambioResponsable
+1.025/08/2025    Elaboración  inicial  del  Product
+Backlog.
+Angel Ayuquina
+1.125/03/2026    Reestructuración del Product Bac-
+klog  para  alinear  los  ítems  del
+Sprint 1 exactamente con el ta-
+blero Trello (Fases 1 y 2: Requi-
+sitos, UX/UI, Arquitectura y En-
+torno Git/Docker).
+Angel Ayuquina

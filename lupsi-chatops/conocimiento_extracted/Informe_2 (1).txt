@@ -1,0 +1,187 @@
+
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-ARQ-002
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de Modelado de BD y Arquitectura
+ELABORACIÓN:
+17/03/2026
+Sprint 1 – Arquitectura y Diseño
+ÚLTIMA
+REVISIÓN:
+17/03/2026
+1.  Título
+Informe de Modelado de Base de Datos (ER) y Definición de Arquitectura del
+Sistema
+2.  Introducción
+Este informe documenta el diseño lógico y la estructuración arquitectónica del
+sistema LUPSI, desarrollado durante el Sprint 1. Antes de proceder a la creación físi-
+ca de entornos en la nube, es imperativo establecer un modelo de datos normalizado
+y definir cómo se comunicarán los componentes del sistema (Frontend, Backend y
+Base de Datos). Este documento sirve como plano maestro técnico para el equipo
+de desarrollo.
+3.  Objetivo
+Entregar un modelo de datos relacional normalizado (3NF), eficiente y escalable,
+junto con la definición de la arquitectura de software, garantizando que el equipo de
+programación cuente con reglas claras de integridad referencial y comunicación de
+APIs para el Sprint 2.
+4.  Definiciones
+ER (Entidad-Relación): Modelo conceptual que representa las entidades
+del negocio y las relaciones entre ellas.
+3FN (Tercera Forma Normal): Criterio de diseño de bases de datos que
+elimina redundancias y dependencias transitivas.
+Arquitectura Cliente-Servidor: Modelo de diseño donde el PWA (Cliente)
+consume servicios de una API REST (Servidor).
+DDL (Data Definition Language): Lenguaje teórico estructurado para la
+futura creación de las tablas.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-ARQ-002
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de Modelado de BD y Arquitectura
+ELABORACIÓN:
+17/03/2026
+Sprint 1 – Arquitectura y Diseño
+ÚLTIMA
+REVISIÓN:
+17/03/2026
+5.  Actividades realizadas
+Análisis de requerimientos de persistencia extraídos del Product Backlog apro-
+bado.
+Diseño del diagrama Entidad-Relación (ER) contemplando los módulos de:
+usuarios, pacientes, médicos, citas, y catálogos.
+Normalización de todas las entidades hasta la Tercera Forma Normal (3FN).
+Redacción en borrador del script DDL para definir claves primarias, foráneas
+y restricciones lógicas.
+Diseño del diagrama de arquitectura general del sistema (Angular↔ NestJS
+↔ Supabase/PostgreSQL).
+6.  Herramientas utilizadas
+Draw.io / Lucidchart: Para el modelado del diagrama Entidad-Relación y
+diagramas de arquitectura.
+Consola web de Supabase
+SQL Editor de Supabase
+7.  Resultados obtenidos
+Diagrama ER aprobado y listo para su implementación física.
+Diccionario de datos y borrador de scripts DDL estructurados.
+Diagrama de arquitectura del sistema validado, estableciendo los flujos de co-
+municación y seguridad (JWT / RLS) a implementar en el siguiente sprint.
+8.  Evidencias Técnicas
+A continuación, se presentan los artefactos de diseño que respaldan la ingeniería
+del sistema:
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-ARQ-002
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de Modelado de BD y Arquitectura
+ELABORACIÓN:
+17/03/2026
+Sprint 1 – Arquitectura y Diseño
+ÚLTIMA
+REVISIÓN:
+17/03/2026
+Evidencia 1: Diagrama Entidad-Relación (ER).
+Figura 1: Diagrama lógico Entidad-Relación del sistema LUPSI normalizado (3NF).
+Evidencia 2: Borrador Arquitectónico de Sentencias DDL.
+Se definieron las estructuras primarias que serán orquestadas en Supabase
+durante el Sprint 2:
+-- Definición lógica para la futura tabla Profiles (Usuarios)
+CREATE TABLE public.profiles (
+id uuid NOT NULL,
+role user_role NOT NULL DEFAULT ’PATIENT’,
+email character varying NOT NULL UNIQUE,
+first_name character varying NOT NULL,
+last_name character varying NOT NULL,
+CONSTRAINT profiles_pkey PRIMARY KEY (id)
+);
+-- Definición lógica para la futura tabla Appointments (Citas)
+CREATE TABLE public.appointments (
+id uuid NOT NULL DEFAULT uuid_generate_v4(),
+patient_id uuid NOT NULL,
+doctor_id uuid NOT NULL,
+appointment_time timestamp with time zone NOT NULL,
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-ARQ-002
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de Modelado de BD y Arquitectura
+ELABORACIÓN:
+17/03/2026
+Sprint 1 – Arquitectura y Diseño
+ÚLTIMA
+REVISIÓN:
+17/03/2026
+status appointment_status DEFAULT ’SCHEDULED’,
+CONSTRAINT appointments_pkey PRIMARY KEY (id),
+CONSTRAINT appointments_patient_id_fkey FOREIGN KEY (patient_id)
+REFERENCES public.patients(id)
+);
+Evidencia 3: Diagrama de Arquitectura Cliente-Servidor.
+Figura 2: Diagrama de Arquitectura Cliente-Servidor
+Evidencia 4: Diagrama de despliegue.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-ARQ-002
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de Modelado de BD y Arquitectura
+ELABORACIÓN:
+17/03/2026
+Sprint 1 – Arquitectura y Diseño
+ÚLTIMA
+REVISIÓN:
+17/03/2026
+Figura 3: Diagrama de flujos de despliegue.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-ARQ-002
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de Modelado de BD y Arquitectura
+ELABORACIÓN:
+17/03/2026
+Sprint 1 – Arquitectura y Diseño
+ÚLTIMA
+REVISIÓN:
+17/03/2026
+Evidencia 5: Flujo de despliegue CI/CD
+Figura 4: Diagrama de despliegue CI/CD
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-ARQ-002
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de Modelado de BD y Arquitectura
+ELABORACIÓN:
+17/03/2026
+Sprint 1 – Arquitectura y Diseño
+ÚLTIMA
+REVISIÓN:
+17/03/2026
+9.  Firmas de Responsabilidad
+RolNombre / Represen-
+tante
+Firma (QR)Fecha
+Gestor del ProyectoAngel Ayuquina17/03/2026
+Desarrollador Backend   Sebastián Ortiz17/03/2026
+Desarrollador Fullstack  Daniel Luisa
+17/03/2026
+Desarrollador Frontend  Alex Guachi
+17/03/2026

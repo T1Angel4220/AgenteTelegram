@@ -1,0 +1,86 @@
+
+
+INFORME DE AVANCE DEL
+PROYECTO
+PROYECTO:   Sistema Web PWA LUPSIREFERENCIA:   Avance Sprint 2
+CLIENTE:Centro M ́edico LUPSIREVISI
+ ́
+ON:1.0
+AUTOR:Angel Ayuquina (PM)FECHA:08/04/2026
+DISTRIBUCI
+ ́
+ON:
+1. Patrocinador Acad ́emico: Ing. Paulo Torres, Mg.
+2. Directorio y Administraci ́on del Centro M ́edico LUPSI (Dra. Karen Topa)
+3. Equipo de Desarrollo SKT Software Solution (S. Ortiz, D. Luisa, A. Guachi)
+Cuadro 1: Distribuci ́on del informe
+SITUACI
+ ́
+ON CRONOGRAMA
+Atraso:S ́ı [ ]No [X]Plazo: 08/04/2026
+COMENTARIOS
+El progreso hasta la fecha de corte (08/04/2026) reporta la finalizaci ́on exitosa del Sprint
+2, aline ́andose a la l ́ınea base del archivo Microsoft Project. Los objetivos correspondientes
+a la capa de Seguridad (RLS), Autenticaci ́on, Validaci ́on de Identidad y Cat ́alogos fueron
+alcanzados a tiempo, consolidando el n ́ucleo del backend.
+Cuadro 2: Comentarios sobre el cronograma
+Figura 1: Vista de Gantt MS
+1
+
+SITUACI
+ ́
+ON FINANZAS
+COSTE ACTUAL$1,390.96Sobrecoste:S ́ıNoXValor:
+$0.00
+Cantidad  factura-
+da
+$0.00Pagospen-
+dientes:
+S ́ıNoX
+Cuadro 3: Resumen de situaci ́on financiera
+COMENTARIOS
+El Coste Actual de$1,390.96 USD refleja el costo valorizado ACUMULADO de las horas
+de  ingenier ́ıa  (talento  humano)  invertidas  por  el  equipo  de  desarrollo  desde  el  inicio  del
+proyecto hasta el cierre del Sprint 2. No representa un desembolso en efectivo por parte de
+la cl ́ınica. En cuanto a infraestructura en la nube, el gasto real es de$0.00 al mantenerse
+dentro de las capas gratuitas de Supabase y Render.
+Cuadro 4: Comentarios sobre las finanzas
+SITUACI
+ ́
+ON ALCANCE
+ENTREGABLEFECHAACEPTADO
+1. Creaci ́on de BD y Pol ́ıticas de Seguridad
+(RLS)
+25/03/2026
+2. Backend: M ́odulo de Autenticaci ́on y Vali-
+daci ́on de C ́edula
+07/04/2026
+3. Backend: Gesti ́on de Cat ́alogos Param ́etri-
+cos del Sistema
+08/04/2026
+Cuadro 5: Entregables del Sprint 2 seg ́un MS Project
+PRINCIPALES PUNTOS ABIERTOS
+DESCRIPCI
+ ́
+ONFECHAESPE-
+RADA
+RESPONSABLE
+Integraci ́on del M ́odulo de Autenticaci ́on
+con las vistas finales del Frontend.
+Inicio Sprint 3Alex Guachi
+Desarrollo  del  Motor  de  Agendamiento
+S ́ıncrono (Inicio de l ́ogica de negocio).
+Inicio Sprint 3Sebasti ́an Ortiz
+Mitigaci ́on de riesgos: Preparaci ́on de en-
+torno para pruebas piloto de usabilidad.
+15/05/2026Daniel Luisa
+Cuadro 6: Puntos abiertos hacia el Sprint 3
+OTROS
+2
+
+El  progreso  del  Sprint  2  ha  cumplido  sus  objetivos  al  100 %.  La  base  de  datos  cuenta
+con pol ́ıticas de seguridad a nivel de fila (RLS), la validaci ́on de identidad ciudadana est ́a
+operativa y los cat ́alogos del sistema est ́an gestionados. El equipo cuenta con la viabilidad
+t ́ecnica total para iniciar el Sprint 3 (Motor de Reservas y Agendamiento).
+Cuadro 7: Otros aspectos a considerar
+3

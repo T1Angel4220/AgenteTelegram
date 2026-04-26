@@ -1,0 +1,209 @@
+
+
+Ecosistema Móvil
+para Gestión
+Médica
+CENTRO MÉDICO
+
+CONTENIDO
+01
+05
+03
+07
+02
+06
+04
+08
+INTEGRANTES DEL EQUIPO
+ANÁLISIS DE OPCIONES
+LA SOLUCIÓN PROPUESTA
+COSTOS DIRECTOS,
+INDIRECTOS
+EL PROBLEMA 
+INVERSIÓN Y COSTOS
+OBJETIVOS ESTRATÉGICOS 
+CRONOGRAMA DE
+IMPLEMENTACIÓN
+09
+GESTIÓN DE RIESGOS Y
+MITIGACIÓN
+10
+CONCLUSIONES Y
+RECOMENDACIÓN
+
+INTEGRANTES
+DEL EQUIPO
+Angel 
+Ayuquina
+Sebastían
+Ortiz
+Daniel
+Luisa
+Alex
+Guachi
+JEFE DE PROYECTOEXPERTO EN BASE DE DATOS
+DESARROLLADOR BACKENDDESARROLLADOR FRONTEND
+
+Aplicativo Web
+usando PWA
+
+SITUACIÓN ACTUAL
+GESTIÓN
+MANUAL
+HERRAMIENTA
+PRINCIPAL 
+WHATSAPP
+
+EL PROBLEMA
+CUELLO DE
+BOTELLA
+CITAS FALSASAUSENTISMO EN
+LAS CITAS
+MEDICAS
+
+Tecnología PWA.
+SOLUCIÓNPROPUESTA
+Motor AsíncronoVerificación Módulo 10
+
+ALCANCE
+Registro y Autenticación: Proceso de entrada
+seguro y verificado para nuevos pacientes.
+Gestión Asíncrona de Citas: Sistema que
+permite reservar, visualizar y cancelar turnos
+sin intermediarios.
+Panel Administrativo: Centro de control total
+para la gestión de horarios y disponibilidad
+médica.
+Agenda Digital Dinámica: Visualización
+organizada y en tiempo real de la atención
+diaria del centro médico.
+01
+02
+03
+04
+
+Módulos Fuera de AlcanceJustificación
+Sistemas Externos ( Gubernamentales)
+No se contempla la vinculación con sistemas
+hospitalarios externos o redes
+gubernamentales.
+Historiales Clínicos (EHR)
+Priorizamos la agilidad del agendamiento sobre
+la gestión clínica compleja.
+Módulos Financieros
+El objetivo es optimizar el flujo de pacientes, no
+la administración contable.
+LIMITACIONES
+
+OBJETIVOS
+EFICIENCIATRAZABILIDADDIGITALIZACIÓNMIGRACIÓN
+ESTRATÉGICOS
+METAS SMART
+0% cruce de horarios;
+agendamiento en
+minutos.
+100% de usuarios
+verificados.
+Disponibilidad 24/7 de
+indicaciones médicas.
+Lograr que el 60% de
+pacientes usen la web
+en 1 mes.
+
+ANÁLISIS DE
+OPCIONES
+
+COSTOS DIRECTOS (VALORADOS)
+INVERSIÓN REAL INICIAL
+BENEFICIOS FINANCIEROSBENEFICIOS NO FINANCIEROS
+ $3,000.00 
+Infraestructura y herramientas.
+Optimización del tiempo del personal.
+Reducción de perdidas económicas (falsas
+reservaciones).
+Mejora inmediata del tiempo del personal.
+Acceso rápido, seguro y continuo a las
+indicaciones médicas.
+INVERSIÓN YCOSTOS
+MANTENIMIENTO ANUAL
+Incluye soporte, capacitación y servicios.
+Costos Valorados (Absorbidos por el equipo)
+ $200 
+ $1.000
+
+COSTOS DIRECTOS TOTALES
+Talento humano
+Infraestructura
+Servicios
+Imprevistos (10%)
+COSTOS DIRECTOS
+COSTOS INDIRECTOS
+$4,724.50
+PRIMER AÑO
+Capacitación
+Mantenimiento anual
+Servicios operativos
+$1,640
+
+CRONOGRAMA 
+DE
+IMPLEMENTACIÓN 
+(15 SEMANAS)
+(Sem 1-3): Aprobación, Requisitos y
+modelado.
+(Sem 4-9): Desarrollo iterativo de módulos.
+ (Sem 10-12): Pruebas piloto y ajustes.
+(Sem 13-15): Capacitación, Pruebas finales y
+Despliegue Final.
+01
+02
+03
+04
+FASES
+
+GESTIÓN DE RIESGOS
+PLAN DE MITIGACIÓN
+RESISTENCIA AL
+CAMBIO
+CAÍDAS DEL
+SERVIDOR
+CIBERATAQUESPERFILES FALSOS
+UX intuitiva y registro
+rapido
+FALLOS EN
+DIRECCIÓN DEL
+PROYECTO
+Hosting Cloud con SLA
+99.9%.
+Cifrado TLS + AES-256
+Verificación obligatoria
+por correo
+Metodología Scrum +
+seguimiento docente
+
+OBJETIVO DE
+USUARIOS
+Tratar de que el 60% de los pacientes migren del
+canal informal a la nueva plataforma web
+DE LOS
+PACIENTES
+60%
+
+CONCLUSIONES
+✔ Viabilidad Técnica: Arquitectura PWA
+validada y altamente accesible.
+✔ Impacto Operativo: Erradicación del
+fraude en reservas (Módulo 10).
+✔ Eficiencia Financiera: Despliegue integral
+con costo inicial mínimo ($200).
+
+RECOMENDACIONES
+Despliegue Piloto: Iniciar la transición con un
+grupo de prueba de 50 pacientes recurrentes.
+Gestión del Cambio: Ejecutar un taller de
+inducción operativo de 2 horas para el
+personal de recepción.
+Escalabilidad: Preparar la arquitectura para
+una futura Fase 2 con pasarela de pagos.
+
+Gracias

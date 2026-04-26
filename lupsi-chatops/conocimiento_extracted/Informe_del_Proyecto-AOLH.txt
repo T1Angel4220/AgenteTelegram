@@ -1,0 +1,318 @@
+
+
+UNIVERSIDAD TÉCNICA DE AMBATO
+FACULTAD DE INGENIERÍA EN SISTEMAS, ELECTRÓNICA E INDUSTRIAL 
+CARRERA DE SOFTWARE
+Cdla. Universitaria (Predios Huachi) / Casilla 334 / Telefax: 03-2851894 - 2411537, Correo Electrónico: carrera.sistemas@uta.edu.ec 
+AMBATO-ECUADOR
+I    PORTADA
+UNIVERSIDAD T
+ ́
+ECNICA DE AMBATO
+Facultad de Ingenier ́ıa en Sistemas, Electr ́onica e Industrial
+“Proyecto Acad ́emico de Fin de Semestre:  Enero 2026 – Julio 2026”
+T ́ıtulo:Caso de negocio
+Carrera:Ingenier ́ıa en Software
+Unidad de Organizaci ́on Curricular:Profesional
+L ́ınea de Investigaci ́on:Desarrollo de software
+Nivel y Paralelo:S ́eptimo ”A”
+Alumnos participantes:
+Ayuquina Chimborazo Angel Israel
+Guachi Aucapi ̃na Alex Fabricio
+Luisa Calapi ̃na Daniel Alexander
+Ortiz Bustos Sebastian Alejandro
+M ́odulo y Docente:Gesti ́on De Proyectos De Software Ing.  Torres Paulo
+II    Resumen Ejecutivo
+2.1    Objetivo
+Desarrollar una aplicaci ́on web responsiva que funcione como un puente digital seguro entre pa-
+cientes y profesionales de la salud en el centro m ́edico, basada en verificaci ́on de identidad, agen-
+damiento automatizado y un repositorio digital de indicaciones m ́edicas.
+2.2    Propuesta de Soluci ́on
+La propuesta consiste en el desarrollo y despliegue de una aplicaci ́on web responsiva, basada en una
+arquitectura cliente-servidor, que actuar ́a como el  ́unico canal oficial de comunicaci ́on y gesti ́on entre
+el centro m ́edico y sus pacientes.  Para erradicar la dependencia operativa de canales informales y
+la gesti ́on manual, el sistema se estructurar ́a en tres m ́odulos funcionales cr ́ıticos:
+•  M ́odulo de Autenticaci ́on y Verificaci ́on:  Un portal de acceso que valide la identidad
+del paciente (mediante confirmaci ́on de correo electr ́onico o validaci ́on de documento de iden-
+tidad), garantizando la trazabilidad de los usuarios y mitigando la saturaci ́on del sistema por
+perfiles falsos.
+•  M ́odulo  de  Agendamiento  Automatizado:  Un  motor  de  reservas  en  tiempo  real  sin-
+cronizado con la disponibilidad del personal m ́edico.  Este componente elimina la interme-
+diaci ́on de la recepci ́on, permitiendo al paciente autogestionar, confirmar o reprogramar sus
+citas bajo reglas de negocio estrictas (por ejemplo, bloqueos por cancelaciones tard ́ıas).
+•  Repositorio Seguro de Indicaciones M ́edicas:  Un entorno de almacenamiento digital
+con control de acceso basado en roles (RBAC). Los profesionales de la salud tendr ́an permisos
+de escritura para emitir indicaciones post-consulta, mientras que los pacientes dispondr ́an de
+acceso de solo lectura permanente a su historial, garantizando la integridad y confidencialidad
+de la informaci ́on.
+A nivel de infraestructura, el sistema ser ́a desplegado inicialmente en un entorno de servidor
+local dentro del centro m ́edico o mediante un servicio de alojamiento web est ́andar para su fase
+piloto.  Se aplicar ́an protocolos de cifrado fundamentales para proteger los datos en tr ́ansito, lo que
+permite validar el funcionamiento del sistema de forma ininterrumpida en un entorno controlado.
+Esto asegura el cumplimiento de las bases de seguridad para el manejo de informaci ́on sensible sin
+incurrir en complejidades operativas innecesarias para la etapa de evaluaci ́on.
+1
+
+UNIVERSIDAD TÉCNICA DE AMBATO
+FACULTAD DE INGENIERÍA EN SISTEMAS, ELECTRÓNICA E INDUSTRIAL 
+CARRERA DE SOFTWARE
+Cdla. Universitaria (Predios Huachi) / Casilla 334 / Telefax: 03-2851894 - 2411537, Correo Electrónico: carrera.sistemas@uta.edu.ec 
+AMBATO-ECUADOR
+2.3    Beneficios Esperados
+La implementaci ́on de la plataforma generar ́a un impacto positivo en tres ejes fundamentales del
+centro m ́edico:
+•  Eficiencia Operativa:  Eliminaci ́on absoluta de cruces de horarios y errores humanos en la
+asignaci ́on de turnos.  El personal de recepci ́on reducir ́a dr ́asticamente el tiempo invertido en
+la gesti ́on manual de mensajes de WhatsApp, lo que les permitir ́a enfocarse en la atenci ́on
+presencial y en tareas de mayor valor administrativo.
+•  Experiencia y Autonom ́ıa del Paciente:  Los usuarios podr ́an gestionar sus citas las 24
+horas del d ́ıa sin depender de los tiempos de respuesta manual del centro.  Adem ́as, el acceso
+inmediato al repositorio digital de indicaciones m ́edicas evitar ́a la p ́erdida de recetas f ́ısicas
+y mejorar ́a el seguimiento de sus tratamientos.
+•  Seguridad y Cumplimiento Normativo:  El sistema de verificaci ́on de identidad garan-
+tizar ́a la creaci ́on de perfiles  ́unicos y reales, evitando registros basura.  Asimismo, la arqui-
+tectura  del  sistema  asegurar ́a  el  cumplimiento  de  la  Ley  Org ́anica  de  Protecci ́on  de  Datos
+Personales del Ecuador mediante el manejo seguro, encriptado y auditable de la informaci ́on
+m ́edica sensible.
+2.4    Costo Estimado
+La inversi ́on directa valorada es de $4,724.50 (absorbida mayoritariamente por el trabajo acad ́emico
+del  equipo  desarrollador),  reduciendo  el  desembolso  real  del  centro  m ́edico  a $200  iniciales  para
+infraestructura, m ́as $1,640 de costos indirectos para el primer a ̃no.
+2.5    Riesgos Clave
+Para garantizar la viabilidad del proyecto, se han identificado cinco riesgos cr ́ıticos que requieren
+estrategias de mitigaci ́on activas:
+•  Resistencia al cambio y adopci ́on temprana:  La fricci ́on que experimentar ́an los pa-
+cientes al transicionar de un canal pasivo y de ”cero esfuerzo” como WhatsApp, hacia una
+plataforma web que exige un registro aut ́onomo.
+•  Disponibilidad e interrupciones del servicio: Posibles ca ́ıdas del entorno de alojamiento
+(hosting) o cortes de conectividad que inhabilitar ́ıan tanto el agendamiento de nuevas citas
+como el acceso a los historiales m ́edicos.
+•  Vulneraci ́on de la seguridad inform ́atica:  Exposici ́on a ciberataques orientados a inter-
+ceptar o extraer informaci ́on de salud confidencial, comprometiendo la confianza en el centro
+m ́edico.
+•  Falsificaci ́on en la verificaci ́on de identidad:  Vulnerabilidades en el proceso de registro
+que permitan la creaci ́on de perfiles falsos, derivando en ”agendamientos basura” que bloqueen
+horarios leg ́ıtimos.
+•  Deficiencias en la direcci ́on del proyecto:  El riesgo de retrasos, desorganizaci ́on o fallos
+en la ejecuci ́on debido a la inexperiencia en la gesti ́on, lo que exige un control estricto mediante
+metodolog ́ıas  ́agiles y supervisi ́on acad ́emica.
+2
+
+UNIVERSIDAD TÉCNICA DE AMBATO
+FACULTAD DE INGENIERÍA EN SISTEMAS, ELECTRÓNICA E INDUSTRIAL 
+CARRERA DE SOFTWARE
+Cdla. Universitaria (Predios Huachi) / Casilla 334 / Telefax: 03-2851894 - 2411537, Correo Electrónico: carrera.sistemas@uta.edu.ec 
+AMBATO-ECUADOR
+III    Descripci ́on del Problema/Necesidad
+3.1    Situaci ́on Actual
+El centro m ́edico gestiona actualmente el agendamiento de sus citas a trav ́es de mensajes de What-
+sApp  y  atenci ́on  presencial.   Este  modelo  de  comunicaci ́on  informal  dificulta  la  verificaci ́on  real
+de la identidad del paciente,  genera desorden en la asignaci ́on de turnos y no se integra con un
+repositorio de indicaciones m ́edicas.
+3.2    Necesidades del Negocio
+Se requiere una plataforma que centralice la comunicaci ́on y el agendamiento de forma segura.  El
+uso de canales como WhatsApp impide mantener un registro auditable e integrado de las citas y
+diagn ́osticos, lo que provoca p ́erdida de informaci ́on y sobrecarga de trabajo manual en la recepci ́on.
+3.3    Consecuencias de No Actuar
+Mantener el agendamiento informal limitar ́a la capacidad operativa del centro m ́edico.  La falta de
+un repositorio seguro y la dependencia continua de canales no oficiales incrementar ́a el riesgo de vul-
+nerar la privacidad del paciente, propiciar ́a errores en las citas y generar ́a una carga administrativa
+insostenible a medida que crezca la demanda.
+IV    Objetivos del Proyecto
+4.1    Metas y Objetivos Espec ́ıficos
+Para medir el  ́exito del proyecto de forma objetiva, se han definido metas cuantificables orientadas
+a resolver las deficiencias operativas actuales:
+•  Automatizaci ́on  y  Eficiencia  de  Agendamiento:  Implementar  un  motor  de  reservas
+que reduzca a cero la tasa de cruces de horarios por error humano y disminuya el tiempo de
+confirmaci ́on de una cita a menos de tres minutos mediante la autogesti ́on del usuario.
+•  Trazabilidad y Verificaci ́on de Usuarios:  Establecer un sistema de validaci ́on de iden-
+tidad en el registro que garantice que el 100% de las nuevas cuentas pertenezcan a pacientes
+reales.  Esto busca reducir al m ́ınimo el  ́ındice de inasistencia provocado por ”citas fantasma”
+o agendamientos informales no confirmados.
+•  Digitalizaci ́on y Disponibilidad Cl ́ınica:  Desplegar un repositorio seguro que permita
+digitalizar el 100% de las nuevas indicaciones m ́edicas emitidas post-consulta, garantizando
+un uptime (disponibilidad) del sistema para que los pacientes accedan a sus recetas las 24
+horas del d ́ıa.
+•  Migraci ́on y Adopci ́on Tecnol ́ogica:  Lograr que al menos un 60% de los pacientes recur-
+rentes migren del canal informal (WhatsApp) a la nueva plataforma web durante los primeros
+tres meses posteriores al despliegue.
+4.2    Alineaci ́on Estrat ́egica
+La implementaci ́on de este sistema trasciende la simple digitalizaci ́on; act ́ua como un habilitador
+estrat ́egico que se alinea directamente con los pilares comerciales y operativos del centro m ́edico:
+•  Escalabilidad del Negocio:  Elimina el ”techo operativo” que impone la gesti ́on manual
+por chat.  Al automatizar la recepci ́on de citas, la cl ́ınica adquiere la capacidad tecnol ́ogica
+para atender a un mayor volumen de pacientes sin necesidad de aumentar proporcionalmente
+su plantilla administrativa.
+3
+
+UNIVERSIDAD TÉCNICA DE AMBATO
+FACULTAD DE INGENIERÍA EN SISTEMAS, ELECTRÓNICA E INDUSTRIAL 
+CARRERA DE SOFTWARE
+Cdla. Universitaria (Predios Huachi) / Casilla 334 / Telefax: 03-2851894 - 2411537, Correo Electrónico: carrera.sistemas@uta.edu.ec 
+AMBATO-ECUADOR
+•  Optimizaci ́on de Recursos Humanos:  Libera al personal de recepci ́on de tareas operati-
+vas de bajo valor (como triangular mensajes para buscar huecos en la agenda), permiti ́endoles
+reasignar esas horas a la atenci ́on presencial de calidad y a la facturaci ́on.
+•  Cumplimiento Normativo y Mitigaci ́on Legal:  Cierra una brecha cr ́ıtica de vulnerabil-
+idad.  Al centralizar la informaci ́on bajo controles de acceso basados en roles (RBAC) y bases
+de datos cifradas, el centro m ́edico se alinea estrictamente con las exigencias de confidencial-
+idad de la Ley Org ́anica de Protecci ́on de Datos Personales del Ecuador.
+•  Fidelizaci ́on  y  Experiencia  del  Paciente:  Profesionaliza  el  primer  punto  de  contacto.
+Entregar al usuario autonom ́ıa total sobre sus reservas y acceso inmediato a su historial de
+indicaciones  mejora  radicalmente  la  percepci ́on  de  modernidad,  seguridad  y  calidad  de  la
+instituci ́on.
+V    An ́alisis de Opciones
+5.1    Opci ́on 1:  Continuar como Estamos (No Hacer Nada)
+Continuar con el agendamiento por WhatsApp y presencial es ineficiente y poco profesional.  Los
+mensajes se pierden, no existen confirmaciones automatizadas reales y la gesti ́on manual del chat
+consume  horas  cr ́ıticas  del  personal  administrativo  sin  aportar  valor  al  seguimiento  cl ́ınico  del
+paciente.
+5.2    Opci ́on 2:  Mejoras Incrementales
+Migrar a herramientas gen ́ericas de calendario web puede mejorar el orden visual, pero sigue care-
+ciendo de un mecanismo de verificaci ́on de identidad de pacientes y no soluciona la necesidad de
+contar con un repositorio seguro y enlazado para las indicaciones m ́edicas.
+5.3    Opci ́on 3:  Soluci ́on Propuesta (Implementaci ́on Completa)
+Desarrollar la aplicaci ́on web responsiva es la soluci ́on definitiva.  Centraliza la validaci ́on de usuar-
+ios, automatiza el agendamiento eliminando intermediarios innecesarios y crea un espacio seguro y
+auditable para el manejo de la informaci ́on m ́edica.
+VI    Beneficios del Proyecto
+6.1    Beneficios Financieros
+Optimizaci ́on  radical  del  tiempo  del  personal  de  recepci ́on,  permitiendo  reasignar  sus  funciones
+a  tareas  de  mayor  valor  en  lugar  de  responder  mensajes  repetitivos.    Reducci ́on  de  p ́erdidas
+econ ́omicas derivadas de inasistencias no confirmadas oportunamente.
+6.2    Beneficios No Financieros
+Mejora inmediata en la percepci ́on de calidad y profesionalismo por parte de los pacientes.  Acceso
+r ́apido,  seguro  y  continuo  a  las  indicaciones  m ́edicas  desde  cualquier  dispositivo,  y  trazabilidad
+total de las interacciones entre el centro y los usuarios.
+VII    Estimaci ́on de Costos y Cronograma
+Costos Directos
+Los costos directos del proyecto est ́an asociados a los recursos necesarios para el desarrollo e imple-
+mentaci ́on del sistema.  Se considera principalmente el talento humano involucrado.  Se emplear ́an
+4
+
+UNIVERSIDAD TÉCNICA DE AMBATO
+FACULTAD DE INGENIERÍA EN SISTEMAS, ELECTRÓNICA E INDUSTRIAL 
+CARRERA DE SOFTWARE
+Cdla. Universitaria (Predios Huachi) / Casilla 334 / Telefax: 03-2851894 - 2411537, Correo Electrónico: carrera.sistemas@uta.edu.ec 
+AMBATO-ECUADOR
+tecnolog ́ıas de c ́odigo abierto, por lo que no se contemplan costos de licencias.  Adem ́as, al dispon-
+erse de infraestructura con planes con un costo bajo para la implementaci ́on, los costos de servidores
+se reducen, contempl ́andose  ́unicamente mejoras o servicios complementarios.
+•  Talento humano (duraci ́on del desarrollo:  15 semanas  3.5 meses):
+–  Desarrollador Full Stack (1): $600/mes× 3.5 = $2,100
+–  Desarrollador de apoyo (1): $500/mes× 3.5 = $1,750
+Total talento humano:$3,850
+•  Contrataci ́on y configuraci ́on del servidor / seguridad inicial: $100
+•  Herramientas  y  servicios  complementarios  (dominio,  respaldos,  servicios  pun-
+tuales): $100
+•  Servicios b ́asicos utilizados durante el desarrollo (15 semanas):
+–  Energ ́ıa el ́ectrica: $40/mes× 3.5 = $140
+–  Internet: $30/mes× 3.5 = $105
+Total servicios:$245
+•  Subtotal costos directos:
+$3,850 + $100 + $100 + $245 =$4,295
+•  Imprevistos (10%): $429.50
+•  Total costos directos:$4,724.5
+Costos Indirectos
+Los costos indirectos corresponden a aquellos necesarios para la adopci ́on, operaci ́on y sostenibilidad
+del sistema una vez implementado.  Incluyen capacitaci ́on, mantenimiento y soporte t ́ecnico.
+•  Capacitaci ́on del personal usuario del sistema: $200
+•  Mantenimiento y soporte t ́ecnico anual: $600
+•  Servicios operativos (electricidad e internet) — primer a ̃no:
+$70 mensuales× 12 = $840
+•  Total costos indirectos (primer a ̃no):
+$200 + $600 + $840 =$1,640
+7.1    Cronograma Tentativo
+Se plante ́o un tiempo estimado de 15 semanas para la planificaci ́on, desarrollo y despliegue, el cual
+se distribuy ́o de la siguiente manera:
+•  Semana 1 — Aprobaci ́on del proyecto, definici ́on del alcance, asignaci ́on de recursos.
+•  Semanas 2–3 — Levantamiento de requisitos y modelado del flujo de agendamiento mediante
+reuniones con recepci ́on, m ́edicos y administraci ́on.
+•  Semanas  4–9  —  Desarrollo  del  sistema  (m ́odulo  de  agendamiento,  repositorio  y  puente
+digital) mediante iteraciones quincenales.
+5
+
+UNIVERSIDAD TÉCNICA DE AMBATO
+FACULTAD DE INGENIERÍA EN SISTEMAS, ELECTRÓNICA E INDUSTRIAL 
+CARRERA DE SOFTWARE
+Cdla. Universitaria (Predios Huachi) / Casilla 334 / Telefax: 03-2851894 - 2411537, Correo Electrónico: carrera.sistemas@uta.edu.ec 
+AMBATO-ECUADOR
+•  Semanas 10–11 — Pruebas piloto de usabilidad con usuarios reales, recopilaci ́on de retroal-
+imentaci ́on y correcci ́on de errores cr ́ıticos.
+•  Semana 12 — Ajustes funcionales y optimizaci ́on del sistema.
+•  Semana 13 — Capacitaci ́on del personal (recepci ́on y m ́edicos) y entrega de manuales.
+•  Semana 14 — Pruebas finales de integraci ́on y preparaci ́on para despliegue.
+•  Semana 15 — Despliegue final, monitorizaci ́on inicial y cierre del proyecto.
+VIII    An ́alisis de Riesgos
+8.1    Identificaci ́on de Riesgos Clave
+Se han identificado cinco riesgos principales que amenazan la viabilidad y ejecuci ́on del proyecto:
+•  Resistencia al cambio tecnol ́ogico: Dificultad de los pacientes para transicionar del agen-
+damiento por WhatsApp hacia el uso aut ́onomo de la nueva plataforma web.
+•  Interrupciones del servicio web:  Ca ́ıdas del servidor, del proveedor de nube o de la red
+local del centro m ́edico.
+•  Vulneraciones de seguridad:  Exposici ́on de la base de datos a ciberataques orientados a
+interceptar o extraer historiales m ́edicos confidenciales.
+•  Fallos de autenticaci ́on:  Creaci ́on de perfiles de usuario falsos mediante vulnerabilidades
+en el registro, lo que genera ”agendamientos basura”.
+•  Deficiencias en la direcci ́on del proyecto: Fallos operativos, retrasos o alcance deficiente
+derivados  de  la  inexperiencia  del  equipo  estudiantil  en  la  gesti ́on  de  proyectos  de  software
+reales.
+8.2    Impacto y Probabilidad
+•  Resistencia  al  cambio:  Probabilidad Alta  (el  uso  de  WhatsApp  es  un  h ́abito  muy  ar-
+raigado); Impacto Medio (ralentiza el retorno de inversi ́on inicial pero no paraliza la cl ́ınica).
+•  Interrupciones  del  servicio:   Probabilidad  Media  (dependencia  de  terceros);  Impacto
+Alto (inhabilita la atenci ́on y la consulta de historiales en tiempo real).
+•  Vulneraciones de seguridad: Probabilidad Baja (mitigado por el uso de frameworks mod-
+ernos); Impacto Cr ́ıtico (p ́erdida de reputaci ́on y problemas legales severos por exposici ́on
+de datos sensibles).
+•  Fallos de autenticaci ́on:  Probabilidad Media (ataques comunes mediante bots); Impacto
+Alto (bloqueo de horarios reales que causa p ́erdida econ ́omica directa por inasistencia).
+•  Deficiencias  en  la  direcci ́on:  Probabilidad Media  (naturaleza  acad ́emica  del  equipo);
+Impacto Alto (riesgo de no culminar el proyecto satisfactoriamente para la universidad).
+8.3    Plan de Mitigaci ́on
+•  Para la resistencia al cambio:  Desarrollar una UX que permita el registro en menos de 2
+minutos.  Proveer registro asistido desde recepci ́on y realizar mini-talleres en la sala de espera
+durante las Semanas 10 y 11. Responsable:  Jefe de Recepci ́on / Coordinador.
+6
+
+UNIVERSIDAD TÉCNICA DE AMBATO
+FACULTAD DE INGENIERÍA EN SISTEMAS, ELECTRÓNICA E INDUSTRIAL 
+CARRERA DE SOFTWARE
+Cdla. Universitaria (Predios Huachi) / Casilla 334 / Telefax: 03-2851894 - 2411537, Correo Electrónico: carrera.sistemas@uta.edu.ec 
+AMBATO-ECUADOR
+•  Para  interrupciones  del  servicio:   Contratar  hosting  cloud  con  SLA≥  99.9%  y  alta
+disponibilidad  (Multi-AZ).  Configurar  backups  diarios  garantizando  un  RTO≤  2  h  y  un
+RPO≤ 1 h. Responsable:  Administrador de Sistemas.
+•  Para vulneraciones de seguridad:  Implementar cifrado TLS 1.2/1.3 en tr ́ansito y AES-
+256 en reposo, Control de Acceso Basado en Roles (RBAC), y firmar un DPA con el proveedor
+cloud antes del despliegue en la Semana 14. Responsable:  Arquitecto de Seguridad.
+•  Para  fallos  de  autenticaci ́on:  Integrar  verificaci ́on  obligatoria  por  correo  electr ́onico  y
+monitoreo de IPs para detectar patrones de registro an ́omalos durante las fases de desarrollo
+(Semanas 4-9). Responsable:  Equipo de Desarrollo.
+•  Para la direcci ́on del proyecto:  Aplicar rigurosamente el marco de trabajo  ́agil Scrum
+con hitos quincenales, uso de software de seguimiento (Jira/Trello) y auditor ́ıa continua por
+parte del docente tutor. Responsable:  Gestor del Proyecto (Angel Ayuquina).
+IX    Conclusi ́on y Recomendaciones
+9.1    Conclusi ́on General
+El desarrollo e implementaci ́on del Sistema Web de Directorio y Gesti ́on M ́edica es t ́ecnica y opera-
+tivamente viable.  La dependencia actual de canales informales como WhatsApp genera ineficiencias
+cr ́ıticas y vulnerabilidades en la privacidad.  Aunque el proyecto tiene una valoraci ́on de mercado
+estimada en $4,724.50 en costos directos,  al ser ejecutado bajo un esquema acad ́emico por estu-
+diantes de ingenier ́ıa, esta inversi ́on en talento humano es absorbida por el equipo desarrollador.
+Esto reduce el desembolso real del centro m ́edico  ́unicamente a la infraestructura b ́asica ($200 ini-
+ciales), eliminando el riesgo financiero institucional y garantizando una plataforma moderna, segura
+y escalable.
+9.2    Recomendaci ́on
+Se recomienda proceder formalmente con la ejecuci ́on y despliegue del proyecto en todas sus fases.
+El an ́alisis t ́ecnico demuestra que los beneficios de la automatizaci ́on y seguridad de la informaci ́on
+superan ampliamente el riesgo principal asociado a la resistencia al cambio por parte de los pa-
+cientes.  Se aconseja al centro m ́edico aprovechar esta sinergia acad ́emica para iniciar su transfor-
+maci ́on digital, prestando especial atenci ́on a la ejecuci ́on de las campa ̃nas de adopci ́on en la sala
+de  espera y  manteniendo  una  estricta  supervisi ́on  t ́ecnica  para  garantizar  el  cumplimiento  de la
+Ley Org ́anica de Protecci ́on de Datos Personales del Ecuador antes de la puesta en producci ́on.
+X    Aprobaciones y Firmas
+10.1    Aprobaciones de los Patrocinadores
+Firmas de los patrocinadores del proyecto.
+10.2    Involucrados Clave
+Identificaci ́on de los responsables y partes interesadas principales.
+7

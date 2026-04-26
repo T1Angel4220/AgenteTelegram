@@ -6,6 +6,7 @@ import { AutonomyService } from './autonomy.service';
 import { BotService } from './bot.service';
 import { TrelloService } from './trello.service';
 import { DocsService } from './docs.service';
+import { ConsistencyService } from './consistency.service';
 import { Telegraf, Markup, Input } from 'telegraf';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -20,6 +21,7 @@ export class CronService {
     private readonly botService: BotService,
     private readonly trelloService: TrelloService,
     private readonly docsService: DocsService,
+    private readonly consistencyService: ConsistencyService,
   ) {}
 
   // ══════════════════════════════════════════════════════
@@ -143,6 +145,61 @@ Máximo 4 puntos concisos. Sin introducciones.`;
   }
 
   // ══════════════════════════════════════════════════════
+  // CICLO 2.5 — AUDITORÍA DE CONSISTENCIA (11:30 AM — Lunes a Viernes)
+  // Reconcilia standup vs. Trello y alerta de discrepancias.
+  // ══════════════════════════════════════════════════════
+  @Cron('30 11 * * 1-5')
+  async auditoriaConsistencia() {
+    console.log('⚖️ Iniciando auditoría de consistencia (Standup vs Trello)...');
+    const chatId = process.env.TELEGRAM_CHAT_ID as string;
+    const bot = this.botService.getBotInstance();
+
+    try {
+      const alertas = await this.consistencyService.checkConsistency();
+      if (alertas.length === 0) return;
+
+      let mensaje = `⚖️ *Auditoría de Consistencia LUPSI (11:30)*\n\n`;
+      
+      const porTipo = {
+        TRELLO_DESACTUALIZADO: '📝 *Trello Desactualizado:*',
+        TAREA_SIN_ASIGNAR: '➕ *Tarea sin Asignar:*',
+        BLOQUEO_DETECTADO_EN_STANDUP: '⚠️ *Bloqueos Reportados:*',
+        NO_RESPONDIO_STANDUP: '👤 *Ausencias en Standup:*'
+      };
+
+      for (const [tipo, titulo] of Object.entries(porTipo)) {
+        const filtradas = alertas.filter(a => a.tipo === tipo);
+        if (filtradas.length > 0) {
+          mensaje += `${titulo}\n` + filtradas.map(a => `• *${a.miembro}:* ${a.detalle}`).join('\n') + '\n\n';
+        }
+      }
+
+      mensaje += `_He notificado a los implicados para que actualicen sus tableros._`;
+
+      await bot.telegram.sendMessage(chatId, this.escapeMarkdown(mensaje), { parse_mode: 'Markdown' });
+
+      // Notificar individualmente y proponer acciones
+      for (const alerta of alertas) {
+        if (alerta.tipo === 'TRELLO_DESACTUALIZADO' && alerta.action) {
+          // Si hay una acción de auto-corrección, proponerla al PM
+          await this.botService.proponerAccionConsistencia({
+            ...alerta.action,
+            member: alerta.miembro
+          });
+        } else if (alerta.tipo === 'TAREA_SIN_ASIGNAR') {
+          await this.botService.notifyMember(
+            alerta.miembro,
+            `⚖️ *LUPSI - Consistencia:* ${alerta.detalle}\n\nPor favor, mantén el tablero al día para que el equipo sepa en qué vas. 🚀`
+          ).catch(() => {});
+        }
+      }
+
+    } catch (e) {
+      console.error('Error en auditoría de consistencia:', e.message);
+    }
+  }
+
+  // ══════════════════════════════════════════════════════
   // CICLO 3 — WATCHDOG DE BLOQUEOS (12:00 PM — Todos los días)
   // LUPSI revisa si hay tareas "estancadas" y avisa al PM y al dev.
   // ══════════════════════════════════════════════════════
@@ -189,6 +246,43 @@ Máximo 4 puntos concisos. Sin introducciones.`;
       }
     } catch (e) {
       console.error('Error en watchdog:', e.message);
+    }
+  }
+
+  // ══════════════════════════════════════════════════════
+  // CICLO NUEVO — INTELIGENCIA PROACTIVA (14:00 — Lunes a Viernes)
+  // Alerta solo si detecta algo NUEVO o crítico que no se reportó antes.
+  // ══════════════════════════════════════════════════════
+  @Cron('0 14 * * 1-5')
+  async inteligenciaProactiva() {
+    console.log('🧠 Ejecutando inteligencia proactiva...');
+    const chatId = process.env.TELEGRAM_CHAT_ID as string;
+    const bot = this.botService.getBotInstance();
+
+    try {
+      // Analizar si hay cambios drásticos en GitHub o Trello que requieran atención inmediata
+      const metrics = await this.trelloService.getMetrics();
+      const proximasAVencer = await this.trelloService.getCardsDueSoon(24); // Solo las que vencen MAÑANA
+      
+      if (proximasAVencer.length > 0) {
+        const lista = proximasAVencer.map(c => `• *${c.nombre}* (${c.asignados})`).join('\n');
+        await bot.telegram.sendMessage(
+          chatId,
+          this.escapeMarkdown(`🧠 *LUPSI Proactivo:* Estas tareas vencen MAÑANA y aún no están en Done:\n\n${lista}\n\n¿Quieres que presione a los responsables?`),
+          { parse_mode: 'Markdown' }
+        );
+      }
+
+      // Ver si hay un aumento repentino de tareas en el Backlog
+      if (metrics.listas['Backlog'] > 10) {
+        await bot.telegram.sendMessage(
+          chatId,
+          `🧠 *LUPSI Proactivo:* Veo que el Backlog está creciendo mucho (${metrics.listas['Backlog']} tareas). Quizás deberíamos hacer una sesión de refinamiento.`
+        );
+      }
+
+    } catch (e) {
+      console.error('Error en inteligencia proactiva:', e.message);
     }
   }
 

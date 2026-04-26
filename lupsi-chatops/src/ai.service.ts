@@ -22,16 +22,10 @@ export class AiService {
         @Inject(forwardRef(() => DocsService))
         private docs: DocsService
     ) {
-        // Cargar llaves y modelos desde el entorno
         const envKeys = process.env.AI_KEYS || process.env.OPENROUTER_API_KEY;
         this.keys = envKeys ? envKeys.split(',').map(k => k.trim()) : [];
-        
         const envModels = process.env.AI_MODELS;
         this.models = envModels ? envModels.split(',').map(m => m.trim()) : ['openrouter/free'];
-
-        console.log(`🔌 IA Service inicializado con ${this.keys.length} llaves y ${this.models.length} modelos.`);
-
-        // Cargar sesiones persistidas al iniciar
         this.loadSessions();
     }
 
@@ -42,346 +36,217 @@ export class AiService {
                 for (const [chatId, msgs] of Object.entries(raw)) {
                     this.sessionMemory.set(chatId, msgs as any[]);
                 }
-                console.log(`💾 Sesiones cargadas: ${this.sessionMemory.size} conversación(es) restauradas.`);
             }
-        } catch (e) {
-            console.warn('No se pudieron cargar sesiones previas:', e.message);
-        }
+        } catch (e) { }
     }
 
     private saveSessions() {
         try {
             const obj: any = {};
-            this.sessionMemory.forEach((v, k) => { obj[k] = v.slice(-10); }); // Últimos 10 mensajes por sesión
+            this.sessionMemory.forEach((v, k) => { obj[k] = v.slice(-10); });
             fs.writeFileSync(SESIONES_PATH, JSON.stringify(obj));
-        } catch (e) {
-            console.warn('No se pudo guardar sesión:', e.message);
-        }
+        } catch (e) { }
     }
 
-    /**
-     * Realiza una petición a OpenRouter con soporte para failover (reintento con otras keys/modelos)
-     */
     private async postWithFailover(payload: { messages: any[], max_tokens: number }): Promise<any> {
         let lastError = null;
         let attempts = 0;
-        const MAX_TOTAL_ATTEMPTS = 3; // Límite total de intentos para no exceder timeouts globales
-        
-        // Intentar con cada modelo disponible
-        for (let m = 0; m < this.models.length && attempts < MAX_TOTAL_ATTEMPTS; m++) {
-            const modelIndex = (this.currentModelIndex + m) % this.models.length;
-            const model = this.models[modelIndex];
-
-            // Para cada modelo, intentar con cada llave disponible
-            for (let k = 0; k < this.keys.length && attempts < MAX_TOTAL_ATTEMPTS; k++) {
-                const keyIndex = (this.currentKeyIndex + k) % this.keys.length;
-                const key = this.keys[keyIndex];
+        for (let m = 0; m < this.models.length && attempts < 3; m++) {
+            const model = this.models[(this.currentModelIndex + m) % this.models.length];
+            for (let k = 0; k < this.keys.length && attempts < 3; k++) {
+                const key = this.keys[(this.currentKeyIndex + k) % this.keys.length];
                 attempts++;
-
                 try {
-                    console.log(`🤖 [Intento ${attempts}] Modelo: ${model} | Key Index: ${keyIndex}`);
-                    
                     const response = await axios.post('https://openrouter.ai/api/v1/chat/completions', {
-                        model: model,
-                        messages: payload.messages,
-                        max_tokens: payload.max_tokens
-                    }, {
-                        headers: {
-                            'Authorization': `Bearer ${key}`,
-                            'Content-Type': 'application/json'
-                        },
-                        timeout: 20000 // Reducido a 20s para ser más ágil
-                    });
-
-                    // Si tuvo éxito, actualizamos los índices actuales para la próxima vez
-                    this.currentKeyIndex = keyIndex;
-                    this.currentModelIndex = modelIndex;
+                        model: model, messages: payload.messages, max_tokens: payload.max_tokens
+                    }, { headers: { 'Authorization': `Bearer ${key}` }, timeout: 45000 });
                     return response.data;
-                } catch (error) {
-                    const status = error?.response?.status;
-                    const errorData = error?.response?.data;
-                    console.warn(`⚠️ Fallo intento ${attempts}: Status ${status}`, errorData || error.message);
-                    
-                    lastError = error;
-
-                    // Si el error es 400 o 404 (Bad Request / Not Found - usualmente modelo inválido), saltamos el modelo
-                    if (status === 400 || status === 404) {
-                        break; // Probar con el siguiente modelo
-                    }
-
-                    // Si es 401, 429 o 402, probamos con la siguiente key
-                    if (status === 429 || status === 402 || status === 401) {
-                        continue; 
-                    } else {
-                        break; // Otros errores: probamos con el siguiente modelo
-                    }
-                }
+                } catch (error) { lastError = error; }
             }
         }
-        
-        throw lastError || new Error('No se pudo completar la petición tras varios intentos.');
+        throw lastError || new Error('IA Offline');
     }
 
+    private getSuperPrompt(conocimiento: any, hoy: string, equipoContext: string, topology: string, githubContext: string, trelloContext: string, ragContext: string, masterKnowledge: string): string {
+        return `ERES EL AGENTE AUTÓNOMO LUPSI. Identidad: Project Manager Activo del proyecto de agendamiento médico LUPSI de SKT Software Solution.
+      
+      ╔══════════════════════════════════════════════════╗
+      ║   REGLAS ANTI-ALUCINACIÓN — MÁXIMA PRIORIDAD   ║
+      ╚══════════════════════════════════════════════════╝
+      ANTES DE RESPONDER, VERIFICA ESTOS HECHOS FIJOS (SON INAMOVIBLES):
+
+      ► EQUIPO: Solo existen 4 personas. Sus nombres exactos son:
+         1. Angel Ayuquina — Gestor del Proyecto (PM)
+         2. Sebastián Ortiz — Desarrollador Backend
+         3. Daniel Luisa — Desarrollador Fullstack
+         4. Alex Guachi (también conocido como Huachi) — Desarrollador Frontend
+         ¡PROHIBIDO inventar otros nombres de desarrolladores!
+
+      ► STACK TECNOLÓGICO REAL (no inventes otros):
+         Backend: NestJS | Frontend: Angular PWA | BD: Supabase (PostgreSQL+RLS)
+         Auth: JWT + Módulo 10 | Storage: Cloudinary | Producción: Render
+         Seguridad: RBAC + TLS 1.3 + AES-256 | Scrum: Trello + GitHub
+
+      ► PRESUPUESTO Y FINANCIAMIENTO (datos verificados):
+         - Valoración de mercado del sistema: $4,724.50 USD
+         - Desembolso real inicial: $200 USD
+         - Costo acumulado al cierre de Sprint 4: $4,690.40 USD
+         - Costo total final al cierre de Sprint 5: $5,850.00 USD
+
+      ► CRONOGRAMA REAL:
+         Sprint 1 & 2: COMPLETADOS
+         Sprint 3: 08/04/2026 → 30/04/2026 (EN CURSO)
+         Sprint 4: 04/05/2026 → 27/05/2026 (PENDIENTE)
+         Sprint 5: 28/05/2026 → 10/06/2026 (PENDIENTE)
+
+      ► REGLA ANTI-ALUCINACIÓN ABSOLUTA:
+         Si un dato NO está en los documentos, di: "No tengo ese dato en mi base de conocimiento".
+         PROHIBIDO inventar nombres, fechas, costos o tecnologías.
+
+      === REGLA DE ORO DE ACCIÓN ===
+      1. SIEMPRE incluye la etiqueta <accion> para cualquier cambio o notificación.
+      2. NUNCA digas "Hecho" si no incluyes el JSON en la misma respuesta.
+      3. Usa EXCLUSIVAMENTE los IDs de la TOPOLOGÍA proporcionada abajo.
+      4. Si el usuario pide notificar a varios, incluye múltiples etiquetas <accion>.
+
+      === MANUAL DE HERRAMIENTAS ===
+      - MOVE_CARD: {"cardId": "string", "listId": "string"}
+      - CREATE_CARD: {"listId": "string", "name": "string", "desc": "string", "idMembers": "id1,id2"}
+      - ADD_COMMENT: {"cardId": "string", "text": "string"}
+      - NOTIFY_MEMBER: {"trelloNames": "Nombre1, Nombre2", "text": "string"}
+      - MARK_CARD_COMPLETE: {"cardId": "string"}
+      - GET_CARD_DETAILS: {"searchTerm": "nombre"}
+      - AUTO_FIX_CODE: {"filePath": "ruta", "newContent": "código", "reason": "explicación"}
+
+      === CONTEXTO DEL PROYECTO (FUENTE DE VERDAD) ===
+      Sprint Actual: ${conocimiento.sprint_actual} | Hoy: ${hoy}
+      Objetivo: ${conocimiento.objetivo_principal}
+      KPIs Oficiales: ${JSON.stringify(conocimiento.kpis_oficiales || [])}
+      
+      === REGLA DE ESTADOS DE TAREAS (ESTRICTA) ===
+      NUNCA confundas tareas "Pendientes" con "En proceso".
+      - "Pendiente" (To Do): Tarea NO ha iniciado.
+      - "En proceso" (Doing): Tarea se está trabajando activamente.
+      ¡Diferencia claramente las listas de Trello!
+
+      === REGLAS APRENDIDAS (ÓRDENES DEL PM) ===
+      ${(conocimiento.reglas_aprendidas || []).map((r:any) => `- RECHAZASTE: ${r.accion_rechazada} MOTIVO: ${r.motivo}`).join('\n') || 'Ninguna regla aprendida aún.'}
+
+      === REGLA DE ORO DE FUENTES (PROHIBIDO ALUCINAR) ===
+      1. TAREAS URGENTES Y ESTADO ACTUAL: Usa exclusivamente el [CONTEXTO EN TIEMPO REAL] (Trello). Si una tarea tiene 🚨 o dice [URGENTE], priorízala.
+      2. DATOS HISTÓRICOS, KPIs Y REGLAS: Usa la [FUENTE DE VERDAD MAESTRA] (PDFs/Base de Conocimiento). Aquí están los números oficiales para el Sprint 1 y 2.
+      3. GITHUB: Úsalo para ver el esfuerzo real de commits.
+
+      Si un dato no está en ninguna de estas fuentes, responde "No tengo esa información en mis registros". NUNCA INVENTES.
+      
+      === FUENTES DE INFORMACIÓN ===
+
+      [FUENTE DE VERDAD MAESTRA - BASE DE CONOCIMIENTO]
+      Prioriza SIEMPRE esta información sobre cualquier otra fuente:
+      ${masterKnowledge}
+      
+      [CONTEXTO EN TIEMPO REAL - ESTADO ACTUAL DEL PROYECTO]
+      Este es el estado del tablero Trello y GitHub AHORA MISMO. Úsalo para preguntas sobre "cómo vamos" o tareas actuales.
+      ESTADO TRELLO ACTUAL: ${trelloContext.slice(0, 5000)}
+      ESTADO GITHUB ACTUAL: ${githubContext.slice(0, 3000)}
+      TOPOLOGÍA TÉCNICA (IDs): ${topology}
+      
+      [BASE DE CONOCIMIENTO - HISTÓRICO Y PLANIFICACIÓN (RAG)]
+      Usa esta sección como fuente de verdad para PRECIOS, FECHAS DE SPRINT, KPI HISTÓRICOS, REQUISITOS Y SPRINT 1/2.
+      Si la pregunta es sobre el SPRINT 1 o SPRINT 2, IGNORE el Trello actual y use estos documentos:
+      DOCUMENTACIÓN EXTRAÍDA: ${ragContext}
+
+      === FORMATO DE RESPUESTA ===
+      1. Respuesta al usuario en <respuesta></respuesta>.
+      2. Acciones técnicas en <accion></accion>.
+      
+      REGLA FINAL Y ABSOLUTA: 
+      Si un usuario te pide un CÁLCULO (como un KPI) y no tienes los números exactos en la "DOCUMENTACIÓN EXTRAÍDA" o en "GITHUB ACTUAL/HISTÓRICO", responde exactamente así: 
+      "No puedo realizar el cálculo exacto del KPI [nombre] porque no cuento con el dato de [dato faltante] en mi base de conocimientos." 
+      ESTÁ TERMINANTEMENTE PROHIBIDO inventar números, porcentajes o decir "aquí tienes datos ficticios". Sé honesto sobre lo que sabes y lo que no.
+      `;
+    }
 
     async chatWithAgent(userMessage: string, chatId?: string): Promise<{ text: string, actions?: any[] }> {
         try {
-            const trelloContext = await this.trello.getBoardState();
-            const githubContext = await this.github.getLatestCommits();
-            const topology = await this.trello.getBoardTopologyForAI();
-
-            // 1. Leemos el conocimiento estático (Fechas del sprint)
-            const conocimientoPath = path.join(process.cwd(), 'conocimiento.json');
-            const conocimientoRaw = fs.readFileSync(conocimientoPath, 'utf-8');
-            const conocimiento = JSON.parse(conocimientoRaw);
+            const conocimiento = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'conocimiento.json'), 'utf-8'));
             const hoy = new Date().toISOString().split('T')[0];
 
-            // 2. Leemos la memoria histórica del equipo
-            let historialContext = "No hay datos históricos previos aún.";
-            const historialPath = path.join(process.cwd(), 'historial.txt');
-            if (fs.existsSync(historialPath)) {
-                const rawHistory = fs.readFileSync(historialPath, 'utf-8');
-                historialContext = rawHistory.slice(-1500);
+            // Detectar si pide información histórica de Sprints
+            let since, until;
+            if (/sprint\s*2/i.test(userMessage)) {
+                since = `${conocimiento.cronograma.sprint2.inicio}T00:00:00Z`;
+                until = `${conocimiento.cronograma.sprint2.fin}T23:59:59Z`;
+            } else if (/sprint\s*1/i.test(userMessage)) {
+                since = `${conocimiento.cronograma.sprint1.inicio}T00:00:00Z`;
+                until = `${conocimiento.cronograma.sprint1.fin}T23:59:59Z`;
             }
 
-            // 2.5 Leemos los integrantes vinculados
-            let equipoContext = "No hay miembros vinculados aún.";
-            const equipoPath = path.join(process.cwd(), 'equipo.json');
-            if (fs.existsSync(equipoPath)) {
-                equipoContext = fs.readFileSync(equipoPath, 'utf-8');
+            const [trelloContext, githubContext, topology, fullContext] = await Promise.all([
+                this.trello.getBoardState(),
+                this.github.getLatestCommits(since, until),
+                this.trello.getBoardTopologyForAI(),
+                this.docs.getRelevantContext(userMessage, 15)
+            ]);
+
+            let equipoContext = "Sin miembros.";
+            if (fs.existsSync(path.join(process.cwd(), 'equipo.json'))) {
+                equipoContext = fs.readFileSync(path.join(process.cwd(), 'equipo.json'), 'utf-8');
             }
+            const trimmedContext = fullContext.slice(0, 20000);
 
-            // 3. El Súper-Prompt Definitivo (Restructurado para Rigidez)
-            const prompt = `ERES EL AGENTE AUTÓNOMO LUPSI. Identidad: Project Manager Activo.
-      
-      === REGLA DE ORO DE ACCIÓN ===
-      1. SIEMPRE que debas hacer algo (mover, crear, notificar, etc.), DEBES incluir la etiqueta <accion>.
-      2. NUNCA digas "¡Listo! He enviado..." o "Hecho" si no estás incluyendo el JSON de la herramienta en esa misma respuesta.
-      3. REGLA DE VERACIDAD: NO INVENTES NADA. Si un dato (fecha, hito, nombre) no está en los documentos o APIs, di que no lo sabes. Prohibido alucinar.
-      4. Para notificar a una persona, es OBLIGATORIO usar NOTIFY_MEMBER. No puedes "hablarles" sin usar la herramienta.
-      5. Si el usuario pide notificar a varios, incluye múltiples etiquetas <accion> (una por persona).
-      6. Usa EXCLUSIVAMENTE los IDs de la TOPOLOGÍA proporcionada abajo.
-      7. ¡ESTÁS CONECTADO EN TIEMPO REAL! Los datos del ESTADO TRELLO y la TOPOLOGÍA proporcionados abajo son 100% reales y actualizados al milisegundo. PROHIBIDO decir que "simulas", "basado en datos previos" o "no tienes acceso en tiempo real".
-      8. CUIDADO CON EL HISTORIAL: Si en el historial de conversación anterior mencionaste o te equivocaste de ID, NO LO COPIES. SIEMPRE extrae el ID exacto y verdadero leyendo la TOPOLOGÍA TÉCNICA actual.
+            const masterKnowledge = fs.readFileSync(path.join(process.cwd(), 'conocimiento', 'base_conocimiento.md'), 'utf-8');
 
-      === MANUAL DE HERRAMIENTAS (OBLIGATORIO) ===
-      Para actuar, escribe: <accion>{"tool": "NOMBRE", "args": {...}}</accion>
-      Herramientas disponibles:
-      - MOVE_CARD: {"cardId": "string", "listId": "string"}
-      - CREATE_CARD: {"listId": "string", "name": "string", "desc": "string", "idMembers": "id1,id2", "idLabels": "id1,id2", "due": "ISO_DATE", "start": "ISO_DATE"}
-      - ADD_COMMENT: {"cardId": "string", "text": "string"}
-      - CREATE_ISSUE: {"title": "string", "body": "string"}
-      - ASSIGN_USER: {"cardId": "string", "memberId": "string"}
-      - MARK_CARD_COMPLETE: {"cardId": "string"} → Úsala cuando el usuario te pida marcar una tarea o tarjeta específica como terminada o completada. OBLIGATORIO: El "cardId" DEBE ser EXACTAMENTE el código alfanumérico de 24 caracteres de la TOPOLOGÍA TÉCNICA. ¡PROHIBIDO inventar sufijos como "_forgotten_id" o agregar texto extra! Solo copia y pega el ID real.
-      - NOTIFY_MEMBER: {"trelloNames": "Nombre1, Nombre2", "text": "string"} → Úsala para enviar el mismo mensaje a uno o varios miembros a la vez. Si es para todo el equipo, incluye todos los nombres separados por coma.
-      - GET_CARD_DETAILS: {"searchTerm": "nombre parcial de la tarea"} → Úsala cuando el usuario pregunte por una tarea específica o pida sus adjuntos/entregables. IMPORTANTE: Al usar esta herramienta, TÚ NO TIENES los datos de la tarjeta todavía. El sistema los buscará y enviará automáticamente. Por lo tanto, en tu etiqueta <respuesta> SOLAMENTE di que la estás buscando y NO INTENTES adivinar, explicar ni asumir su estado.
-      - AUTO_FIX_CODE: {"filePath": "ruta/al/archivo.ts", "newContent": "código completo corregido", "reason": "explicación breve"} → Úsala cuando detectes un bug o mejora clara en el código y quieras proponer un Pull Request.
-
-      === EJEMPLO DE RESPUESTA CORRECTA ===
-      Usuario: "Notifica a ALEX que revise el bug"
-      Respuesta: "<respuesta>Entendido, le avisaré a ALEX de inmediato.</respuesta> <accion>{\"tool\": \"NOTIFY_MEMBER\", \"args\": {\"trelloName\": \"ALEX\", \"text\": \"Hola, el PM solicita que revises el bug pendiente.\"}}</accion>"
-
-      Usuario: "Crea un issue de bug"
-      Respuesta: "<respuesta>Con gusto, voy a preparar el reporte de error en GitHub.</respuesta> <accion>{\"tool\": \"CREATE_ISSUE\", \"args\": {\"title\": \"Bug reportado\", \"body\": \"...\"}}</accion>"
-
-      === CONTEXTO DEL PROYECTO (FUENTE DE VERDAD ABSOLUTA) ===
-      Sprint Actual: ${conocimiento.sprint_actual}
-      Fecha Fin Sprint: ${conocimiento.fecha_fin} | Hoy: ${hoy}
-      Objetivo: ${conocimiento.objetivo_principal}
-      
-      === REGLA DE VERACIDAD DE SPRINT ===
-      Aunque encuentres documentos de otros sprints, DEBES IGNORARLOS si contradicen el "Sprint Actual". Actualmente estamos ÚNICAMENTE en el ${conocimiento.sprint_actual}. No menciones otros sprints como si fueran el presente.
-      
-      === REGLA DE ESTADOS DE TAREAS (ESTRICTA) ===
-      NUNCA confundas tareas "Pendientes" con tareas "En proceso".
-      - "Pendiente" (To Do): Significa que la tarea NO ha iniciado. No digas que está en proceso.
-      - "En proceso" (Doing / In Progress): Significa que la tarea se está trabajando activamente.
-      Si el usuario pregunta por tareas pendientes, MUESTRA SOLO LAS PENDIENTES. Si pregunta por tareas en proceso, MUESTRA SOLO LAS EN PROCESO. ¡Diferencia claramente las listas de Trello!
-      
-      === REGLAS APRENDIDAS (ÓRDENES DIRECTAS DEL PM) ===
-      ${(conocimiento.reglas_aprendidas || []).map(r => `- RECHAZASTE: ${r.accion_rechazada} MOTIVO: ${r.motivo}`).join('\n') || 'Ninguna regla aprendida aún.'}
-
-      EQUIPO VINCULADO (TELEGRAM):
-      ${equipoContext}
-
-      TOPOLOGÍA TÉCNICA (USA ESTOS IDs):
-      ${topology}
-      
-      ESTADO ACTUAL (GITHUB):
-      ${githubContext}
-      
-      ESTADO TRELLO:
-      ${trelloContext}
-      
-      DOCUMENTACIÓN RELEVANTE (RAG):
-      ${await this.docs.getRelevantContext(userMessage)}
-
-      === REGLAS DE FORMATO (OBLIGATORIO) ===
-      1. Tu respuesta DEBE estar contenida en etiquetas <respuesta></respuesta>.
-      2. CUALQUIER acción técnica DEBE estar en etiquetas <accion></accion>.
-      3. Si el usuario pide notificar a varias personas, escribe una etiqueta <accion> POR CADA PERSONA.
-      4. NUNCA respondas sin usar <respuesta>.
-      5. NUNCA digas que hiciste algo si no pusiste la etiqueta <accion> en este mismo turno.
-      
-      EJEMPLO GRUPAL:
-      Usuario: "Avisa a todo el equipo que hay junta"
-      Respuesta: "<respuesta>Entendido, notificaré a Sebastián y ALEX sobre la junta.</respuesta> <accion>{\"tool\": \"NOTIFY_MEMBER\", \"args\": {\"trelloNames\": \"Sebastián Alejandro Ortiz Bustos, ALEX\", \"text\": \"Junta hoy a las 5pm.\"}}</accion>"
-      
-      EJEMPLO MULTITAREA (ACCIONES DIFERENTES):`;
+            const prompt = this.getSuperPrompt(conocimiento, hoy, equipoContext, topology, githubContext, trelloContext, trimmedContext, masterKnowledge);
 
             const activeChat = chatId || 'default';
-            if (!this.sessionMemory.has(activeChat)) {
-                this.sessionMemory.set(activeChat, []);
-            }
-            const memory = this.sessionMemory.get(activeChat) || [];
-            
+            if (!this.sessionMemory.has(activeChat)) this.sessionMemory.set(activeChat, []);
+            const memory = this.sessionMemory.get(activeChat)!;
+            if (memory.length > 8) memory.splice(0, memory.length - 8);
             memory.push({ role: 'user', content: userMessage });
-            if (memory.length > 20) memory.splice(0, memory.length - 20);
-
-            const messages = [
-                { role: 'system', content: prompt },
-                ...memory
-            ];
 
             const data = await this.postWithFailover({
-                messages: messages,
+                messages: [{ role: 'system', content: prompt }, ...memory],
                 max_tokens: 2000
             });
 
-            const content = data.choices[0]?.message?.content;
-            console.log('🤖 RAW AI RESPONSE:', content);
-            if (!content) {
-                return { text: '❌ La IA no devolvió ninguna respuesta (vacío). Intenta de nuevo.' };
-            }
-            
-            // Extracción resiliente: intenta capturar contenido entre etiquetas <respuesta>
+            const content = data.choices[0]?.message?.content || '';
             const match = content.match(/<respuesta>([\s\S]*?)<\/respuesta>/i);
             let cleanText = match ? match[1].trim() : content.trim();
+            cleanText = cleanText.replace(/<[^>]+>/g, '').trim();
 
-            // Limpieza defensiva: eliminar cualquier etiqueta XML residual que se haya colado
-            cleanText = cleanText
-                .replace(/<\/?respuesta>/gi, '')
-                .replace(/<\/?accion>[\s\S]*?<\/accion>/gi, '')
-                .replace(/<accion>[\s\S]*/gi, '') // Si quedó etiqueta sin cerrar
-                .replace(/<[^>]+>/g, '')          // Cualquier otra etiqueta HTML/XML
-                .trim();
-
-            // Fallback si la IA puso su texto fuera de las etiquetas <respuesta>
-            if (!cleanText && match) {
-                let fallback = content.replace(/<respuesta>[\s\S]*?<\/respuesta>/i, '').trim();
-                fallback = fallback
-                    .replace(/<\/?accion>[\s\S]*?<\/accion>/gi, '')
-                    .replace(/<accion>[\s\S]*/gi, '')
-                    .replace(/<[^>]+>/g, '')
-                    .trim();
-                if (fallback) {
-                    cleanText = fallback;
-                }
-            }
-
-            // Extracción de acciones JSON (Soporte para múltiples formatos debido a alucinación de modelos gratuitos)
             let actions: any[] = [];
-            
-            const extractAndPush = (regex: RegExp) => {
-                const matches = content.matchAll(regex);
-                for (const match of matches) {
-                    try {
-                        const parsed = JSON.parse(match[1].trim());
-                        // Adaptador universal para modelos que cambian tool/args por name/arguments
-                        if (parsed.name && parsed.arguments && !parsed.tool) {
-                            parsed.tool = parsed.name;
-                            parsed.args = parsed.arguments;
-                        }
-                        if (parsed.tool) actions.push(parsed);
-                    } catch (e) { }
-                }
-            };
-
-            extractAndPush(/<accion>([\s\S]*?)<\/accion>/gi);
-            extractAndPush(/<tool_call>([\s\S]*?)<\/tool_call>/gi);
-            extractAndPush(/```json\s*([\s\S]*?)\s*```/gi);
-            extractAndPush(/<code>([\s\S]*?)<\/code>/gi);
-            
-            // Si el modelo solo botó un JSON puro que empieza con {"tool"
-            if (actions.length === 0 && content.trim().startsWith('{"tool"')) {
-                 try { actions.push(JSON.parse(content.trim())); } catch (e) {}
+            const matches = content.matchAll(/<accion>([\s\S]*?)<\/accion>/gi);
+            for (const m of matches) {
+                try {
+                    const p = JSON.parse(m[1].trim());
+                    if (p.name && p.arguments) { p.tool = p.name; p.args = p.arguments; }
+                    if (p.tool) actions.push(p);
+                } catch (e) { }
             }
-            
+
             memory.push({ role: 'assistant', content: cleanText });
-            this.saveSessions(); // Persistir en disco para sobrevivir reinicios
-            
+            this.saveSessions();
             return { text: cleanText, actions: actions.length > 0 ? actions : undefined };
         } catch (error) {
-            console.error('Error en IA:', error?.response?.data || error.message);
-            return { text: '❌ Mi cerebro de IA está fuera de línea por ahora.' };
+            return { text: '❌ Error en mi cerebro de IA.' };
         }
     }
 
     async analyzeAndDecideTasks(trelloTopology: string, githubWorkload: string): Promise<any> {
         try {
-            const conocimientoPath = path.join(process.cwd(), 'conocimiento.json');
-            const conocimiento = JSON.parse(fs.readFileSync(conocimientoPath, 'utf-8'));
-            const reglasText = (conocimiento.reglas_aprendidas || []).map(r => `- Acción rechazada en el pasado: ${r.accion_rechazada}. Motivo del PM: ${r.motivo}`).join('\n');
-
-            const prompt = `Eres un Agente Autónomo (Project Manager). 
-Debes analizar la siguiente topología de Trello (en JSON) y la carga de GitHub.
-
-=== REGLAS APRENDIDAS DE TUS ERRORES PASADOS ===
-${reglasText || 'Ninguna regla aprendida aún. Eres libre de decidir.'}
-¡NO PROPONGAS ACCIONES QUE VAYAN EN CONTRA DE ESTAS REGLAS!
-
-Topología Trello (IDs reales):
-${trelloTopology}
-
-Carga GitHub:
-${githubWorkload}
-
-TU MISIÓN:
-Identifica problemas como tareas estancadas, personas sobrecargadas o tarjetas sin asgignar a punto de vencer.
-
-REGLA ESTRICTA: Tu respuesta DEBE ser EXCLUSIVAMENTE un objeto JSON válido, sin delimitadores Markdown ni texto extra.
-Formato requerido:
-{
-  "decisiones": [
-    {
-      "tipo": "MOVE_CARD",
-      "cardId": "string",
-      "targetListId": "string",
-      "rationale": "Justificación corta en español para que el usuario entienda."
-    },
-    {
-      "tipo": "REASSIGN_CARD",
-      "cardId": "string",
-      "memberId": "string",
-      "rationale": "Justificación corta en español."
-    }
-  ]
-}
-Si no hay decisiones, devuelve {"decisiones": []}. Responde solo con JSON.
-
-=== ÚLTIMA REGLA / FINAL RULE ===
-ALL TEXT INSIDE "rationale" MUST BE IN SPANISH. NO INGLÉS. NO PENSAMIENTOS. SOLO JSON PURO.`;
-
+            const conocimiento = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'conocimiento.json'), 'utf-8'));
+            const reglasText = (conocimiento.reglas_aprendidas || []).map((r:any) => `- ${r.accion_rechazada}: ${r.motivo}`).join('\n');
+            const prompt = `Analiza Trello (${trelloTopology}) y GitHub (${githubWorkload}). Reglas: ${reglasText}. Responde solo JSON: {"decisiones": []}`;
             const data = await this.postWithFailover({
-                messages: [
-                    { role: 'system', content: 'Eres un motor JSON. Responde siempe en Español.' },
-                    { role: 'user', content: prompt }
-                ],
-                max_tokens: 1500
+                messages: [{ role: 'system', content: 'Motor JSON' }, { role: 'user', content: prompt }],
+                max_tokens: 1000
             });
-
             let content = data.choices[0].message.content;
-            
-            // Extracción ultra-resiliente de JSON por si el modelo genera pensamientos antes de la llave.
             const startObj = content.indexOf('{');
             const endObj = content.lastIndexOf('}');
-            if (startObj !== -1 && endObj !== -1) {
-                content = content.substring(startObj, endObj + 1);
-            }
-            
+            if (startObj !== -1 && endObj !== -1) content = content.substring(startObj, endObj + 1);
             return JSON.parse(content);
-        } catch (error) {
-            console.error('Error en AI JSON:', error?.response?.data || error.message);
-            return { decisiones: [] };
-        }
+        } catch (error) { return { decisiones: [] }; }
     }
 }

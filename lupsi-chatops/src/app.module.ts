@@ -14,6 +14,8 @@ import { DocsService } from './docs.service';
 import { AutonomyService } from './autonomy.service';
 import { WebhookController } from './webhook.controller';
 
+import { ConsistencyService } from './consistency.service';
+
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -31,6 +33,7 @@ import { WebhookController } from './webhook.controller';
     PdfService,
     DocsService,
     AutonomyService,
+    ConsistencyService,
   ],
 })
 export class AppModule {}

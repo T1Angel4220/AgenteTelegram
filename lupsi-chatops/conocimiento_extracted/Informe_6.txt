@@ -1,0 +1,146 @@
+
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-RGI-006
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de implementación del validador
+Módulo 10
+ELABORACIÓN:
+09/09/2025
+Sprint 1 – Infraestructura Base
+ÚLTIMA
+REVISIÓN:
+09/09/2025
+1.  Título
+Informe de implementación del servicio de validación de cédula ecuatoriana (Mó-
+dulo 10)
+2.  Introducción
+La validación del número de cédula es un requisito legal y funcional para el
+registro de pacientes en el sistema LUPSI. Este informe describe la implementación
+del algoritmo Módulo 10, que verifica la consistencia del dígito verificador de las
+cédulas ecuatorianas, así como las pruebas unitarias realizadas y el estado actual de
+integración.
+3.  Objetivo
+Entregar un servicio reutilizable (EcuadorianIdValidatorService) que valide cé-
+dulas según el algoritmo oficial, con pruebas que cubran casos válidos, inválidos y
+bordes, y que pueda ser consumido tanto por el backend como por el frontend.
+4.  Definiciones
+Módulo 10: Algoritmo de validación utilizado por el Registro Civil de Ecua-
+dor para generar el dígito verificador de la cédula.
+Dígito verificador: Último dígito de la cédula, calculado a partir de los 9
+primeros.
+Provincia: Los dos primeros dígitos de la cédula deben corresponder a un
+código de provincia válido (01-24).
+5.  Actividades realizadas
+Investigación del algoritmo oficial (documentación del Registro Civil).
+Implementación de la lógica en TypeScript como clase EcuadorianIdValidatorService
+con métodos:
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-RGI-006
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de implementación del validador
+Módulo 10
+ELABORACIÓN:
+09/09/2025
+Sprint 1 – Infraestructura Base
+ÚLTIMA
+REVISIÓN:
+09/09/2025
+• validate(cedula: string): boolean – valida formato, provincia, lon-
+gitud y dígito verificador.
+• getProvinceCode(cedula: string): number – extrae código de pro-
+vincia.
+• computeVerifier(cedula: string): number – cálculo interno del dí-
+gito esperado.
+Escritura de pruebas unitarias con Jest (integrado en NestJS) que cubren:
+• Cédulas válidas reales.
+• Cédulas inválidas por dígito verificador.
+• Códigos de provincia inexistentes.
+• Longitud incorrecta (<10 o >10 dígitos).
+• Caracteres no numéricos.
+Integración inicial en el backend como un servicio inyectable.
+Documentación de uso en el README del repositorio.
+6.  Herramientas utilizadas
+TypeScript 5.x
+Jest (framework de pruebas)
+NestJS (para inyección de dependencias)
+Postman (pruebas de API endpoint que expone el validador)
+7.  Resultados obtenidos
+Servicio EcuadorianIdValidatorService implementado y probado (100 % de
+pruebas pasan).
+Endpoint REST POST /validate-id que recibe {cedula: string} y retorna
+{valid: boolean, message?: string}.
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-RGI-006
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de implementación del validador
+Módulo 10
+ELABORACIÓN:
+09/09/2025
+Sprint 1 – Infraestructura Base
+ÚLTIMA
+REVISIÓN:
+09/09/2025
+Documentación de casos de prueba.
+Estado a fecha 08/09/2025: Validación lógica completa y probada. Pen-
+diente integración con el frontend (se estima finalizar el 10/09/2025) y conexión
+con el registro de usuarios (Sprint 2).
+8.  Evidencias
+Se adjuntan las siguientes capturas de pantalla:
+8.1.  Código fuente del servicio y sus pruebas unitarias
+Figura 1: Código fuente del servicio junto con sus pruebas unitarias
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-RGI-006
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de implementación del validador
+Módulo 10
+ELABORACIÓN:
+09/09/2025
+Sprint 1 – Infraestructura Base
+ÚLTIMA
+REVISIÓN:
+09/09/2025
+8.2.  Salida de ejecución de pruebas
+Figura 2: Resultado de ejecución de pruebas unitarias (todas exitosas)
+8.3.  Prueba del endpoint desde Postman
+Figura 3: Prueba del endpoint utilizando Postman con diferentes cédulas
+
+SKT Software Solution
+CÓDIGO:
+MI-DES-RGI-006
+PROCESO: Desarrollo de Software
+VERSIÓN:
+1.0
+Informe de implementación del validador
+Módulo 10
+ELABORACIÓN:
+09/09/2025
+Sprint 1 – Infraestructura Base
+ÚLTIMA
+REVISIÓN:
+09/09/2025
+9.  Firmas de Responsabilidad
+RolNombre / Represen-
+tante
+Firma (QR)Fecha
+Gestor del ProyectoAngel Ayuquina09/09/2025
+Desarrollador Backend   Sebastián Ortiz09/09/2025
+Desarrollador Fullstack  Daniel Luisa
+09/09/2025
+Desarrollador Frontend  Alex Guachi
+09/09/2025

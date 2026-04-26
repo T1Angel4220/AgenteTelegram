@@ -1,0 +1,98 @@
+
+
+INFORME DE AVANCE Y
+CIERRE
+PROYECTO:   Sistema Web PWA LUPSIREFERENCIA:   Avance Sprint 5 (Final)
+CLIENTE:Centro M ́edico LUPSIREVISI
+ ́
+ON:1.1
+AUTOR:Angel Ayuquina (PM)FECHA:10/06/2026
+DISTRIBUCI
+ ́
+ON:
+1. Patrocinador Acad ́emico: Ing. Paulo Torres, Mg.
+2. Directorio y Administraci ́on del Centro M ́edico LUPSI (Dra. Saenz D ́ıaz Luz Marina de
+Jes ́us)
+3. Equipo de Desarrollo SKT Software Solution (S. Ortiz, D. Luisa, A. Guachi)
+Cuadro 1: Distribuci ́on del informe
+SITUACI
+ ́
+ON CRONOGRAMA
+Atraso:S ́ı [ ]No [X]Plazo final: 10/06/2026
+COMENTARIOS
+El proyecto concluye su ciclo de vida de desarrollo de manera exitosa y dentro de los plazos
+establecidos. Durante el Sprint 5, el sistema fue sometido a pruebas de estr ́es y concurrencia,
+demostrando robustez frente al agendamiento masivo. Se ejecutaron las pruebas piloto, se
+imparti ́o la capacitaci ́on al personal m ́edico entregando los manuales correspondientes, y
+finalmente,  la  aplicaci ́on  fue  desplegada  en  el  servidor  de  producci ́on  (Render)  bajo  un
+dominio seguro (SSL). El sistema LUPSI se encuentra 100 % operativo y entregado al cliente.
+Cuadro 2: Comentarios sobre el cronograma
+Figura 1: Vista de Gantt MS Project - Fase 5 y 6 (QA, Capacitaci ́on y Despliegue)
+SITUACI
+ ́
+ON FINANZAS
+1
+
+COSTE ACTUAL$5,850.00Sobrecoste:S ́ıNoXValor:
+$0.00
+Cantidad  factura-
+da
+$0.00Pagospen-
+dientes:
+S ́ıNoX
+Cuadro 3: Resumen de situaci ́on financiera al cierre
+COMENTARIOS
+El Coste Actual final de$5,850.00 USD refleja la valorizaci ́on total acumulada de las horas
+de ingenier ́ıa, QA y DevOps invertidas por el equipo a lo largo de los 5 sprints del proyecto.
+Este monto consolida el valor intangible del producto entregado. Respecto a los costos de
+infraestructura (Supabase, Cloudinary y Render), el dise ̃no arquitect ́onico permiti ́o alojar
+el sistema aprovechando las capas gratuitas, garantizando a la cl ́ınica un costo operativo
+mensual de$0.00 en su fase inicial de adopci ́on.
+Cuadro 4: Comentarios sobre las finanzas
+SITUACI
+ ́
+ON ALCANCE
+ENTREGABLE (Artefacto de Softwa-
+re)
+FECHAACEPTADO
+1. Reporte QA: Pruebas de Estr ́es y versi ́on
+piloto sin bugs cr ́ıticos.
+27/05/2026
+2. Manuales de Usuario y Taller de Capaci-
+taci ́on M ́edica.
+02/06/2026
+3. Despliegue en Producci ́on (Render) y cer-
+tificados de seguridad SSL.
+10/06/2026
+Cuadro 5: Entregables formales del Sprint 5
+PRINCIPALES PUNTOS ABIERTOS (FASE POST-PRODUCCI
+ ́
+ON)
+DESCRIPCI
+ ́
+ON(Post-
+Lanzamiento)
+FECHAESPE-
+RADA
+RESPONSABLE
+Monitoreo de estabilidad de los servidores
+en la nube durante el primer mes de uso.
+10/07/2026Equipo SKT
+Soporte t ́ecnico de Nivel 1 ante consultas
+del personal administrativo.
+10/07/2026   (1   mes
+de garant ́ıa)
+Equipo SKT
+Cuadro 6: Puntos de seguimiento post-implementaci ́on
+OTROS
+2
+
+Con  la  firma  de  este  documento,  se  declara  el  cierre  oficial  de  la  fase  de  desarrollo  del
+Sistema Web PWA LUPSI. El equipo de SKT Software Solution ha cumplido a cabalidad
+con  las  historias  de  usuario  aprobadas  en  el  Product  Backlog.  La  implementaci ́on  exito-
+sa  de  tecnolog ́ıas  modernas  (NestJS,  Angular,  Supabase,  Integraci ́on  IA  y  arquitecturas
+Cloud)  posiciona  a  la  cl ́ınica  con  una  infraestructura  digital  robusta,  segura  y  escalable.
+Agradecemos al Ing. Paulo Torres y a la administraci ́on del centro m ́edico por la confianza
+depositada en este proyecto.
+Cuadro 7: Conclusi ́on del Proyecto
+3
