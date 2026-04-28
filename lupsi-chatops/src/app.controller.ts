@@ -12,6 +12,11 @@ export class AppController {
     return '🚀 LUPSI API is running';
   }
 
+  @Get('health')
+  getHealth() {
+    return { status: 'ok', uptime: process.uptime(), timestamp: new Date().toISOString() };
+  }
+
   @Get('metrics')
   async getMetrics() {
     const trelloMetrics = await this.trelloService.getMetrics();
