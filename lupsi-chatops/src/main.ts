@@ -16,6 +16,8 @@ async function bootstrap() {
     console.error('🚨 Uncaught Exception thrown:', err);
   });
 
-  await app.listen(8090);
+  const port = process.env.PORT || 8090;
+  await app.listen(port, '0.0.0.0');
+  console.log(`🚀 LUPSI Agente activo en puerto ${port}`);
 }
 bootstrap();

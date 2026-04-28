@@ -7,7 +7,7 @@
   "sprint_actual": "Sprint 3: Motor de Agendamiento e Interfaces Frontend",
   "fecha_inicio": "2026-04-08",
   "fecha_fin": "2026-04-30",
-  "objetivo_principal": "Desarrollar e integrar el Motor de Reservas en el backend para prevenir cruces de horarios y construir los portales PWA para pacientes y administración.",
+  "objetivo_principal": "Desarrollar e integrar el Motor de Reservas en el backend para prevenir cruces de horarios y construir los portales PWA para pacientes y administración, incluyendo el desarrollo del repositorio RBAC.",
   "stack_tecnologico": {
     "backend": "NestJS (Node.js + TypeScript)",
     "frontend": "Angular (PWA)",
@@ -71,7 +71,7 @@
     "US-04": "Digitalización de Expedientes en Nube (Cloudinary) — Sprint 4 — PENDIENTE",
     "US-05": "Restricción de Privacidad y Data Médica (RBAC) — Sprint 4 — PENDIENTE"
   },
-  "riesgos_conocidos": "Resistencia al cambio, caídas del servidor, ciberataques, perfiles falsos, fallos en la dirección del proyecto e incompatibilidades tecnológicas.",
+  "riesgos_conocidos": "Resistencia al cambio, caídas del servidor cloud, ciberataques/vulneraciones, perfiles falsos/bots, deficiencias en la dirección del proyecto e incompatibilidades tecnológicas.",
   "reglas_aprendidas": [
     {
       "fecha": "2026-04-21",
