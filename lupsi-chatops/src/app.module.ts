@@ -15,6 +15,7 @@ import { AutonomyService } from './autonomy.service';
 import { WebhookController } from './webhook.controller';
 
 import { ConsistencyService } from './consistency.service';
+import { SupabaseService } from './supabase.service';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { ConsistencyService } from './consistency.service';
     DocsService,
     AutonomyService,
     ConsistencyService,
+    SupabaseService,
   ],
 })
 export class AppModule {}

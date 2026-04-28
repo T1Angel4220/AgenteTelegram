@@ -7,6 +7,7 @@ const SESIONES_PATH = path.join(process.cwd(), 'sesiones.json');
 import { TrelloService } from './trello.service';
 import { GithubService } from './github.service';
 import { DocsService } from './docs.service';
+import { SupabaseService } from './supabase.service';
 
 @Injectable()
 export class AiService {
@@ -24,7 +25,8 @@ export class AiService {
         private trello: TrelloService,
         private github: GithubService,
         @Inject(forwardRef(() => DocsService))
-        private docs: DocsService
+        private docs: DocsService,
+        private supabase: SupabaseService
     ) {
         const envKeys = process.env.AI_KEYS || process.env.OPENROUTER_API_KEY;
         this.keys = envKeys ? envKeys.split(',').map(k => k.trim()) : [];
@@ -33,8 +35,19 @@ export class AiService {
         this.loadSessions();
     }
 
-    private loadSessions() {
+    private async loadSessions() {
         try {
+            // 1. Intentar cargar desde Supabase (Prioridad)
+            const remoteSessions = await this.supabase.getAllSessions();
+            if (Object.keys(remoteSessions).length > 0) {
+                for (const [chatId, msgs] of Object.entries(remoteSessions)) {
+                    this.sessionMemory.set(chatId, msgs);
+                }
+                console.log(`🧠 Memoria cargada desde Supabase (${Object.keys(remoteSessions).length} sesiones).`);
+                return;
+            }
+
+            // 2. Fallback a archivo local
             if (fs.existsSync(SESIONES_PATH)) {
                 const raw = JSON.parse(fs.readFileSync(SESIONES_PATH, 'utf-8'));
                 for (const [chatId, msgs] of Object.entries(raw)) {
@@ -44,8 +57,15 @@ export class AiService {
         } catch (e) { }
     }
 
-    private saveSessions() {
+    private async saveSessions(chatId?: string) {
         try {
+            // 1. Guardar en Supabase (si se provee chatId)
+            if (chatId) {
+                const memory = this.sessionMemory.get(chatId);
+                if (memory) await this.supabase.saveSession(chatId, memory);
+            }
+
+            // 2. Mantener archivo local por seguridad
             const obj: any = {};
             this.sessionMemory.forEach((v, k) => { obj[k] = v.slice(-10); });
             fs.writeFileSync(SESIONES_PATH, JSON.stringify(obj));
@@ -196,7 +216,7 @@ export class AiService {
             }
 
             memory.push({ role: 'assistant', content: cleanText });
-            this.saveSessions();
+            await this.saveSessions(activeChat);
             return { text: cleanText, actions: actions.length > 0 ? actions : undefined };
         } catch (error) {
             return { text: '❌ Error en mi cerebro de IA.' };

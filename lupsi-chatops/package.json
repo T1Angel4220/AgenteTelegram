@@ -25,6 +25,7 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/schedule": "^6.1.1",
+    "@supabase/supabase-js": "^2.105.0",
     "axios": "^1.15.0",
     "pdf-parse": "^1.1.1",
     "pdfkit": "^0.18.0",
