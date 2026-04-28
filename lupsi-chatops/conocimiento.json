@@ -71,7 +71,7 @@
     "US-04": "Digitalización de Expedientes en Nube (Cloudinary) — Sprint 4 — PENDIENTE",
     "US-05": "Restricción de Privacidad y Data Médica (RBAC) — Sprint 4 — PENDIENTE"
   },
-  "riesgos_conocidos": "Resistencia al cambio, caídas del servidor cloud, ciberataques/vulneraciones, perfiles falsos/bots, deficiencias en la dirección del proyecto e incompatibilidades tecnológicas.",
+  "riesgos_conocidos": "Resistencia al cambio, caídas del servidor cloud, ciberataques/vulneraciones, perfiles falsos/bots, deficiencias en la dirección del proyecto, incompatibilidades tecnológicas.",
   "reglas_aprendidas": [
     {
       "fecha": "2026-04-21",

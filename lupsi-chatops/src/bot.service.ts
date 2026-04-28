@@ -862,6 +862,9 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
         if (errores.length > 0) {
           return { success: true, message: `Enviado a algunos, pero no se encontró a: ${errores.join(', ')}` };
         }
+      } else if (tool === 'NOTIFY_TEAM') {
+        const texto = args.message || args.text;
+        await this.notifyTeam(texto);
       } else if (tool === 'AUTO_FIX_CODE') {
         const prUrl = await this.githubService.createAutoFixPR(args.filePath, args.newContent, `Fix: ${args.reason || 'Mejora automática'}`);
         return { success: true, message: `Pull Request creado con éxito: ${prUrl}` };
@@ -909,6 +912,23 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
       console.error(`Error enviando mensaje a ${trelloName} (${member.chatId}):`, e.message);
       throw new Error(`Telegram bloqueó el mensaje para ${trelloName}. Motivo probable: El usuario NO ha iniciado un chat con el bot aún. Pídele que le envíe un mensaje al bot primero. Error técnico: ${e.message}`);
     }
+  }
+
+  async notifyTeam(text: string): Promise<boolean> {
+    const equipoPath = path.join(process.cwd(), 'equipo.json');
+    if (!fs.existsSync(equipoPath)) return false;
+    const equipo = JSON.parse(fs.readFileSync(equipoPath, 'utf-8'));
+    
+    let envios = 0;
+    for (const member of equipo) {
+      try {
+        await this.bot.telegram.sendMessage(member.chatId, this.safe(text), { parse_mode: 'Markdown' });
+        envios++;
+      } catch (e) {
+        console.error(`No se pudo notificar a ${member.trelloName}:`, e.message);
+      }
+    }
+    return envios > 0;
   }
 
   async notifyMemberStandup(chatId: string, mensaje: string) {
