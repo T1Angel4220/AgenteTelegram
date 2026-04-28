@@ -109,6 +109,12 @@ export class WebhookController {
     return { received: true };
   }
 
+  @Post('telegram')
+  async handleTelegramWebhook(@Body() update: any) {
+    await this.botService.bot.handleUpdate(update);
+    return { ok: true };
+  }
+
   // Trello requiere un endpoint HEAD para validar el Webhook al crearlo
   @Head('trello')
   async verifyTrelloWebhook() {

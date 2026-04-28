@@ -13,7 +13,7 @@ import * as https from 'https';
 
 @Injectable()
 export class BotService implements OnModuleInit {
-  private bot: Telegraf;
+  public bot: Telegraf;
 
   // Decisiones en espera de aprobación (en memoria, se borran al aprobar/rechazar)
   private pendingActions: Map<string, any> = new Map();
@@ -712,8 +712,19 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
       }
     });
 
-    this.bot.launch();
-    console.log('🤖 Agente LUPSI conectado a Telegram exitosamente...');
+    // Configuración de Webhook o Polling
+    const webhookUrl = process.env.WEBHOOK_URL;
+    if (webhookUrl) {
+      const fullUrl = `${webhookUrl}/webhooks/telegram`;
+      console.log(`📡 Configurando Webhook en: ${fullUrl}`);
+      this.bot.telegram.setWebhook(fullUrl)
+        .then(() => console.log('🤖 Webhook de Telegram registrado con éxito'))
+        .catch(err => console.error('❌ Error al registrar Webhook:', err));
+    } else {
+      this.bot.launch()
+        .then(() => console.log('🤖 Agente LUPSI conectado vía Polling'))
+        .catch(err => console.error('❌ Error al lanzar Polling:', err));
+    }
   }
 
   // ── Activar modo standup para un usuario ────────────────────────────────
