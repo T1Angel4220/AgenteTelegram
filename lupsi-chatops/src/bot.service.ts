@@ -638,11 +638,14 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
       }
 
       // Chat normal con la IA
-      const thinkingMsg = await ctx.reply('🧠 Analizando...');
+      const thinkingMsg = await ctx.reply('🧠 Pensando... (Consultando base de conocimientos)');
       const result = await this.aiService.chatWithAgent(ctx.message.text, chatId);
       await ctx.telegram.deleteMessage(ctx.chat.id, thinkingMsg.message_id).catch(() => { });
+      
       if (result.text && result.text.trim().length > 0) {
         await ctx.reply(this.safe(result.text), { parse_mode: 'Markdown' });
+      } else {
+        await ctx.reply('😔 Lo siento, tuve un bloqueo mental y no pude generar una respuesta clara. ¿Podrías reformular tu pregunta?');
       }
 
       // ── Detección proactiva de tarjeta mencionada ─────────────────────────
