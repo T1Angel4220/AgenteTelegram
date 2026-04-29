@@ -729,9 +729,20 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
     if (webhookUrl) {
       const fullUrl = `${webhookUrl}/webhooks/telegram`;
       console.log(`📡 Configurando Webhook en: ${fullUrl}`);
-      this.bot.telegram.setWebhook(fullUrl)
-        .then(() => console.log('🤖 Webhook de Telegram registrado con éxito'))
-        .catch(err => console.error('❌ Error al registrar Webhook:', err));
+      
+      const registerWebhook = (intentos = 1) => {
+        this.bot.telegram.setWebhook(fullUrl)
+          .then(() => console.log('🤖 Webhook de Telegram registrado con éxito'))
+          .catch(err => {
+            console.error(`❌ Error al registrar Webhook (Intento ${intentos}):`, err.message || err);
+            if (intentos < 5) {
+              console.log('🔄 Reintentando configuración del webhook en 5 segundos...');
+              setTimeout(() => registerWebhook(intentos + 1), 5000);
+            }
+          });
+      };
+      
+      registerWebhook();
     } else {
       this.bot.launch()
         .then(() => console.log('🤖 Agente LUPSI conectado vía Polling'))
