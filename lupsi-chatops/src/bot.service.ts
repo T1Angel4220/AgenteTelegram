@@ -638,13 +638,26 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
       }
 
       // Chat normal con la IA
+      console.log(`💬 Mensaje recibido de ${ctx.from.first_name}: "${ctx.message.text}"`);
       const thinkingMsg = await ctx.reply('🧠 Pensando... (Consultando base de conocimientos)');
-      const result = await this.aiService.chatWithAgent(ctx.message.text, chatId);
+      
+      let userName = ctx.from.first_name;
+      const equipoPathConfig = path.join(process.cwd(), 'equipo.json');
+      if (fs.existsSync(equipoPathConfig)) {
+        const equipo = JSON.parse(fs.readFileSync(equipoPathConfig, 'utf-8'));
+        const miembro = equipo.find((m: any) => m.chatId === chatId);
+        if (miembro) userName = miembro.nombre || miembro.trelloName;
+      }
+
+      const result = await this.aiService.chatWithAgent(ctx.message.text, chatId, userName);
+      const actions = (result as any).actions || [];
+      
       await ctx.telegram.deleteMessage(ctx.chat.id, thinkingMsg.message_id).catch(() => { });
       
       if (result.text && result.text.trim().length > 0) {
+        console.log(`🤖 Respuesta de LUPSI enviada.`);
         await ctx.reply(this.safe(result.text), { parse_mode: 'Markdown' });
-      } else {
+      } else if (actions.length === 0) {
         await ctx.reply('😔 Lo siento, tuve un bloqueo mental y no pude generar una respuesta clara. ¿Podrías reformular tu pregunta?');
       }
 
@@ -678,8 +691,7 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
       }
 
       // Si la IA también solicitó GET_CARD_DETAILS como acción
-      const actions = (result as any).actions || [];
-      const getCardAction = actions.find(a => a.tool === 'GET_CARD_DETAILS');
+      const getCardAction = actions.find((a: any) => a.tool === 'GET_CARD_DETAILS');
       if (getCardAction) {
         await this.enviarDetallesTarjeta(ctx, getCardAction.args?.searchTerm || '');
       }

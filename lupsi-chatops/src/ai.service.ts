@@ -91,7 +91,7 @@ export class AiService {
         throw lastError || new Error('IA Offline');
     }
 
-    private getSuperPrompt(conocimiento: any, hoy: string, equipoContext: string, topology: string, githubContext: string, trelloContext: string, ragContext: string, masterKnowledge: string, manual: string): string {
+    private getSuperPrompt(conocimiento: any, hoy: string, equipoContext: string, topology: string, githubContext: string, trelloContext: string, ragContext: string, masterKnowledge: string, manual: string, userName?: string): string {
         return `ERES LUPSI, AGENTE AUTÓNOMO DE SKT SOFTWARE SOLUTION.
       Identidad: Senior Project Manager del sistema de agendamiento médico LUPSI.
       
@@ -111,13 +111,13 @@ export class AiService {
 
       === JERARQUÍA DE VERDAD ABSOLUTA ===
       1. ASIGNACIONES (Quién hace qué): EXCLUSIVAMENTE lo que diga el bloque [ESTADO TRELLO]. La sección "entregables" de los documentos es PLANIFICACIÓN INICIAL y puede estar obsoleta.
-      2. ESTADOS (Doing/Done): EXCLUSIVAMENTE lo que diga el bloque [ESTADO TRELLO].
-      3. HALLUCINATION CHECK: NO inventes IDs como "T-01". Usa los nombres de las tareas tal cual aparecen en Trello. NO digas que no tienes acceso en tiempo real; el bloque de abajo se actualizó hace milisegundos.
+      3. HALLUCINATION CHECK: NO inventes IDs como "T-01". Usa los nombres de las tareas tal cual aparecen en Trello. TIENES ACCESO TOTAL a Trello. El bloque [ESTADO TRELLO] de abajo contiene la información viva y actualizada hace milisegundos. JAMÁS digas "no tengo acceso" o "no puedo revisar Trello". Lee la información y responde con ella. Si dice "Hubo un error", dile al usuario que la conexión falló temporalmente y que intente de nuevo.
 
       ╔══════════════════════════════════════════════════╗
       ║   REGLAS ANTI-ALUCINACIÓN (CERO TOLERANCIA)    ║
       ╚══════════════════════════════════════════════════╝
       ► FECHA ACTUAL: ${hoy}
+      ► USUARIO ACTUAL: Estás hablando con ${userName || 'un miembro del equipo'}. Dirígete a esta persona por su nombre y adapta tu tono para ser servicial y proactivo con sus tareas.
       ► EQUIPO: Angel Ayuquina (PM), Sebastián Ortiz (Backend), Daniel Luisa (Fullstack), Alex Guachi (Frontend).
       ► RESPONSABLES: Si en Trello la tarea "Portal del Paciente" tiene asignado a "Angel", ese es el responsable actual. Punto.
 
@@ -146,7 +146,7 @@ export class AiService {
       REGLA DE ORO: Prioriza la realidad de Trello sobre la teoría de los documentos.`;
     }
 
-    async chatWithAgent(userMessage: string, chatId?: string): Promise<{ text: string, actions?: any[] }> {
+    async chatWithAgent(userMessage: string, chatId?: string, userName?: string): Promise<{ text: string, actions?: any[] }> {
         try {
             const conocimiento = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'conocimiento.json'), 'utf-8'));
             const hoy = new Date().toLocaleString('es-EC', { timeZone: 'America/Guayaquil' });
@@ -179,6 +179,10 @@ export class AiService {
                     data: { trelloContext, githubContext, topology, fullContext }, 
                     timestamp: Date.now() 
                 });
+                // Invalida la caché inmediatamente si Trello falló para no quedarse atascado
+                if (typeof trelloContext === 'string' && trelloContext.includes('❌')) {
+                    this.cache.delete(cacheKey);
+                }
             }
 
             let equipoContext = "Sin miembros.";
@@ -190,7 +194,7 @@ export class AiService {
             const masterKnowledge = fs.readFileSync(path.join(process.cwd(), 'conocimiento', 'base_conocimiento.md'), 'utf-8');
             const manualComportamiento = fs.readFileSync(path.join(process.cwd(), 'conocimiento', 'manual_comportamiento.md'), 'utf-8');
 
-            const prompt = this.getSuperPrompt(conocimiento, hoy, equipoContext, topology, githubContext, trelloContext, trimmedContext, masterKnowledge, manualComportamiento);
+            const prompt = this.getSuperPrompt(conocimiento, hoy, equipoContext, topology, githubContext, trelloContext, trimmedContext, masterKnowledge, manualComportamiento, userName);
 
             const activeChat = chatId || 'default';
             if (!this.sessionMemory.has(activeChat)) this.sessionMemory.set(activeChat, []);
@@ -206,7 +210,8 @@ export class AiService {
             const content = data.choices[0]?.message?.content || '';
             const match = content.match(/<respuesta>([\s\S]*?)<\/respuesta>/i);
             let cleanText = match ? match[1].trim() : content.trim();
-            cleanText = cleanText.replace(/<[^>]+>/g, '').trim();
+            cleanText = cleanText.replace(/<accion>[\s\S]*?<\/accion>/gi, '').trim();
+            cleanText = cleanText.replace(/\\([.\-])/g, '$1'); // Limpiar escapes innecesarios que hace la IA
 
             let actions: any[] = [];
             const matches = content.matchAll(/<accion>([\s\S]*?)<\/accion>/gi);

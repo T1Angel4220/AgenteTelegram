@@ -11,6 +11,7 @@ export class WebhookController {
 
   @Post('github')
   async handleGithubWebhook(@Body() payload: any, @Headers('x-github-event') event: string) {
+    console.log(`🔔 Webhook GitHub recibido: Evento [${event}]`);
     // 1. Push Event
     if (event === 'push') {
       const repo = payload.repository.full_name;
@@ -81,6 +82,7 @@ export class WebhookController {
 
   @Post('trello')
   async handleTrelloWebhook(@Body() payload: any) {
+    console.log(`📋 Webhook Trello recibido: ${payload.action?.type || 'evento desconocido'}`);
     // Trello envía el evento en la propiedad 'action'
     if (!payload.action) return { received: true };
 
@@ -111,6 +113,7 @@ export class WebhookController {
 
   @Post('telegram')
   async handleTelegramWebhook(@Body() update: any) {
+    console.log(`📨 Webhook Telegram recibido: ID ${update.update_id}`);
     await this.botService.bot.handleUpdate(update);
     return { ok: true };
   }
