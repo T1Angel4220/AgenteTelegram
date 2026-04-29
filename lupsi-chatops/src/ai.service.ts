@@ -30,8 +30,20 @@ export class AiService {
     ) {
         const envKeys = process.env.AI_KEYS || process.env.OPENROUTER_API_KEY;
         this.keys = envKeys ? envKeys.split(',').map(k => k.trim()) : [];
-        const envModels = process.env.AI_MODELS;
-        this.models = envModels ? envModels.split(',').map(m => m.trim()) : ['openrouter/free'];
+        
+        let envModels = process.env.AI_MODELS ? process.env.AI_MODELS.split(',').map(m => m.trim()) : [];
+        // Si detectamos los modelos viejos que ya no existen, forzamos los nuevos de alta capacidad
+        if (envModels.length === 0 || envModels.includes('meta-llama/llama-3.1-8b-instruct:free') || envModels.includes('mistralai/mistral-7b-instruct:free')) {
+            this.models = [
+                'meta-llama/llama-3.3-70b-instruct:free',
+                'google/gemma-3-27b-it:free',
+                'qwen/qwen3-next-80b-a3b-instruct:free',
+                'openrouter/free'
+            ];
+        } else {
+            this.models = envModels;
+        }
+        
         this.loadSessions();
     }
 
@@ -208,10 +220,16 @@ export class AiService {
             });
 
             const content = data.choices[0]?.message?.content || '';
+            console.log('🤖 RAW LLM RESPONSE:', content);
             const match = content.match(/<respuesta>([\s\S]*?)<\/respuesta>/i);
             let cleanText = match ? match[1].trim() : content.trim();
             cleanText = cleanText.replace(/<accion>[\s\S]*?<\/accion>/gi, '').trim();
             cleanText = cleanText.replace(/\\([.\-])/g, '$1'); // Limpiar escapes innecesarios que hace la IA
+
+            if (cleanText === '' && content.trim() !== '') {
+                // Si todo el texto fue borrado (ej. la IA generó etiquetas <accion> inválidas)
+                cleanText = content.trim();
+            }
 
             let actions: any[] = [];
             const matches = content.matchAll(/<accion>([\s\S]*?)<\/accion>/gi);
