@@ -49,18 +49,18 @@ export class BotService implements OnModuleInit {
       const isNetworkError = err.code === 'ECONNRESET' || err.code === 'ETIMEDOUT' || err.name === 'FetchError';
       
       if (err.name === 'TimeoutError' || err.code === 'ETIMEDOUT') {
-        ctx.reply('⚠️ La consulta tardó demasiado o hubo un problema de red. Por favor, intenta de nuevo.').catch(() => {});
+        ctx.reply('[ERROR] La consulta tardo demasiado o hubo un problema de red. Por favor, intenta de nuevo.').catch(() => {});
       } else if (isNetworkError) {
-        console.warn('⚠️ Error de red detectado (ECONNRESET/Fetch). Reintentando silenciosamente o esperando nueva conexión...');
+        console.warn('[WARNING] Error de red detectado (ECONNRESET/Fetch). Reintentando silenciosamente o esperando nueva conexión...');
       } else {
-        ctx.reply('❌ Ups, ocurrió un error inesperado en mi sistema interno.').catch(() => {});
+        ctx.reply('[ERROR] Ups, ocurrio un error inesperado en mi sistema interno.').catch(() => {});
       }
     });
 
     // ── /start ───────────────────────────────────────────────────────────────
     this.bot.start((ctx) => {
       ctx.reply(
-        '👋 ¡Hola! Soy *LUPSI*, tu Agente Autónomo de Gestión de Proyectos.\n\n' +
+        'Hola. Soy *LUPSI*, tu Agente Autonomo de Gestion de Proyectos.\n\n' +
         'Trabajo 24/7 monitoreando el proyecto. Escribe */ayuda* para ver todo lo que puedo hacer.',
         { parse_mode: 'Markdown' }
       );
@@ -69,83 +69,83 @@ export class BotService implements OnModuleInit {
     // ── /ayuda ───────────────────────────────────────────────────────────────
     this.bot.command('ayuda', (ctx) => {
       ctx.reply(
-        '🤖 *Comandos de LUPSI*\n\n' +
-        '📊 *Información del Proyecto*\n' +
-        '/estado — Estado actual del tablero Trello\n' +
-        '/github — Últimos commits y actividad\n' +
-        '/analisis — Análisis de salud del proyecto\n' +
-        '/contexto — Sprint activo y documentos cargados\n' +
-        '/presupuesto — Resumen financiero del proyecto\n' +
-        '/entregables — Estado de entregables del sprint actual\n\n' +
-        '📄 *Reportes y Análisis*\n' +
-        '/reporte — Genera un reporte PDF ejecutivo\n' +
-        '/codigo — Análisis técnico del repositorio (3 mensajes)\n\n' +
-        '⚙️ *Gestión*\n' +
-        '/agente — Motor de decisiones con aprobación humana\n' +
-        '/sprint — Actualizar el sprint activo\n' +
-        '/vincular — Vincular tu Telegram con Trello (validado)\n' +
-        '/recargar — Recargar base de conocimiento (PDFs y docs)\n\n' +
-        '💬 *Chat Libre*\n' +
-        'Escríbeme cualquier pregunta sobre el proyecto y te respondo.\n\n' +
-        '🕐 *Ciclos Autónomos (sin que me lo pidas)*\n' +
-        '• 08:00 — Alertas de vencimiento (datos reales)\n' +
-        '• 09:00 — Standup matutino al equipo\n' +
-        '• 10:00 — Resumen del standup + watchdog de bloqueos\n' +
-        '• 11:30 — Verificación de consistencia standup vs. Trello\n' +
-        '• 12:00 — Segunda revisión de bloqueos\n' +
-        '• 14:00 — Inteligencia proactiva (alerta solo si hay novedades)\n' +
-        '• 23:30 — Reporte PDF + análisis de código + propuesta de acción\n' +
-        '• Viernes 17:00 — Resumen semanal al equipo',
+        '*Comandos de LUPSI*\n\n' +
+        '*Informacion del Proyecto*\n' +
+        '/estado - Estado actual del tablero Trello\n' +
+        '/github - Ultimos commits y actividad\n' +
+        '/analisis - Analisis de salud del proyecto\n' +
+        '/contexto - Sprint activo y documentos cargados\n' +
+        '/presupuesto - Resumen financiero del proyecto\n' +
+        '/entregables - Estado de entregables del sprint actual\n\n' +
+        '*Reportes y Analisis*\n' +
+        '/reporte - Genera un reporte PDF ejecutivo\n' +
+        '/codigo - Analisis tecnico del repositorio (3 mensajes)\n\n' +
+        '*Gestion*\n' +
+        '/agente - Motor de decisiones con aprobacion humana\n' +
+        '/sprint - Actualizar el sprint activo\n' +
+        '/vincular - Vincular tu Telegram con Trello (validado)\n' +
+        '/recargar - Recargar base de conocimiento (PDFs y docs)\n\n' +
+        '*Chat Libre*\n' +
+        'Escribeme cualquier pregunta sobre el proyecto y te respondo.\n\n' +
+        '*Ciclos Autonomos (sin que me lo pidas)*\n' +
+        '- 08:00 - Alertas de vencimiento (datos reales)\n' +
+        '- 09:00 - Standup matutino al equipo\n' +
+        '- 10:00 - Resumen del standup + watchdog de bloqueos\n' +
+        '- 11:30 - Verificacion de consistencia standup vs. Trello\n' +
+        '- 12:00 - Segunda revision de bloqueos\n' +
+        '- 14:00 - Inteligencia proactiva (alerta solo si hay novedades)\n' +
+        '- 23:30 - Reporte PDF + analisis de codigo + propuesta de accion\n' +
+        '- Viernes 17:00 - Resumen semanal al equipo',
         { parse_mode: 'Markdown' }
       );
     });
 
     // ── /estado ──────────────────────────────────────────────────────────────
     this.bot.command('estado', async (ctx) => {
-      const msg = await ctx.reply('⏳ Consultando el tablero de Trello...');
+      const msg = await ctx.reply('[PROCESANDO] Consultando el tablero de Trello...');
       try {
         const reporte = await this.trelloService.getBoardState();
         await ctx.telegram.deleteMessage(ctx.chat.id, msg.message_id).catch(() => { });
         ctx.reply(this.safe(reporte), { parse_mode: 'Markdown' });
       } catch (e) {
-        ctx.reply('❌ No pude conectar con Trello. Verifica las credenciales.');
+        ctx.reply('[ERROR] No pude conectar con Trello. Verifica las credenciales.');
       }
     });
 
     // ── /github ──────────────────────────────────────────────────────────────
     this.bot.command('github', async (ctx) => {
-      const msg = await ctx.reply('⏳ Obteniendo actividad de GitHub...');
+      const msg = await ctx.reply('[PROCESANDO] Obteniendo actividad de GitHub...');
       try {
         const res = await this.githubService.getLatestCommits();
         await ctx.telegram.deleteMessage(ctx.chat.id, msg.message_id).catch(() => { });
         ctx.reply(this.safe(res), { parse_mode: 'Markdown' });
       } catch (e) {
-        ctx.reply('❌ No pude conectar con GitHub. Verifica el token.');
+        ctx.reply('[ERROR] No pude conectar con GitHub. Verifica el token.');
       }
     });
 
     // ── /analisis ────────────────────────────────────────────────────────────
     this.bot.command('analisis', async (ctx) => {
-      const msg = await ctx.reply('🔍 Analizando la salud del proyecto...');
+      const msg = await ctx.reply('[PROCESANDO] Analizando la salud del proyecto...');
       try {
         const health = await this.managerService.getHealthCheck();
         const trello = await this.trelloService.getBoardState();
         await ctx.telegram.deleteMessage(ctx.chat.id, msg.message_id).catch(() => { });
         ctx.reply(this.safe(`${health}${trello}`), { parse_mode: 'Markdown' });
       } catch (e) {
-        ctx.reply('❌ Error al realizar el análisis.');
+        ctx.reply('[ERROR] Error al realizar el analisis.');
       }
     });
 
     // ── /recargar ────────────────────────────────────────────────────────────
     this.bot.command('recargar', (ctx) => {
       this.docsService.clearCache();
-      ctx.reply('🔄 Base de conocimiento recargada. Los PDFs y documentos serán releídos en la próxima consulta.');
+      ctx.reply('[RECARGADO] Base de conocimiento recargada. Los PDFs y documentos seran releidos en la proxima consulta.');
     });
 
     // ── /test_consistencia — Prueba manual de Self-Healing ────────────────
     this.bot.command('test_consistencia', async (ctx) => {
-      await ctx.reply('🧪 Iniciando prueba manual de consistencia...');
+      await ctx.reply('[TEST] Iniciando prueba manual de consistencia...');
       try {
         const topologyRaw = await this.trelloService.getBoardTopologyForAI();
         const topology = JSON.parse(topologyRaw);
@@ -156,7 +156,7 @@ export class BotService implements OnModuleInit {
         const card = topology.tarjetas.find((c: any) => listasEnProceso.includes(c.idList));
 
         if (!card || !listaDone) {
-          return ctx.reply('❌ No encontré tarjetas en "Doing" o no existe lista "Done" para realizar la prueba.');
+          return ctx.reply('[ERROR] No encontre tarjetas en "Doing" o no existe lista "Done" para realizar la prueba.');
         }
 
         // Simular alerta de consistencia
@@ -168,9 +168,9 @@ export class BotService implements OnModuleInit {
           member: 'Simulacro de Prueba'
         });
 
-        await ctx.reply('⚠️ Se ha detectado una "discrepancia" (Simulada). Revisa el mensaje de arriba para autorizar la corrección.');
+        await ctx.reply('[ALERTA] Se ha detectado una "discrepancia" (Simulada). Revisa el mensaje de arriba para autorizar la correccion.');
       } catch (e) {
-        ctx.reply('❌ Error en la prueba: ' + e.message);
+        ctx.reply('[ERROR] Error en la prueba: ' + e.message);
       }
     });
 
@@ -184,15 +184,15 @@ export class BotService implements OnModuleInit {
         try {
           const miembros = await this.trelloService.getBoardMembers();
           if (miembros.length === 0) {
-            return ctx.reply('❌ No pude obtener los miembros del tablero. Intenta: /vincular Tu Nombre En Trello');
+            return ctx.reply('[ERROR] No pude obtener los miembros del tablero. Intenta: /vincular Tu Nombre En Trello');
           }
           const lista = miembros.map((m, i) => `${i + 1}. *${m.fullName}* (@${m.username})`).join('\n');
           return ctx.reply(
-            `👥 *Miembros del tablero Trello:*\n\n${lista}\n\nUsa el comando con tu nombre exacto:\n/vincular Nombre Completo`,
+            `Miembros del tablero Trello:\n\n${lista}\n\nUsa el comando con tu nombre exacto:\n/vincular Nombre Completo`,
             { parse_mode: 'Markdown' }
           );
         } catch (e) {
-          return ctx.reply('❌ Uso: /vincular Tu Nombre En Trello');
+          return ctx.reply('[ERROR] Uso: /vincular Tu Nombre En Trello');
         }
       }
 
@@ -221,7 +221,7 @@ export class BotService implements OnModuleInit {
         fs.writeFileSync(equipoPath, JSON.stringify(equipo, null, 2));
 
         ctx.reply(
-          `✅ ¡Vinculado! Te reconoceré como *${nombreFinal}*.\nPodrás recibir el standup, alertas de vencimiento y notificaciones directas.${advertencia}`,
+          `[EXITO] ¡Vinculado! Te reconocere como *${nombreFinal}*.\nPodras recibir el standup, alertas de vencimiento y notificaciones directas.${advertencia}`,
           { parse_mode: 'Markdown' }
         );
       } catch (e) {
@@ -232,7 +232,7 @@ export class BotService implements OnModuleInit {
         equipo = equipo.filter(m => m.chatId !== chatId);
         equipo.push({ trelloName, chatId, nombre: ctx.from?.first_name || trelloName });
         fs.writeFileSync(equipoPath, JSON.stringify(equipo, null, 2));
-        ctx.reply(`✅ Vinculado como *${trelloName}* (sin validación — Trello no disponible).`, { parse_mode: 'Markdown' });
+        ctx.reply(`[EXITO] Vinculado como *${trelloName}* (sin validacion - Trello no disponible).`, { parse_mode: 'Markdown' });
       }
     });
 
@@ -244,26 +244,26 @@ export class BotService implements OnModuleInit {
         const p = c.presupuesto || {};
 
         const msg =
-          `💰 *Resumen Financiero del Proyecto LUPSI*\n\n` +
-          `📊 *Valoración de mercado del sistema:* ${p.valoracion_mercado || '$4,724.50'}\n` +
-          `🏥 *Desembolso real del centro médico:* ${p.desembolso_real_clinica || '$200 iniciales'}\n` +
-          `☁️ *Infraestructura cloud (Supabase/Cloudinary/Render):* ${p.costo_infraestructura_cloud || '$0.00 (capas gratuitas)'}\n` +
-          `📈 *ROI estimado:* ${p.roi_estimado || '10 a 12 meses'}\n\n` +
-          `💼 *Modelo de financiamiento:*\n_${p.modelo_financiamiento || 'El equipo académico absorbe el costo de talento humano. La clínica no invierte en desarrollo.'}_\n\n` +
-          `📉 *Costos acumulados por sprint:*\n` +
-          `• Sprint 4 (15/05): ${p.costo_acumulado_sprint4 || '$4,690.40'} (horas de ingeniería valoradas)\n` +
-          `• Sprint 5 final (10/06): ${p.costo_acumulado_final || '$5,850.00'}\n\n` +
-          `_Fuente: Caso de Negocio — SKT Software Solution_`;
+          `Resumen Financiero del Proyecto LUPSI\n\n` +
+          `Valoracion de mercado del sistema: ${p.valoracion_mercado || '$4,724.50'}\n` +
+          `Desembolso real del centro medico: ${p.desembolso_real_clinica || '$200 iniciales'}\n` +
+          `Infraestructura cloud: ${p.costo_infraestructura_cloud || '$0.00 (capas gratuitas)'}\n` +
+          `ROI estimado: ${p.roi_estimado || '10 a 12 meses'}\n\n` +
+          `Modelo de financiamiento:\n_${p.modelo_financiamiento || 'El equipo académico absorbe el costo de talento humano. La clínica no invierte en desarrollo.'}_\n\n` +
+          `Costos acumulados por sprint:\n` +
+          `- Sprint 4 (15/05): ${p.costo_acumulado_sprint4 || '$4,690.40'} (horas de ingeniería valoradas)\n` +
+          `- Sprint 5 final (10/06): ${p.costo_acumulado_final || '$5,850.00'}\n\n` +
+          `Fuente: Caso de Negocio — SKT Software Solution`;
 
         ctx.reply(this.safe(msg), { parse_mode: 'Markdown' });
       } catch (e) {
-        ctx.reply('❌ No pude leer el presupuesto. Revisa `conocimiento.json`.');
+        ctx.reply('[ERROR] No pude leer el presupuesto. Revisa `conocimiento.json`.');
       }
     });
 
     // ── /entregables — Estado de entregables del sprint ─────────────────────
     this.bot.command('entregables', async (ctx) => {
-      const loadingMsg = await ctx.reply('📋 Consultando entregables del sprint...');
+      const loadingMsg = await ctx.reply('[PROCESANDO] Consultando entregables del sprint...');
       try {
         const conocimientoPath = path.join(process.cwd(), 'conocimiento.json');
         const c = JSON.parse(fs.readFileSync(conocimientoPath, 'utf-8'));
@@ -275,8 +275,8 @@ export class BotService implements OnModuleInit {
         const completadas = await this.trelloService.getCompletedCardsThisSprint();
         const completadasNames = completadas.map(c => c.nombre.toLowerCase());
 
-        let reporte = `📋 *Entregables — ${c.sprint_actual}*\n`;
-        reporte += `📅 Cierre: ${c.fecha_fin}\n\n`;
+        let reporte = `Entregables - ${c.sprint_actual}\n`;
+        reporte += `Fecha Cierre: ${c.fecha_fin}\n\n`;
 
         if (entregablesPlaneados.length === 0) {
           reporte += `_No hay entregables definidos para este sprint en conocimiento.json._\n`;
@@ -289,22 +289,22 @@ export class BotService implements OnModuleInit {
             n.includes(e.nombre.toLowerCase().split(' ').slice(0, 3).join(' ')) ||
             e.nombre.toLowerCase().includes(n.split(' ').slice(0, 3).join(' '))
           );
-          const icon = encontrada ? '✅' : '⏳';
+          const icon = encontrada ? '[OK]' : '[...]';
           if (encontrada) done++;
-          reporte += `${icon} *${e.nombre}*\n   👤 ${e.responsable} | 📅 ${e.fecha}\n\n`;
+          reporte += `${icon} *${e.nombre}*\n   Responsable: ${e.responsable} | Fecha: ${e.fecha}\n\n`;
         }
 
         const total = entregablesPlaneados.length || 1;
         const pct = Math.round((done / total) * 100);
-        reporte += `📊 *Progreso:* ${done}/${entregablesPlaneados.length} entregables (${pct}%)\n`;
-        reporte += `\n💼 *Tarjetas completadas en Trello:* ${completadas.length}`;
+        reporte += `Analisis de Progreso: ${done}/${entregablesPlaneados.length} entregables (${pct}%)\n`;
+        reporte += `\nTarjetas completadas en Trello: ${completadas.length}`;
 
         await ctx.telegram.deleteMessage(ctx.chat.id, loadingMsg.message_id).catch(() => {});
         ctx.reply(this.safe(reporte), { parse_mode: 'Markdown' });
       } catch (e) {
         console.error('Error en /entregables:', e);
         await ctx.telegram.deleteMessage(ctx.chat.id, loadingMsg.message_id).catch(() => {});
-        ctx.reply('❌ Error al obtener los entregables del sprint.');
+        ctx.reply('[ERROR] Error al obtener los entregables del sprint.');
       }
     });
 
@@ -412,6 +412,7 @@ export class BotService implements OnModuleInit {
         try {
           const prompt = `Actúa como Senior Project Manager de SKT Software Solution. 
 Genera un REPORTE EJECUTIVO DE ALTO NIVEL en ESPAÑOL. El tono debe ser profesional, analítico y directo.
+FECHA ACTUAL: ${new Date().toLocaleDateString('es-ES')}
 
 Estructura obligatoria:
 
@@ -422,30 +423,63 @@ ESTADO GENERAL: [Color: VERDE/AMARILLO/ROJO] - Justificación ejecutiva en una f
 - Top 3 logros técnicos clave.
 - Bloqueos críticos que requieren atención inmediata.
 
-2. ANÁLISIS DE FLUJO DE TRABAJO:
-- Interpretación de la velocidad del equipo y cuellos de botella detectados en las listas.
-- Comentario sobre la eficiencia en la transición de tareas.
+2. TAREAS EN EJECUCIÓN:
+- Formato: Tarea | Encargado | Plazo (Fechas y Días) | Inactividad.
+- "Plazo (Fechas y Días)": DEBES incluir explícitamente desde cuándo hasta cuándo es el plazo, seguido de los días restantes (ej: "10/05 al 15/05 (5 días rest.)" o "Hasta 15/05 (5 días rest.)" si no hay inicio).
+- "Inactividad": Debe decir el número de días y el rango de fechas (ej: "Lleva 3 días, desde 10/05 hasta hoy"). Calcula basándote en su fecha de última actividad.
+- Solo incluye tareas con estado explícito de "En Proceso" en [ESTADO TRELLO].
 
-3. SALUD DEL CÓDIGO Y REPOSITORIO:
-- Calidad de los últimos commits y actividad en GitHub.
-- Estado de las ramas y consistencia del código.
+3. TAREAS PENDIENTES / EN ESPERA:
+- Formato: Tarea | Encargado | Plazo (Fechas y Días) | Inactividad.
+- "Plazo (Fechas y Días)": DEBES incluir explícitamente desde cuándo hasta cuándo es el plazo, seguido de los días restantes (ej: "10/05 al 15/05 (5 días rest.)" o "Hasta 15/05 (5 días rest.)" si no hay inicio).
+- "Inactividad": Debe decir el número de días y el rango de fechas (ej: "Lleva 3 días, desde 10/05 hasta hoy").
+- Incluye el resto de tareas que no han comenzado.
 
-4. AUDITORÍA DE DOCUMENTACIÓN:
-- Lista detallada: Documento | Estado | Acción Requerida.
-- Enfócate en la base de conocimiento cargada.
+4. ANÁLISIS DE FLUJO Y BLOQUEOS (STANDUP):
+- Explica POR QUÉ hay tareas en espera basándote en los bloqueos del [ESTADO DEL STANDUP DE HOY].
+- Aporta valor analítico: ¿el equipo está saturado? ¿faltan definiciones?
 
-5. MATRIZ DE RIESGOS:
+5. ACTIVIDAD TÉCNICA Y REPOSITORIO (GITHUB):
+- Genera la TABLA DE COMMITS directamente (Fecha | Autor | Mensaje | Rama). Sin encabezados de texto antes de la tabla.
+- Debajo de la tabla, redacta el ANÁLISIS DE VALOR técnico sin usar el encabezado "*ANÁLISIS DE VALOR*".
+
+6. MATRIZ DE RIESGOS REALES:
 - Formato: Riesgo | Impacto | Mitigación | Responsable.
-- Identifica riesgos técnicos y de gestión.
 
-6. RECOMENDACIONES Y PRÓXIMOS PASOS:
-- Acciones correctivas sugeridas.
-- Prioridades estratégicas para el cierre del periodo.
+7. ALERTAS CRÍTICAS Y RESOLUCIÓN:
+- Formato de tabla: Problema Detectado | Acción de Resolución.
+- Identifica las 2-3 situaciones más graves.
 
-REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
+8. RECOMENDACIONES Y PRÓXIMOS PASOS:
+- Lista de viñetas con las prioridades estratégicas para las próximas 48 horas. Sin encabezados internos.
+
+9. PRESUPUESTO Y RECURSOS:
+- Análisis de la eficiencia en el uso de tiempo/esfuerzo del equipo.
+
+10. NOTIFICACIONES AL GESTOR:
+- Alertas dirigidas directamente al Gestor del Proyecto (Angel Ayuquina) sobre desvíos o intervenciones necesarias urgentes.
+
+11. DECISIONES AUTÓNOMAS SUGERIDAS:
+- Decisiones de gestión que recomiendas tomar inmediatamente (ej. reasignación de recursos, cambio de fechas).
+
+12. ESTADO DEL EQUIPO Y RETIROS:
+- Evaluación de la carga de cada integrante. Si alguien está inactivo o no tiene carga, sugiere su retiro o reasignación temporal.
+
+REGLAS: Sin emojis. Sin introducciones. Lenguaje Senior PM. BASA TODO ESTRICTAMENTE EN [ESTADO TRELLO], [ACTIVIDAD GITHUB] y [ESTADO DEL STANDUP DE HOY].`;
+
+          let standupContext = "No hay datos de standup hoy.";
+          const standupPath = path.join(process.cwd(), 'standup_hoy.json');
+          if (fs.existsSync(standupPath)) {
+            const standupData = JSON.parse(fs.readFileSync(standupPath, 'utf-8'));
+            if (standupData.length > 0) {
+              standupContext = standupData.map((s: any) => `- ${s.nombre}: "${s.respuesta}"`).join('\n');
+            }
+          }
+          
+          const finalPrompt = prompt + `\n\n[ESTADO DEL STANDUP DE HOY]\n${standupContext}`;
 
           const [result, metrics] = await Promise.all([
-            this.aiService.chatWithAgent(prompt),
+            this.aiService.chatWithAgent(finalPrompt),
             this.trelloService.getMetrics(),
           ]);
 
@@ -592,8 +626,20 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
       const chatId = ctx.chat.id.toString();
 
       // Si el usuario está en modo standup, guardar su respuesta
-      if (this.standupState.get(chatId)) {
-        this.standupState.delete(chatId);
+      const statePath = path.join(process.cwd(), 'standup_state.json');
+      let isStandupMode = false;
+      if (fs.existsSync(statePath)) {
+        try {
+          const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+          if (state[chatId] && state[chatId] > Date.now()) {
+            isStandupMode = true;
+            delete state[chatId];
+            fs.writeFileSync(statePath, JSON.stringify(state));
+          }
+        } catch(e) {}
+      }
+
+      if (isStandupMode) {
         const standupPath = path.join(process.cwd(), 'standup_hoy.json');
         let standup: any[] = [];
         if (fs.existsSync(standupPath)) standup = JSON.parse(fs.readFileSync(standupPath, 'utf-8'));
@@ -610,7 +656,7 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
         standup.push({ chatId, nombre, respuesta: ctx.message.text, hora: new Date().toISOString() });
         fs.writeFileSync(standupPath, JSON.stringify(standup, null, 2));
 
-        return ctx.reply('✅ ¡Gracias! Registré tu actualización del día. ¡Éxito con tus tareas! 💪');
+        return ctx.reply('[RECIBIDO] ¡Gracias! Registré tu actualización del día. ¡Exito con tus tareas!');
       }
 
       // Si el usuario está dando un motivo de rechazo
@@ -630,16 +676,16 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
           });
 
           fs.writeFileSync(conocimientoPath, JSON.stringify(c, null, 2));
-          return ctx.reply('🧠 ¡Entendido! He guardado esta regla en mi base de conocimiento. La tendré en cuenta para mis futuras decisiones.');
+          return ctx.reply('[APRENDIZAJE] ¡Entendido! He guardado esta regla en mi base de conocimiento. La tendré en cuenta para mis futuras decisiones.');
         } catch (e) {
           console.error('Error guardando regla:', e);
-          return ctx.reply('⚠️ Lo siento, no pude guardar la regla en conocimiento.json.');
+          return ctx.reply('Lo siento, no pude guardar la regla en conocimiento.json.');
         }
       }
 
       // Chat normal con la IA
       console.log(`💬 Mensaje recibido de ${ctx.from.first_name}: "${ctx.message.text}"`);
-      const thinkingMsg = await ctx.reply('🧠 Pensando... (Consultando base de conocimientos)');
+      const thinkingMsg = await ctx.reply('Pensando... (Consultando base de conocimientos)');
       
       let userName = ctx.from.first_name;
       const equipoPathConfig = path.join(process.cwd(), 'equipo.json');
@@ -656,9 +702,9 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
       
       if (result.text && result.text.trim().length > 0) {
         console.log(`🤖 Respuesta de LUPSI enviada.`);
-        await ctx.reply(this.safe(result.text), { parse_mode: 'Markdown' });
+        await this.sendLongMessage(ctx, result.text);
       } else if (actions.length === 0) {
-        await ctx.reply('😔 Lo siento, tuve un bloqueo mental y no pude generar una respuesta clara. ¿Podrías reformular tu pregunta?');
+        await ctx.reply('Lo siento, tuve un bloqueo mental y no pude generar una respuesta clara. ¿Podrias reformular tu pregunta?');
       }
 
       // ── Detección proactiva de tarjeta mencionada ─────────────────────────
@@ -711,12 +757,12 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
 
           const toolName = action.tool || action.tipo || 'acción';
           await ctx.reply(
-            this.safe(`🤖 *Acción requerida*\nDeseo ejecutar: *${toolName}*${detail}\n¿Autorizas esta operación?`),
+            this.safe(`[ACCION] *Acción requerida*\nDeseo ejecutar: *${toolName}*${detail}\n¿Autorizas esta operación?`),
             {
               parse_mode: 'Markdown',
               ...Markup.inlineKeyboard([
-                [Markup.button.callback('✅ Confirmar', `approve_${actionId}`)],
-                [Markup.button.callback('❌ Cancelar', `reject_${actionId}`)],
+                [Markup.button.callback('[V] Confirmar', `approve_${actionId}`)],
+                [Markup.button.callback('[X] Cancelar', `reject_${actionId}`)],
               ]),
             }
           );
@@ -752,8 +798,15 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
 
   // ── Activar modo standup para un usuario ────────────────────────────────
   activarModoStandup(chatId: string) {
-    this.standupState.set(chatId, true);
-    setTimeout(() => this.standupState.delete(chatId), 2 * 60 * 60 * 1000);
+    const statePath = path.join(process.cwd(), 'standup_state.json');
+    let state: Record<string, number> = {};
+    if (fs.existsSync(statePath)) {
+      try { state = JSON.parse(fs.readFileSync(statePath, 'utf-8')); } catch(e) {}
+    }
+    
+    // Guardamos la hora de expiración (2 horas desde ahora)
+    state[chatId] = Date.now() + (2 * 60 * 60 * 1000);
+    fs.writeFileSync(statePath, JSON.stringify(state));
   }
 
   // ── Proponer acción de consistencia (Self-healing) ────────────────────────
@@ -764,14 +817,14 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
     if (!chatId) return;
 
     await this.bot.telegram.sendMessage(chatId, 
-      `⚖️ *Auto-Corrección de Consistencia*\n\n` +
+      `[CONSISTENCIA] *Auto-Corrección de Consistencia*\n\n` +
       `Detecté que la tarea *${action.cardName}* (asignada a ${action.member || 'miembro'}) debería estar en *Done* según el standup.\n\n` +
       `¿Autorizas moverla ahora?`,
       {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.callback('✅ Sí, mover tarjeta', `approve_${actionId}`)],
-          [Markup.button.callback('❌ No, cancelar', `reject_${actionId}`)]
+          [Markup.button.callback('[V] Sí, mover tarjeta', `approve_${actionId}`)],
+          [Markup.button.callback('[X] No, cancelar', `reject_${actionId}`)]
         ])
       }
     );
@@ -794,13 +847,13 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
 
       // Mensaje con info de la tarjeta
       const info =
-        `📌 *${card.nombre}*\n` +
-        `📂 Lista: ${card.lista}\n` +
-        `👤 Asignado a: ${card.asignados}\n` +
-        `📅 Vencimiento: ${card.vencimiento} | Completada: ${card.completada}\n` +
-        `🏷 Etiquetas: ${card.labels}\n\n` +
-        `📝 *Descripción:*\n${card.descripcion.substring(0, 500)}\n\n` +
-        `🔗 [Ver en Trello](${url})`;
+        `[INFO TAREA] *${card.nombre}*\n` +
+        `Lista: ${card.lista}\n` +
+        `Asignado a: ${card.asignados}\n` +
+        `Vencimiento: ${card.vencimiento} | Completada: ${card.completada}\n` +
+        `Etiquetas: ${card.labels}\n\n` +
+        `Descripcion:\n${card.descripcion.substring(0, 500)}\n\n` +
+        `Link Trello: ${url}`;
 
       await ctx.telegram.sendMessage(chatId, this.safe(info), {
         parse_mode: 'Markdown',
@@ -809,7 +862,7 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
 
       // Enviar adjuntos
       if (attachments && attachments.length > 0) {
-        await ctx.telegram.sendMessage(chatId, `📎 *Adjuntos de esta tarjeta (${attachments.length}):*`, { parse_mode: 'Markdown' });
+        await ctx.telegram.sendMessage(chatId, `Archivos adjuntos de esta tarjeta (${attachments.length}):`, { parse_mode: 'Markdown' });
 
         for (const att of attachments.slice(0, 5)) { // máx 5 adjuntos
           if (att.esArchivo && att.url) {
@@ -828,9 +881,9 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
           } else {
             // Es un link externo
             await ctx.telegram.sendMessage(chatId,
-              this.safe(`🔗 *${att.nombre}*\n${att.url}`),
-              { parse_mode: 'Markdown' }
-            );
+                this.safe(`Archivo: *${att.nombre}*\nLink: ${att.url}`),
+                { parse_mode: 'Markdown' }
+              );
           }
         }
 
@@ -862,8 +915,8 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
         await this.trelloService.createCard(args.listId, args.name, args.desc, args.idMembers, args.idLabels, args.due, args.start);
       } else if (tool === 'ADD_COMMENT') {
         await this.trelloService.addComment(args.cardId, args.text);
-      } else if (tool === 'MARK_CARD_COMPLETE' || tool === 'MARK_CARD_COMPLETED') {
-        await this.trelloService.markCardAsComplete(args.cardId || cardId);
+      } else if (tipo === 'MARK_CARD_AS_COMPLETE' || tool === 'MARK_CARD_COMPLETE' || tool === 'MARK_CARD_COMPLETED') {
+        await this.trelloService.markCardAsComplete(args?.cardId || cardId);
       } else if (tool === 'CREATE_ISSUE') {
         await this.githubService.createIssue(args.title, args.body);
       } else if (tool === 'NOTIFY_MEMBER') {
@@ -902,6 +955,14 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
       } else if (tool === 'AUTO_FIX_CODE') {
         const prUrl = await this.githubService.createAutoFixPR(args.filePath, args.newContent, `Fix: ${args.reason || 'Mejora automática'}`);
         return { success: true, message: `Pull Request creado con éxito: ${prUrl}` };
+      } else if (tool === 'SAVE_DELIVERABLE') {
+        const { url, filename } = args;
+        const savedPath = await this.trelloService.downloadAttachment(url, filename);
+        this.docsService.clearCache(); // Forzar recarga de RAG
+        return { success: true, message: `Entregable guardado y indexado: ${filename}` };
+      } else if (tool === 'LIST_DOCUMENTS') {
+        const docs = this.docsService.getDocumentList();
+        return { success: true, message: `Documentos actuales:\n${docs}` };
       } else {
         return { success: false, message: `Herramienta desconocida: ${tool || tipo}` };
       }
@@ -927,16 +988,24 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
 
     // Búsqueda flexible: Priorizar coincidencia exacta primero
     const nameLower = trelloName.toLowerCase().trim();
-    let member = equipo.find(m => m.trelloName.toLowerCase().trim() === nameLower || (m.nombre && m.nombre.toLowerCase().trim() === nameLower));
+    const searchWords = nameLower.split(/\s+/).filter(w => w.length > 1);
     
-    // Fallback: coincidencia parcial solo si no hay coincidencia exacta
-    if (!member) {
-      member = equipo.find(m =>
-        m.trelloName.toLowerCase().includes(nameLower) ||
-        nameLower.includes(m.trelloName.toLowerCase()) ||
-        (m.nombre && nameLower.includes(m.nombre.toLowerCase()))
-      );
-    }
+    let member = equipo.find(m => {
+      const targetTrello = m.trelloName.toLowerCase();
+      const targetNombre = (m.nombre || '').toLowerCase();
+      
+      // 1. Coincidencia exacta
+      if (targetTrello === nameLower || targetNombre === nameLower) return true;
+      
+      // 2. Coincidencia en ALIAS (Nuevo)
+      if (m.alias && m.alias.some(a => a.toLowerCase() === nameLower)) return true;
+
+      // 3. Coincidencia de todas las palabras buscadas en el destino
+      const matchTrello = searchWords.every(word => targetTrello.includes(word));
+      const matchNombre = searchWords.every(word => targetNombre.includes(word));
+      
+      return matchTrello || matchNombre;
+    });
 
     if (!member) return false;
     try {
@@ -981,47 +1050,78 @@ REGLAS: Sin emojis. Sin introducciones. Usa un lenguaje corporativo impecable.`;
     fs.appendFileSync(historialPath, linea);
   }
 
+  // ── Enviar mensajes largos en partes ──────────────────────────────────────
+  async sendLongMessage(ctx: any, text: string, chatId?: string) {
+    const LIMIT = 3800;
+    let remaining = text;
+    while (remaining.length > 0) {
+      let chunk = remaining.length <= LIMIT ? remaining : remaining.substring(0, LIMIT);
+      if (remaining.length > LIMIT) {
+        const splitIdx = chunk.lastIndexOf('\n\n') !== -1 ? chunk.lastIndexOf('\n\n') : chunk.lastIndexOf('\n');
+        if (splitIdx > LIMIT * 0.5) {
+          chunk = chunk.substring(0, splitIdx);
+        }
+      }
+      const safeChunk = this.safe(chunk, false);
+      if (chatId) {
+        await this.bot.telegram.sendMessage(chatId, safeChunk, { parse_mode: 'Markdown' }).catch(console.error);
+      } else if (ctx) {
+        await ctx.reply(safeChunk, { parse_mode: 'Markdown' }).catch(console.error);
+      }
+      remaining = remaining.substring(chunk.length).trimStart();
+    }
+  }
+
   // ── Escape Markdown seguro ────────────────────────────────────────────────
   // Escapa solo caracteres que rompen el parse_mode Markdown de Telegram
-  private safe(text: string): string {
+  private safe(text: string, truncate: boolean = true): string {
     if (!text) return '';
     let t = text;
 
-    // 1. Truncado inteligente: Si supera el límite de Telegram (4096 chars), 
-    // cortamos un poco antes para dejar espacio a los cierres de etiquetas.
+    // 1. Truncado inteligente
     const LIMIT = 3800;
     let wasTruncated = false;
-    if (t.length > LIMIT) {
+    if (truncate && t.length > LIMIT) {
       t = t.substring(0, LIMIT);
       wasTruncated = true;
     }
 
-    // 2. Auto-cierre de bloques de código (```)
+    // 2. Auto-cierre de bloques
     const codeBlocks = (t.match(/```/g) || []).length;
-    if (codeBlocks % 2 !== 0) {
-      t += '\n```';
-    }
-
-    // 3. Auto-cierre de negritas (**)
+    if (codeBlocks % 2 !== 0) t += '\n```';
     const boldTags = (t.match(/\*\*/g) || []).length;
-    if (boldTags % 2 !== 0) {
-      t += '**';
-    }
+    if (boldTags % 2 !== 0) t += '**';
+    const inlineCode = (t.match(/(?<!`)`(?!`)/g) || []).length;
+    if (inlineCode % 2 !== 0) t += '`';
 
-    // 4. Escape defensivo de guiones bajos que no son parte de un formato
-    // En Markdown V1, los _ sueltos rompen todo. Los escapamos si no están ya escapados.
+    // 3. Escape defensivo de guiones bajos (Markdown V1)
     t = t.replace(/(?<!\\)_/g, '\\_');
 
-    // 5. Cierre de etiquetas de código simples (`)
-    const inlineCode = (t.match(/(?<!`)`(?!`)/g) || []).length;
-    if (inlineCode % 2 !== 0) {
-      t += '`';
-    }
+    // 4. ELIMINACIÓN DE EMOJIS (Unicode Property Escapes)
+    // Solo eliminamos presentaciones de emojis y pictogramas, evitando componentes que pueden ser números
+    t = t.replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '');
+    
+    // 5. ELIMINACIÓN DE HASHTAGS
+    t = t.replace(/#/g, '');
+
+    // 6. ELIMINACIÓN DE IDs TÉCNICOS (Solo si son exactamente 24 caracteres hex rodeados de límites)
+    t = t.replace(/\b[0-9a-fA-F]{24}\b/g, '[ID]');
+
+    // 7. ELIMINACIÓN TOTAL DE TABLAS
+    t = t.replace(/\|/g, ' ');
+
+    // 8. LIMPIEZA DE CARACTERES EXTRAÑOS (Preservando números y letras)
+    // Rango ASCII imprimible (32-126) + Latin-1 + Latin Extended
+    t = t.replace(/[^\t\n\r\x20-\x7E\u00A0-\u024F\u2000-\u206F]/gu, '');
 
     if (wasTruncated) {
-      t += '\n\n... _[Mensaje truncado por longitud]_';
+      t += '\n\n... [Mensaje truncado]';
     }
 
-    return t;
+    // Evitar que Telegram falle por mensaje vacío
+    return t.trim().length === 0 ? '.' : t;
   }
+
+
+
 }

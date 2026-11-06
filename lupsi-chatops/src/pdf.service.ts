@@ -37,7 +37,7 @@ export class PdfService {
     }
 
     private drawKPICard(doc: any, x: number, y: number, label: string, value: string, color: string) {
-        const width = 110;
+        const width = 90;
         const height = 45;
         doc.rect(x, y, width, height).fill(this.COLORS.white);
         doc.rect(x, y, 3, height).fill(color);
@@ -189,12 +189,12 @@ export class PdfService {
             doc.rect(0, 0, 595, 120).fill(C.primary);
             doc.rect(0, 115, 595, 5).fill(C.accent);
 
-            doc.fillColor(C.white).fontSize(22).font('Helvetica-Bold')
+            doc.fillColor(C.white).fontSize(20).font('Helvetica-Bold')
                .text('INFORME DE ESTADO DEL PROYECTO', 40, 35);
             doc.fillColor(C.muted).fontSize(12).font('Helvetica-Bold')
-               .text('SKT Software Solution', 40, 62);
+               .text('SKT Software Solution', 40, 60);
             doc.fillColor(C.muted).fontSize(9).font('Helvetica')
-               .text(`Software, Knowledge, and Trust  |  Gestor: Angel Ayuquina`, 40, 78);
+               .text(`Software, Knowledge, and Trust  |  Gestor: Angel Ayuquina`, 40, 75);
 
             // SEMÁFORO (Badge moderno)
             const semaforo = sections.semaforo || 'AMARILLO';
@@ -209,18 +209,33 @@ export class PdfService {
 
             // KPI CARDS
             if (metrics) {
-                const total = Object.values(metrics.listas as Record<string, number>).reduce((a, b) => a + b, 0);
-                const urgent = (metrics.urgent || 0);
-                const progress = metrics.listas['Doing'] || metrics.listas['In Progress'] || 0;
+                const total = metrics.total || 0;
+                const progress = metrics.enProgreso || 0;
+                const pending = metrics.pendientes || 0;
+                const urgent = metrics.urgentes || 0;
 
-                this.drawKPICard(doc, 50, y, 'Tareas Totales', total.toString(), C.primary);
-                this.drawKPICard(doc, 175, y, 'En Progreso', progress.toString(), C.accent);
-                this.drawKPICard(doc, 300, y, 'Alertas Críticas', urgent.toString(), C.danger);
-                this.drawKPICard(doc, 425, y, 'Emisión', new Date().toLocaleDateString('es-ES'), C.success);
+                this.drawKPICard(doc, 50, y, 'Total', total.toString(), C.primary);
+                this.drawKPICard(doc, 150, y, 'Progreso', progress.toString(), C.accent);
+                this.drawKPICard(doc, 250, y, 'Pendientes', pending.toString(), C.warning);
+                this.drawKPICard(doc, 350, y, 'Críticas', urgent.toString(), C.danger);
+                this.drawKPICard(doc, 450, y, 'Emisión', new Date().toLocaleDateString('es-ES'), C.success);
                 y += 70;
+                // TABLA DE CUMPLIMIENTO POR FASES
+                if (metrics.detallesListas && metrics.detallesListas.length > 0) {
+                    y = this.drawSection(doc, 'CUMPLIMIENTO POR FASES DEL PROYECTO', y, C.primary);
+                    y += 10;
+                    const rows = metrics.detallesListas.map((l: any) => [
+                        l.nombre,
+                        l.total.toString(),
+                        l.completas.toString(),
+                        `${l.porcentaje}%`
+                    ]);
+                    y = this.drawTable(doc, y, ['Fase / Lista', 'Total', 'OK', '% Compl.'], rows, [250, 80, 80, 85]);
+                    y += 10;
+                }
             }
 
-            y += 10;
+            y += 5;
 
             // Fallback: Si no se detectaron secciones estructuradas, imprimir todo el contenido
             const hasStructuredData = Object.values(sections).some(v => v !== null && v !== 'AMARILLO' && v !== 'ROJO' && v !== 'VERDE' && v !== '');
@@ -242,10 +257,43 @@ export class PdfService {
                 y += textHeight + 20;
             }
 
-            // 2. ANÁLISIS DE FLUJO
+            // 2. TAREAS EN EJECUCIÓN
+            if (sections.tareas_ejecucion) {
+                if (y > 650) { doc.addPage(); y = 50; }
+                y = this.drawSection(doc, '2. TAREAS EN EJECUCIÓN', y, C.accent);
+                y += 15;
+                const lines = sections.tareas_ejecucion.split('\n').map(l => l.replace(/^[•\-\*]\s*/, ''));
+                const rows = lines.map(l => l.split('|').map(c => c.trim())).filter(r => r.length >= 2);
+                
+                if (rows.length > 0) {
+                    y = this.drawTable(doc, y, ['Tarea', 'Encargado', 'Plazo', 'Inactividad'], rows, [185, 110, 115, 85]);
+                } else {
+                    doc.fillColor(C.primary).fontSize(9).text('No hay tareas activas en este momento.', 55, y);
+                    y += 20;
+                }
+            }
+
+            // 3. TAREAS PENDIENTES
+            if (sections.tareas_pendientes) {
+                if (y > 650) { doc.addPage(); y = 50; }
+                y = this.drawSection(doc, '3. TAREAS PENDIENTES / EN ESPERA', y, C.primary);
+                y += 15;
+                const lines = sections.tareas_pendientes.split('\n').map(l => l.replace(/^[•\-\*]\s*/, ''));
+                const rows = lines.map(l => l.split('|').map(c => c.trim())).filter(r => r.length >= 2);
+                
+                if (rows.length > 0) {
+                    y = this.drawTable(doc, y, ['Tarea', 'Encargado', 'Plazo', 'Inactividad'], rows, [185, 110, 115, 85]);
+                } else {
+                    const textHeight = doc.heightOfString(sections.tareas_pendientes, { width: pageW - 10 });
+                    doc.fillColor(C.primary).fontSize(9).text(sections.tareas_pendientes, 55, y);
+                    y += textHeight + 20;
+                }
+            }
+
+            // 4. ANÁLISIS DE FLUJO
             if (sections.flujo) {
                 if (y > 600) { doc.addPage(); y = 50; }
-                y = this.drawSection(doc, '2. ANÁLISIS DE FLUJO DE TRABAJO (TRELLO)', y, C.primary);
+                y = this.drawSection(doc, '4. ANÁLISIS DE FLUJO Y BLOQUEOS (STANDUP)', y, C.primary);
                 y += 15;
                 const textHeight = doc.heightOfString(sections.flujo, { width: pageW - 10 });
                 doc.fillColor(C.primary).fontSize(9).text(sections.flujo, 55, y, { width: pageW - 10 });
@@ -258,38 +306,34 @@ export class PdfService {
                 }
             }
 
-            // 3. SALUD DEL CÓDIGO
+            // 5. ACTIVIDAD TÉCNICA
             if (sections.codigo) {
                 if (y > 650) { doc.addPage(); y = 50; }
-                y = this.drawSection(doc, '3. SALUD DEL CÓDIGO Y REPOSITORIO (GITHUB)', y, C.primary);
+                y = this.drawSection(doc, '5. ACTIVIDAD TÉCNICA Y REPOSITORIO (GITHUB)', y, C.primary);
                 y += 15;
-                const textHeight = doc.heightOfString(sections.codigo, { width: pageW - 10 });
-                doc.fillColor(C.primary).fontSize(9).text(sections.codigo, 55, y, { width: pageW - 10 });
-                y += textHeight + 20;
-            }
-
-            // 4. AUDITORÍA DE DOCUMENTACIÓN
-            if (sections.documentacion) {
-                if (y > 650) { doc.addPage(); y = 50; }
-                y = this.drawSection(doc, '4. AUDITORÍA DE DOCUMENTACIÓN', y, C.primary);
-                y += 15;
-                // Intentar formatear como tabla si la IA mandó líneas con '|' o '-'
-                const lines = sections.documentacion.split('\n').map(l => l.replace(/^[•\-\*]\s*/, ''));
-                const rows = lines.map(l => l.split('|').map(c => c.trim())).filter(r => r.length >= 2);
                 
-                if (rows.length > 1) {
-                    y = this.drawTable(doc, y, ['Documento', 'Estado', 'Acción'], rows, [180, 100, 215]);
-                } else {
-                    const textHeight = doc.heightOfString(sections.documentacion, { width: pageW - 10 });
-                    doc.fillColor(C.primary).fontSize(9).text(sections.documentacion, 55, y);
+                const lines = sections.codigo.split('\n').map(l => l.replace(/^[•\-\*]\s*/, ''));
+                const tableLines = lines.filter(l => l.includes('|'));
+                const textLines = lines.filter(l => !l.includes('|') && l.trim() !== '');
+                
+                if (tableLines.length > 0) {
+                    const rows = tableLines.map(l => l.split('|').map(c => c.trim())).filter(r => r.length >= 2);
+                    y = this.drawTable(doc, y, ['Fecha', 'Autor', 'Mensaje', 'Rama'], rows, [70, 100, 245, 80]);
+                    y += 10;
+                }
+                
+                if (textLines.length > 0) {
+                    const text = textLines.join('\n');
+                    const textHeight = doc.heightOfString(text, { width: pageW - 10 });
+                    doc.fillColor(C.primary).fontSize(9).text(text, 55, y, { width: pageW - 10 });
                     y += textHeight + 20;
                 }
             }
 
-            // 5. MATRIZ DE RIESGOS
+            // 6. MATRIZ DE RIESGOS
             if (sections.riesgos) {
                 if (y > 650) { doc.addPage(); y = 50; }
-                y = this.drawSection(doc, '5. MATRIZ DE RIESGOS', y, C.danger);
+                y = this.drawSection(doc, '6. MATRIZ DE RIESGOS REALES', y, C.danger);
                 y += 15;
                 const lines = sections.riesgos.split('\n').map(l => l.replace(/^[•\-\*]\s*/, ''));
                 const rows = lines.map(l => l.split('|').map(c => c.trim())).filter(r => r.length >= 2);
@@ -303,13 +347,86 @@ export class PdfService {
                 }
             }
 
-            // 6. RECOMENDACIONES
+            // 7. ALERTAS CRÍTICAS
+            if (sections.alertas) {
+                if (y > 650) { doc.addPage(); y = 50; }
+                y = this.drawSection(doc, '7. ALERTAS CRÍTICAS Y RESOLUCIÓN', y, C.danger);
+                y += 15;
+                
+                const rows = sections.alertas.split('\n')
+                    .map(l => l.replace(/^[•\-\*]\s*/, '').trim())
+                    .filter(l => l.includes('|'))
+                    .map(l => {
+                        // Limpiar pipes al inicio y final antes de dividir
+                        const cleanLine = l.replace(/^\|/, '').replace(/\|$/, '');
+                        return cleanLine.split('|').map(c => c.trim());
+                    })
+                    .filter(r => r.length >= 2)
+                    .filter(r => {
+                        const cell1 = r[0].toUpperCase();
+                        const cell2 = r[1] ? r[1].toUpperCase() : '';
+                        return cell1 !== '' && 
+                               !cell1.includes('PROBLEMA DETECTADO') && 
+                               !cell1.includes('---') && 
+                               !cell2.includes('---');
+                    });
+                
+                if (rows.length > 0) {
+                    y = this.drawTable(doc, y, ['Problema Detectado', 'Acción de Resolución'], rows, [240, 255]);
+                } else {
+                    const textHeight = doc.heightOfString(sections.alertas, { width: pageW - 10 });
+                    doc.fillColor(C.primary).fontSize(9).text(sections.alertas, 55, y, { width: pageW - 10 });
+                    y += textHeight + 20;
+                }
+            }
+
+            // 8. RECOMENDACIONES
             if (sections.proximos) {
                 if (y > 650) { doc.addPage(); y = 50; }
-                y = this.drawSection(doc, '6. RECOMENDACIONES Y PRÓXIMOS PASOS', y, C.success);
+                y = this.drawSection(doc, '8. RECOMENDACIONES Y PRÓXIMOS PASOS', y, C.success);
                 y += 15;
                 const textHeight = doc.heightOfString(sections.proximos, { width: pageW - 10, lineGap: 2 });
                 doc.fillColor(C.primary).fontSize(9).text(sections.proximos, 55, y, { width: pageW - 10, lineGap: 2 });
+                y += textHeight + 20;
+            }
+
+            // 9. PRESUPUESTO Y RECURSOS
+            if (sections.presupuesto) {
+                if (y > 650) { doc.addPage(); y = 50; }
+                y = this.drawSection(doc, '9. PRESUPUESTO Y RECURSOS', y, C.accent);
+                y += 15;
+                const textHeight = doc.heightOfString(sections.presupuesto, { width: pageW - 10, lineGap: 2 });
+                doc.fillColor(C.primary).fontSize(9).text(sections.presupuesto, 55, y, { width: pageW - 10, lineGap: 2 });
+                y += textHeight + 20;
+            }
+
+            // 10. NOTIFICACIONES AL GESTOR
+            if (sections.notificaciones) {
+                if (y > 650) { doc.addPage(); y = 50; }
+                y = this.drawSection(doc, '10. NOTIFICACIONES AL GESTOR', y, C.danger);
+                y += 15;
+                const textHeight = doc.heightOfString(sections.notificaciones, { width: pageW - 10, lineGap: 2 });
+                doc.fillColor(C.primary).fontSize(9).text(sections.notificaciones, 55, y, { width: pageW - 10, lineGap: 2 });
+                y += textHeight + 20;
+            }
+
+            // 11. DECISIONES AUTÓNOMAS SUGERIDAS
+            if (sections.decisiones) {
+                if (y > 650) { doc.addPage(); y = 50; }
+                y = this.drawSection(doc, '11. DECISIONES AUTÓNOMAS SUGERIDAS', y, C.warning);
+                y += 15;
+                const textHeight = doc.heightOfString(sections.decisiones, { width: pageW - 10, lineGap: 2 });
+                doc.fillColor(C.primary).fontSize(9).text(sections.decisiones, 55, y, { width: pageW - 10, lineGap: 2 });
+                y += textHeight + 20;
+            }
+
+            // 12. ESTADO DEL EQUIPO Y RETIROS
+            if (sections.equipo) {
+                if (y > 650) { doc.addPage(); y = 50; }
+                y = this.drawSection(doc, '12. ESTADO DEL EQUIPO Y RETIROS', y, C.primary);
+                y += 15;
+                const textHeight = doc.heightOfString(sections.equipo, { width: pageW - 10, lineGap: 2 });
+                doc.fillColor(C.primary).fontSize(9).text(sections.equipo, 55, y, { width: pageW - 10, lineGap: 2 });
                 y += textHeight + 20;
             }
 
@@ -325,37 +442,51 @@ export class PdfService {
         });
     }
 
-    // Parser que extrae secciones del texto de la IA
-    // Parser que extrae secciones del texto de la IA
     private parseContent(content: string): any {
         const result: any = {
             estado_general: '',
             resumen: '',
+            tareas_ejecucion: '',
+            tareas_pendientes: '',
             flujo: '',
             codigo: '',
-            documentacion: '',
             riesgos: '',
-            proximos: ''
+            alertas: '',
+            proximos: '',
+            presupuesto: '',
+            notificaciones: '',
+            decisiones: '',
+            equipo: ''
         };
         
         const lines = content.split('\n');
         let currentSection = 'estado_general';
         
         for (let line of lines) {
-            // Limpiar línea de caracteres Markdown comunes y espacios al inicio/final
             const cleanLine = line.replace(/[*#_~`>]/g, '').trim();
             const upperLine = cleanLine.toUpperCase();
             
+            // Ignorar encabezados redundantes que la IA a veces repite
+            if (upperLine.startsWith('TABLA DE COMMITS') || upperLine.startsWith('ANÁLISIS DE VALOR')) continue;
+            
             if (upperLine.includes('ESTADO GENERAL')) { currentSection = 'estado_general'; continue; }
             if (upperLine.includes('1. RESUMEN EJECUTIVO')) { currentSection = 'resumen'; continue; }
-            if (upperLine.includes('2. ANÁLISIS DE FLUJO')) { currentSection = 'flujo'; continue; }
-            if (upperLine.includes('3. SALUD DEL CÓDIGO')) { currentSection = 'codigo'; continue; }
-            if (upperLine.includes('4. AUDITORÍA DE DOCUMENTACIÓN')) { currentSection = 'documentacion'; continue; }
-            if (upperLine.includes('5. MATRIZ DE RIESGOS')) { currentSection = 'riesgos'; continue; }
-            if (upperLine.includes('6. RECOMENDACIONES')) { currentSection = 'proximos'; continue; }
+            if (upperLine.includes('2. TAREAS EN EJECUCIÓN') || upperLine.includes('2. TAREAS EN EJECUCION')) { currentSection = 'tareas_ejecucion'; continue; }
+            if (upperLine.includes('3. TAREAS PENDIENTES')) { currentSection = 'tareas_pendientes'; continue; }
+            if (upperLine.includes('4. ANÁLISIS DE FLUJO') || upperLine.includes('4. ANALISIS DE FLUJO')) { currentSection = 'flujo'; continue; }
+            if (upperLine.includes('5. ACTIVIDAD TÉCNICA') || upperLine.includes('5. ACTIVIDAD TECNICA')) { currentSection = 'codigo'; continue; }
+            if (upperLine.includes('6. MATRIZ DE RIESGOS')) { currentSection = 'riesgos'; continue; }
+            if (upperLine.includes('7. ALERTAS') || upperLine.includes('7. ALERTAS CRITICAS')) { currentSection = 'alertas'; continue; }
+            if (upperLine.includes('8. RECOMENDACIONES')) { currentSection = 'proximos'; continue; }
+            if (upperLine.includes('9. PRESUPUESTO')) { currentSection = 'presupuesto'; continue; }
+            if (upperLine.includes('10. NOTIFICACIONES')) { currentSection = 'notificaciones'; continue; }
+            if (upperLine.includes('11. DECISIONES')) { currentSection = 'decisiones'; continue; }
+            if (upperLine.includes('12. ESTADO DEL EQUIPO')) { currentSection = 'equipo'; continue; }
             
             if (line.trim()) {
-                result[currentSection] += line.trim() + '\n';
+                // Eliminar markdown de la línea antes de guardarla
+                const finalLine = line.replace(/[*#_~`>]/g, '').trim();
+                result[currentSection] += finalLine + '\n';
             }
         }
 
