@@ -1,0 +1,50 @@
+# Compiled output
+**/dist/
+**/build/
+**/node_modules/
+
+# Environment variables & secrets
+**/.env
+**/.env.*
+!**/.env.example
+
+# Logs
+**/*.log
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+**/.idea/
+**/.vscode/*
+!**/.vscode/settings.json
+
+# Runtime Data & Local State (LUPSI)
+**/historial.txt
+**/sesiones.json
+**/standup_hoy.json
+**/standup_state.json
+**/decisiones_pendientes.json
+**/equipo.json
+**/relevant_context.txt
+
+# LaTeX / Documentación académica temporal
+**/*.aux
+**/*.log
+**/*.out
+**/*.toc
+**/*.synctex*
+**/*.fls
+**/*.fdb_latexmk
+**/*.tex
+**/*.mpp
+
+# Scripts de prueba y basura local
+**/test_*.js
+**/check_context.js
+**/read_sprint3.js
+**/scratch/
+**/conocimiento_extracted/
+**/*.zip
+**/*.tar
+**/*.gz
+**/*.rar

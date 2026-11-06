@@ -1,26 +1,24 @@
-compiled output
+# Compiled output
 /dist
-/node_modules
-.env
 /build
+/node_modules
+
+# Environment variables & secrets (NUNCA subir credenciales)
+.env
+.env.*
+!.env.example
 
 # Logs
 logs
 *.log
 npm-debug.log*
-pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
-# OS
+# OS & Editor
 .DS_Store
-
-# Tests
-/coverage
-/.nyc_output
-
-# IDEs and editors
+Thumbs.db
 /.idea
 .project
 .classpath
@@ -28,37 +26,52 @@ lerna-debug.log*
 *.launch
 .settings/
 *.sublime-workspace
-
-# IDE - VSCode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# dotenv environment variable files
-.env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
+# Tests & Coverage
+/coverage
+/.nyc_output
 
-# temp directory
+# Temp & Cache
 .temp
 .tmp
-
-# Runtime data
 pids
 *.pid
 *.seed
 *.pid.lock
-
-# Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
-# ── Archivos de datos de LUPSI (no subir al repo) ────────────────────────────
+# Runtime Data & Local State (LUPSI)
 historial.txt
 sesiones.json
 standup_hoy.json
+standup_state.json
 decisiones_pendientes.json
 equipo.json
+relevant_context.txt
+
+# LaTeX / Documentación académica temporal
+*.aux
+*.log
+*.out
+*.toc
+*.synctex*
+*.fls
+*.fdb_latexmk
+*.tex
+*.mpp
+
+# Scripts de prueba y basura local
+test_*.js
+check_context.js
+read_sprint3.js
+scratch/
+conocimiento_extracted/
+*.zip
+*.tar
+*.gz
+*.rar
