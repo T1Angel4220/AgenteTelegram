@@ -314,27 +314,3 @@ CMD ["node", "dist/main"]
 4. El servicio compilará automáticamente y quedará en línea escuchando eventos y webhooks en el puerto `3000`.
 
 ---
-
-## 🛡️ Seguridad y Buenas Prácticas
-
-- **Cero Exposición de Secretos:** El repositorio implementa un `.gitignore` estricto que previene la subida accidental de archivos `.env`, credenciales de API, tokens de bots y llaves privadas.
-- **Failover Seguro:** Las llaves de IA se manejan dinámicamente en memoria con rotación en caso de agotamiento de cuotas.
-- **Principio de Mínimo Privilegio:** Los tokens de GitHub y Trello solo requieren los alcances necesarios para leer tableros y gestionar incidencias del proyecto.
-- **Control Humano (HITL):** Ninguna acción destructiva o de alto impacto se ejecuta de manera 100% ciega; el agente siempre solicita autorización interactiva previa.
-
----
-
-## 👤 Autor
-
-Desarrollado por **Angel Ayuquina**  
-*Facultad de Ingeniería en Sistemas, Electrónica e Industrial (FISEI)*  
-*Universidad Técnica de Ambato (UTA)*
-
-- **GitHub:** [@T1Angel4220](https://github.com/T1Angel4220)
-- **Repositorio:** [AgenteTelegram](https://github.com/T1Angel4220/AgenteTelegram)
-
----
-
-<p align="center">
-  <sub>Construido con dedicación para impulsar la agilidad y la observabilidad en proyectos de ingeniería de software. 🚀</sub>
-</p>
