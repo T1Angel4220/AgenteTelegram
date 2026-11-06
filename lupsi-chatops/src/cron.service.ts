@@ -99,17 +99,17 @@ export class CronService {
             respuestasHoy.map(r => `• *${r.nombre}:* ${r.respuesta}`).join('\n');
           
           // 1. ANÁLISIS DE SENTIMIENTO (Fase 3: Inteligencia Emocional)
-          const sentimentPrompt = `Analiza el tono emocional de estas respuestas de standup del equipo:
-          ${respuestasHoy.map(r => r.respuesta).join('\n')}
-          
-          Responde ÚNICAMENTE con una de estas opciones y un emoji:
-          - 🔋 Alta Energía (Positivo/Motivado)
-          - 😐 Estable (Neutral/Enfocado)
-          - ⚠️ Estrés Detectado (Cansancio/Frustración)
-          - 🆘 Alerta Crítica (Bloqueo emocional/Desmotivación)`;
-          
-          const sentimentResult = await this.aiService.chatWithAgent(sentimentPrompt);
-          climaEmocional = sentimentResult.text.trim();
+          try {
+            const sentimentResult = await this.aiService.quickAsk(
+              'Eres un analizador de sentimientos de equipos ágiles. Responde SOLO con una opción exacta.',
+              `Analiza el tono emocional de estas respuestas de standup:\n${respuestasHoy.map(r => r.respuesta).join('\n')}\n\nResponde ÚNICAMENTE con una de estas opciones y un emoji:\n- 🔋 Alta Energía (Positivo/Motivado)\n- 😐 Estable (Neutral/Enfocado)\n- ⚠️ Estrés Detectado (Cansancio/Frustración)\n- 🆘 Alerta Crítica (Bloqueo emocional/Desmotivación)`,
+              30
+            );
+            climaEmocional = sentimentResult.trim();
+          } catch (e) {
+            console.warn('Sentiment analysis falló, usando valor por defecto:', e.message);
+            climaEmocional = ' Estable (Sin datos suficientes)';
+          }
         } else {
           resumenEquipo = '\n\n_Ningún miembro respondió el standup aún._';
         }
@@ -218,7 +218,7 @@ Máximo 4 puntos concisos. Sin introducciones.`;
       if (bloqueadas.length === 0) return; // Sin ruido innecesario
 
       const lista = bloqueadas
-        .map(c => `• *${c.nombre}* (${c.lista})\n  👤 ${c.asignados} | 📅 Lleva *${c.diasBloqueada} día${c.diasBloqueada !== 1 ? 's' : ''}* sin actividad | Vence: ${c.vencimiento}`)
+        .map(c => `• *${c.nombre}* (${c.lista})\n  👤 ${c.asignados} | 📅 Inactividad: *${c.diasBloqueada}* día(s) [${c.intervaloInactividad}] | Vence: ${c.vencimiento}`)
         .join('\n\n');
 
       const bot = this.botService.getBotInstance();
@@ -237,7 +237,7 @@ Máximo 4 puntos concisos. Sin introducciones.`;
             if (card.asignados.includes(miembro.trelloName)) {
               await this.botService.notifyMember(
                 miembro.trelloName,
-                `⚠️ Hola *${miembro.trelloName}* — LUPSI detectó que *"${card.nombre}"* lleva ${card.diasBloqueada} día(s) sin actividad.\n\n¿Hay algún bloqueo? El PM Angel puede ayudarte.`
+                `⚠️ Hola *${miembro.trelloName}* — LUPSI detectó que *"${card.nombre}"* lleva *${card.diasBloqueada}* día(s) sin actividad (${card.intervaloInactividad}).\n\n¿Hay algún bloqueo? El PM Angel puede ayudarte.`
               ).catch(() => {});
               break;
             }
@@ -433,13 +433,17 @@ ESTADO GENERAL:
 [Métricas del Periodo: Tareas Planificadas, Completadas y Pasadas.
 Distribución de Carga: Una lista por miembro indicando Rol, Miembro, Estado de Carga (Normal/Sobrecargado) y Tareas (Activas/Pendientes)].
 
-4. SALUD DEL CÓDIGO Y REPOSITORIO:
+4. TAREAS EN EJECUCIÓN Y PENDIENTES:
+[Formato de tabla: Tarea | Encargado | Plazo | Inactividad.
+Para "Inactividad", indica días y el rango (ej. "3 días, desde 10/05 hasta hoy")].
+
+5. SALUD DEL CÓDIGO Y REPOSITORIO:
 [Métricas de PRs (Abiertos/Fusionados), Issues (Reportados/Resueltos) y Estado de Ramas (Main/Develop)].
 
-5. MATRIZ DE RIESGOS:
+6. MATRIZ DE RIESGOS:
 [Lista de riesgos. Formato: Riesgo | Impacto | Mitigación | Responsable Directo asignado para solucionarlo hoy/mañana].
 
-6. RECOMENDACIONES Y PRÓXIMOS PASOS:
+7. RECOMENDACIONES Y PRÓXIMOS PASOS:
 [Ajustes al Proceso y Top 3 Prioridades para la próxima semana].
 
 Sin emojis. Sin introducciones. Empieza exactamente con "ESTADO GENERAL:".`;
@@ -483,26 +487,36 @@ Sin emojis. Sin introducciones. Empieza exactamente con "ESTADO GENERAL:".`;
         { caption: '📊 Reporte ejecutivo nocturno generado.' },
       );
 
-      // 2) ANÁLISIS PROACTIVO DE CÓDIGO (secuencial para evitar Rate Limit de OpenRouter)
+      // 2) ANÁLISIS PROACTIVO DE CÓDIGO (sequential, usando quickAsk para evitar sobrecarga)
       try {
-        const baseCtx = `Eres LUPSI, PM autónomo del equipo. Hablas SIEMPRE en ESPAÑOL. Eres conciso y directo.`;
-        
-        const opt = await this.aiService.chatWithAgent(baseCtx + ` Identifica MÁXIMO 3 optimizaciones de código urgentes. Formato: archivo → problema → solución. MUY CORTO.`);
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Delay 2s
-        
-        const test = await this.aiService.chatWithAgent(baseCtx + ` Propón 3 pruebas de software prioritarias que faltan. Formato: tipo → qué prueba → urgencia.`);
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        const debt = await this.aiService.chatWithAgent(baseCtx + ` Los 2 puntos de deuda técnica más urgentes. Formato: problema → impacto → esfuerzo (Bajo/Medio/Alto).`);
+        const sysCtx = `Eres LUPSI, PM autónomo del equipo de software. Hablas SIEMPRE en ESPAÑOL. Eres conciso y directo. Sin introducciones ni saludos.`;
 
-        for (const [emoji, titulo, res] of [
-          ['⚡', 'OPTIMIZACIONES DETECTADAS', opt],
-          ['🧪', 'PRUEBAS QUE FALTAN', test],
-          ['🔧', 'DEUDA TÉCNICA', debt],
-        ] as [string, string, any][]) {
+        let optText = '⚠️ No disponible temporalmente.';
+        let testText = '⚠️ No disponible temporalmente.';
+        let debtText = '⚠️ No disponible temporalmente.';
+
+        try {
+          optText = await this.aiService.quickAsk(sysCtx, 'Identifica MÁXIMO 3 optimizaciones de código urgentes. Formato: archivo → problema → solución. MUY CORTO.', 400);
+        } catch (e) { console.warn('opt falló:', e.message); }
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
+        try {
+          testText = await this.aiService.quickAsk(sysCtx, 'Propón 3 pruebas de software prioritarias que faltan. Formato: tipo → qué prueba → urgencia.', 400);
+        } catch (e) { console.warn('test falló:', e.message); }
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
+        try {
+          debtText = await this.aiService.quickAsk(sysCtx, 'Los 2 puntos de deuda técnica más urgentes. Formato: problema → impacto → esfuerzo (Bajo/Medio/Alto).', 400);
+        } catch (e) { console.warn('debt falló:', e.message); }
+
+        for (const [emoji, titulo, texto] of [
+          ['⚡', 'OPTIMIZACIONES DETECTADAS', optText],
+          ['🧪', 'PRUEBAS QUE FALTAN', testText],
+          ['🔧', 'DEUDA TÉCNICA', debtText],
+        ] as [string, string, string][]) {
           await bot.telegram.sendMessage(
             chatId,
-            this.escapeMarkdown(`${emoji} *${titulo}*\n\n${res.text}`),
+            this.escapeMarkdown(`${emoji} *${titulo}*\n\n${texto}`),
             { parse_mode: 'Markdown' }
           );
         }
@@ -558,6 +572,90 @@ En la <respuesta>, explica MUY brevemente tu razonamiento estratégico de forma 
     } catch (error) {
       console.error('Error en auditoría nocturna:', error);
     }
+  }
+
+  // ══════════════════════════════════════════════════════
+  // CICLO NUEVO — AUDITORÍA DE ENTREGABLES (16:00 — Lunes a Viernes)
+  // Descarga automáticamente nuevos adjuntos a sus carpetas correspondientes.
+  // ══════════════════════════════════════════════════════
+  @Cron('0 16 * * 1-5')
+  async auditoriaEntregables() {
+    console.log('📦 Iniciando auditoría automática de entregables (Trello -> RAG)...');
+    const chatId = process.env.TELEGRAM_CHAT_ID as string;
+    const bot = this.botService.getBotInstance();
+
+    try {
+      const completadas = await this.trelloService.getCompletedCardsThisSprint();
+      if (completadas.length === 0) return;
+
+      const knowledgePath = path.join(process.cwd(), 'conocimiento');
+      
+      for (const card of completadas) {
+        const detalles = await this.trelloService.getCardDetails(card.nombre);
+        if (!detalles.found || !detalles.attachments || detalles.attachments.length === 0) continue;
+
+        const subfolder = this.findTargetSubfolder(card.nombre);
+        const folderPath = path.join(knowledgePath, subfolder);
+        if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath, { recursive: true });
+        
+        const archivosExistentes = fs.readdirSync(folderPath);
+
+        for (const att of detalles.attachments) {
+          if (!att.esArchivo || !att.url) continue;
+
+          // Evitar duplicados
+          if (archivosExistentes.some(f => f === att.nombre)) continue;
+
+          console.log(`📥 Descargando automáticamente: ${att.nombre} en ${subfolder}`);
+          try {
+            await this.trelloService.downloadAttachment(att.url, att.nombre, subfolder);
+            
+            // Notificar al PM
+            await bot.telegram.sendMessage(
+              chatId,
+              `✅ *LUPSI Autonomía: Entregable Indexado*\n\n` +
+              `He detectado y descargado automáticamente un nuevo archivo:\n` +
+              `📄 *${att.nombre}*\n` +
+              `📂 Carpeta: \`${subfolder}\`\n` +
+              `Tarea: *${card.nombre}*\n\n` +
+              `Mi base de conocimiento ha sido actualizada.`,
+              { parse_mode: 'Markdown' }
+            );
+
+            // Actualizar RAG
+            this.docsService.clearCache();
+          } catch (err) {
+            console.error(`Error descargando entregable ${att.nombre}:`, err.message);
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Error en auditoría de entregables:', e.message);
+    }
+  }
+
+  private findTargetSubfolder(taskName: string): string {
+    const normalize = (t: string) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '').trim();
+    const normalizedTarget = normalize(taskName);
+    const knowledgePath = path.join(process.cwd(), 'conocimiento');
+    
+    if (!fs.existsSync(knowledgePath)) return 'entregables';
+
+    const fases = fs.readdirSync(knowledgePath).filter(f => f.startsWith('Fase'));
+    for (const fase of fases) {
+      const fasePath = path.join(knowledgePath, fase);
+      if (!fs.statSync(fasePath).isDirectory()) continue;
+
+      const tareas = fs.readdirSync(fasePath);
+      for (const tareaFolder of tareas) {
+        const folderNameOnly = tareaFolder.split(' - ')[0];
+        if (normalize(folderNameOnly) === normalizedTarget || normalizedTarget.includes(normalize(folderNameOnly))) {
+          return path.join(fase, tareaFolder);
+        }
+      }
+    }
+
+    return 'entregables'; // Default
   }
 
   // ══════════════════════════════════════════════════════

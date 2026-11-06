@@ -101,32 +101,9 @@ REGLA: Solo existen 4 personas en el equipo. No existen otros desarrolladores.
 
 ---
 
-## 5. PRODUCT BACKLOG COMPLETO Y ESTADO (Actualizado desde PDF de Progreso)
+## 5. PRODUCT BACKLOG Y ESTADO EN TIEMPO REAL
 
-| ID | Tarea | Responsable | Prioridad | Sprint | Estado |
-|----|-------|-------------|-----------|--------|--------|
-| 1 | Entrevista con profesional médico | Angel/Sebastián | Media | S1 | Completada |
-| 2 | Análisis de procesos actuales | Angel Ayuquina | Alta | S1 | Completada |
-| 3 | Definición de historias de usuario | Angel Ayuquina | Alta | S1 | Completada |
-| 4 | Creación del Product Backlog | Angel Ayuquina | Alta | S1 | Completada |
-| 5 | Modelado de Base de Datos | Sebastián Ortiz | Alta | S1 | Completada |
-| 6 | Definición arquitectura y APIs | Angel/Daniel/Sebastián | Alta | S1 | Completada |
-| 7 | Diseño wireframes y navegación | Alex Huachi | Media | S1 | Completada |
-| 8 | Prototipos de alta fidelidad | Alex Huachi | Baja | S1 | Completada |
-| 9 | Validación de interfaces | Alex Huachi | Baja | S1 | Completada |
-| 10 | Configuración entorno (Git/Docker) | Alex Huachi | Media | S1 | Completada |
-| 11 | Creación de BD y seguridad (RLS) | Sebastián Ortiz | Alta | S2 | Completada |
-| 12 | Backend: Autenticación y Cédula | Sebastián Ortiz | Alta | S2 | Completada |
-| 13 | Backend: Motor de Reservas | Sebastián/Daniel | Alta | S3 | Completada |
-| 14 | Backend: Repositorio RBAC | Daniel Luisa | Alta | S4 | En progreso |
-| 15 | Frontend: Portal del Paciente | Alex Huachi | Alta | S3 | Pendiente |
-| 16 | Frontend: Panel Administrativo | Alex Huachi | Media | S3 | Pendiente |
-| 17 | Integración Frontend-Backend | Equipo | Alta | S4 | Pendiente |
-| 18 | Pruebas de estrés y concurrencia | Sebastián Ortiz | Alta | S4 | Pendiente |
-| 19 | Despliegue versión Beta (Piloto) | Equipo | Alta | S4 | Pendiente |
-| 20 | Pruebas de usabilidad con paciente | Angel Ayuquina | Media | S5 | Pendiente |
-| 21 | Depuración de errores y parches | Daniel Luisa | Alta | S5 | Pendiente |
-| 22 | Pruebas de estrés superadas y estable | Sebastián Ortiz | Media | S5 | Pendiente |
+**IMPORTANTE:** El backlog, las tareas, responsables y el estado real de cada entregable se gestionan EXCLUSIVAMENTE en el tablero de Trello. Cualquier documento histórico o PDF es solo referencia de la planificación inicial. Trello es la ÚNICA fuente de verdad para el estado del proyecto.
 
 ---
 
@@ -222,15 +199,9 @@ REGLA: Solo existen 4 personas en el equipo. No existen otros desarrolladores.
 
 ---
 
-## 8. ESTADO ACTUAL DEL PROYECTO (A 2026-04-24)
+## 8. ESTADO ACTUAL DEL PROYECTO
 
-- **Sprint activo:** Sprint 3 (08/04 al 30/04/2026)
-- **Días restantes del sprint:** 6 días hábiles aproximados
-- **Estado general:** Sin atrasos. El Motor de Reservas (T-01) tuvo su hito el 21/04 con la API de Agendamiento entregada. Portal Paciente (T-02) y Panel Admin (T-03) en cierre hacia el 30/04.
-- **Puntos abiertos para Sprint 4:**
-  - Backend RBAC (Sebastián, 10/05)
-  - Integración Cloudinary (Daniel/Alex, 15/05)
-  - Inicio QA (Angel, 11/05)
+**IMPORTANTE:** Para conocer el sprint activo, los días restantes y las tareas abiertas, debes consultar SIEMPRE la información del tablero de Trello en tiempo real. No asumas ningún estado basado en este documento.
 
 ---
 

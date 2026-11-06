@@ -42,21 +42,22 @@ export class ConsistencyService {
       const topologyRaw = await this.trelloService.getBoardTopologyForAI();
       const topology = JSON.parse(topologyRaw);
 
-      const listasEnProceso = topology.listas
-        .filter((l: any) => /doing|progreso|proceso|wip|in.?progress/i.test(l.name))
-        .map((l: any) => l.id);
+      // 3. En el nuevo modelo, "En proceso" se define por tener la etiqueta "En proceso" (o color purple)
+      // y NO estar marcada como dueComplete
+      const tarjetasEnProceso = topology.tarjetas.filter((c: any) => {
+        const hasDoingLabel = (c.labels || []).some((l: any) => 
+          /proceso|doing|progreso/i.test(l.name) || l.color === 'purple'
+        );
+        return hasDoingLabel && !c.dueComplete;
+      });
 
-      const listaDone = topology.listas
-        .find((l: any) => /done|completado|terminado|hecho/i.test(l.name))?.id;
-
-      const listaDoing = listasEnProceso[0];
-
-      // 3. Construir mapa: nombre → tarjetas (objeto completo) en proceso
+      // Construir mapa: nombre → tarjetas (objeto completo) en proceso
       const tarjetasEnProcesoPorMiembro: Record<string, any[]> = {};
 
-      for (const miembro of topology.miembros) {
-        const enProceso = topology.tarjetas
-          .filter((c: any) => listasEnProceso.includes(c.idList) && (c.idMembers || []).includes(miembro.id));
+      for (const miembro of topology.miembros || []) {
+        const enProceso = tarjetasEnProceso.filter((c: any) => 
+          (c.idMembers || []).includes(miembro.id)
+        );
 
         if (enProceso.length > 0) tarjetasEnProcesoPorMiembro[miembro.fullName] = enProceso;
       }
@@ -83,13 +84,12 @@ export class ConsistencyService {
               tipo: 'TRELLO_DESACTUALIZADO',
               miembro: nombre,
               detalle: `Dice haber terminado algo, pero tiene "${card.name}" aún en "En Proceso".`,
-              action: listaDone ? {
-                tipo: 'MOVE_CARD',
+              action: {
+                tipo: 'MARK_CARD_AS_COMPLETE',
                 cardId: card.id,
                 cardName: card.name,
-                targetListId: listaDone,
                 rationale: `Sincronización automática: El dev reportó terminar la tarea en el standup.`
-              } : undefined
+              }
             });
           }
         }

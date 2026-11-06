@@ -4,10 +4,10 @@
   "cliente": "Centro Médico LUPSI",
   "directora_medica": "Dra. Luz Marina Saenz Díaz de Jesús",
   "patrocinador_academico": "Ing. Paulo Torres, Mg. — UTA",
-  "sprint_actual": "Sprint 3: Motor de Agendamiento e Interfaces Frontend",
-  "fecha_inicio": "2026-04-08",
-  "fecha_fin": "2026-04-30",
-  "objetivo_principal": "Desarrollar e integrar el Motor de Reservas en el backend para prevenir cruces de horarios y construir los portales PWA para pacientes y administración, incluyendo el desarrollo del repositorio RBAC.",
+  "sprint_actual": "Sprint 4: Integración y Calidad (QA)",
+  "fecha_inicio": "2026-05-04",
+  "fecha_fin": "2026-05-27",
+  "objetivo_principal": "Integración Frontend-Backend, pruebas de estrés y concurrentes.",
   "stack_tecnologico": {
     "backend": "NestJS (Node.js + TypeScript)",
     "frontend": "Angular (PWA)",
@@ -71,12 +71,17 @@
     "US-04": "Digitalización de Expedientes en Nube (Cloudinary) — Sprint 4 — PENDIENTE",
     "US-05": "Restricción de Privacidad y Data Médica (RBAC) — Sprint 4 — PENDIENTE"
   },
-  "riesgos_conocidos": "Resistencia al cambio, caídas del servidor cloud, ciberataques/vulneraciones, perfiles falsos/bots, deficiencias en la dirección del proyecto, incompatibilidades tecnológicas.",
+  "riesgos_conocidos": "No se mencionan riesgos específicos en la planificación para este sprint.",
   "reglas_aprendidas": [
     {
       "fecha": "2026-04-21",
       "accion_rechazada": "NOTIFY_MEMBER",
       "motivo": "Listo muy bien"
+    },
+    {
+      "fecha": "2026-05-01",
+      "accion_rechazada": "MOVE_CARD",
+      "motivo": "quiero que me digas como vamos con el proyecto segun lo planificado"
     }
   ],
   "presupuesto_y_financiamiento": "Valoración de mercado $4,724.50. Desembolso real del centro médico: $200 iniciales. El equipo académico absorbe el costo de talento humano. ROI estimado: 10-12 meses. Infraestructura cloud: $0 en fase inicial.",

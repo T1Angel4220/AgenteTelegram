@@ -38,6 +38,15 @@ export class GithubService {
         if (porcentaje < 5) icono = '⚠️';
         report += `${icono} *${autor}*: ${cantidad} commits (${porcentaje}% del esfuerzo)\n`;
       }
+      
+      // Añadir detalle de los últimos 3 commits
+      report += `\n📌 *ÚLTIMOS COMMITS RECIENTES:*\n`;
+      const recentCommits = commits.slice(0, 3);
+      recentCommits.forEach(c => {
+          const date = new Date(c.commit.author.date).toLocaleString('es-EC', { timeZone: 'America/Guayaquil' });
+          const msg = c.commit.message.split('\n')[0]; // Primera línea del commit
+          report += `- [${date}] ${c.commit.author.name}: "${msg}"\n`;
+      });
 
       return report;
     } catch (error) {

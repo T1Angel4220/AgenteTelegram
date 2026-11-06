@@ -28,8 +28,9 @@ export class DocsService implements OnModuleInit {
         await this.loadChunks();
         console.log('✅ LUPSI Listo: Conocimiento cargado y fragmentado.');
         
-        // Sincronización automática de metadatos
-        setTimeout(() => this.syncMetadataWithAI(), 5000); 
+        // Sincronización automática de metadatos — delay largo para no saturar la API al arrancar
+        // Se ejecuta 3 minutos después del arranque (no es crítico para el funcionamiento del bot)
+        setTimeout(() => this.syncMetadataWithAI(), 3 * 60 * 1000);
     }
 
     async syncMetadataWithAI() {
@@ -39,7 +40,8 @@ export class DocsService implements OnModuleInit {
         
         // Para sincronizar metadatos usamos los fragmentos más relevantes sobre fechas y sprints
         const hoyStr = new Date().toISOString().split('T')[0];
-        const relevantContext = await this.getRelevantContext(`sprint cronograma fecha planificación actual ${hoyStr}`, 20);
+        // Solo 6 fragmentos más relevantes — suficiente para extraer sprint metadata sin ahogar el modelo
+        const relevantContext = await this.getRelevantContext(`sprint cronograma fecha planificación actual ${hoyStr}`, 6);
         const fullText = relevantContext;
         
         const prompt = `Analiza este conocimiento (fragmentos de PDFs/TeX del proyecto):
@@ -66,36 +68,48 @@ export class DocsService implements OnModuleInit {
         }`;
 
         try {
-            const response = await this.aiService.chatWithAgent(prompt);
-            const jsonStr = response.text.match(/\{[\s\S]*\}/)?.[0];
+            // Usamos quickAsk (sin cargar Trello/GitHub/docs completos)
+            // Solo necesitamos el contexto local de los documentos para extraer metadatos
+            const responseText = await this.aiService.quickAsk(
+                'Eres un extractor de metadatos JSON. Responde SOLO con JSON válido, sin Markdown ni explicaciones.',
+                prompt,
+                500
+            );
+            const jsonStr = responseText.match(/\{[\s\S]*\}/)?.[0];
             if (jsonStr) {
                 const metadata = JSON.parse(jsonStr);
                 const configPath = path.join(process.cwd(), 'conocimiento.json');
                 const current = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
-                
                 const updated = { ...current, ...metadata };
                 fs.writeFileSync(configPath, JSON.stringify(updated, null, 2));
                 console.log('✅ Metadatos del proyecto actualizados automáticamente desde los documentos.');
+            } else {
+                console.warn('⚠️ syncMetadata: no se encontró JSON en la respuesta de la IA.');
             }
         } catch (e) {
             console.error('❌ Error al sincronizar metadatos:', e.message);
         }
     }
 
-    /**
-     * Busca los fragmentos más relevantes para una consulta dada
-     */
     async getRelevantContext(query: string, limit: number = 5): Promise<string> {
         if (this.chunks.length === 0) await this.loadChunks();
         
-        const keywords = query.toLowerCase().split(/\s+/).filter(k => k.length > 3 || /\d/.test(k));
+        const normalize = (text: string) => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+        const stopWords = new Set(['como', 'para', 'este', 'esta', 'estos', 'estas', 'pero', 'todo', 'cada', 'sobre', 'entre', 'cuando', 'donde', 'quien', 'cual', 'dices', 'llego', 'puede', 'decir', 'decir?', 'tiene', 'tienen', 'hacer', 'sabes', 'algo']);
+        const keywords = normalize(query).replace(/[?¿!¡,.]/g, '').split(/\s+/).filter(k => (k.length > 3 || /\d/.test(k)) && !stopWords.has(k));
         
         // Puntuación simple por coincidencia de palabras clave
         const scored = this.chunks.map(chunk => {
             let score = 0;
-            const contentLower = chunk.content.toLowerCase();
+            const contentLower = normalize(chunk.content);
             keywords.forEach(kw => {
-                if (contentLower.includes(kw)) score += 1;
+                // Dar más peso si la palabra clave aparece como palabra completa
+                // ESCAPE CRÍTICO: \\b para que sea Regex word boundary, no backspace
+                const escapedKw = kw.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+                const regex = new RegExp(`\\\\b${escapedKw}\\\\b`, 'g');
+                const matches = contentLower.match(regex);
+                if (matches) score += matches.length; 
+                else if (contentLower.includes(kw)) score += 0.5; // Puntaje parcial por coincidencia parcial
             });
             return { chunk, score };
         });
@@ -121,22 +135,33 @@ export class DocsService implements OnModuleInit {
         try {
             if (!fs.existsSync(this.knowledgePath)) return;
 
-            const files = fs.readdirSync(this.knowledgePath).filter(f => !f.startsWith('.'));
+            const getAllFiles = (dir: string): string[] => {
+                const entries = fs.readdirSync(dir, { withFileTypes: true });
+                const files = entries
+                    .filter(e => !e.name.startsWith('.'))
+                    .map(e => {
+                        const res = path.join(dir, e.name);
+                        return e.isDirectory() ? getAllFiles(res) : res;
+                    });
+                return Array.prototype.concat(...files);
+            };
+
+            const files = getAllFiles(this.knowledgePath);
             const newChunks: Chunk[] = [];
 
-            for (const file of files) {
-                const filePath = path.join(this.knowledgePath, file);
-                const ext = path.extname(file).toLowerCase();
+            for (const filePath of files) {
+                const fileRelative = path.relative(this.knowledgePath, filePath);
+                const ext = path.extname(filePath).toLowerCase();
                 let text = '';
 
                 if (ext === '.pdf') {
                     const dataBuffer = fs.readFileSync(filePath);
                     const data = await pdfParse(dataBuffer);
                     text = data.text || '';
-                    console.log(`✅ PDF leído: ${file}`);
+                    console.log(`✅ PDF leído: ${fileRelative}`);
                 } else if (['.md', '.txt', '.tex', '.csv'].includes(ext)) {
                     text = fs.readFileSync(filePath, 'utf-8');
-                    console.log(`✅ Doc leído: ${file}`);
+                    console.log(`✅ Doc leído: ${fileRelative}`);
                 }
 
                 if (text.trim()) {
@@ -144,7 +169,7 @@ export class DocsService implements OnModuleInit {
                     const chunkSize = 1500;
                     for (let i = 0; i < text.length; i += chunkSize - 200) { // 200 caracteres de solapamiento
                         newChunks.push({
-                            file: file,
+                            file: fileRelative,
                             content: text.substring(i, i + chunkSize).trim()
                         });
                     }
@@ -152,7 +177,7 @@ export class DocsService implements OnModuleInit {
             }
 
             this.chunks = newChunks;
-            this.cachedSummary = files.map(f => `• ${f}`).join('\n');
+            this.cachedSummary = files.map(f => `• ${path.relative(this.knowledgePath, f)}`).join('\n');
             console.log(`📚 Memoria RAG lista: ${this.chunks.length} fragmentos cargados.`);
         } catch (error) {
             console.error('Error cargando chunks:', error);
