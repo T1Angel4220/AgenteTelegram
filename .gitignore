@@ -1,51 +1,77 @@
 # Compiled output
-**/dist/
-**/build/
-**/node_modules/
+/dist
+/build
+/node_modules
 
-# Environment variables & secrets
-**/.env
-**/.env.*
-!**/.env.example
+# Environment variables & secrets (NUNCA subir credenciales)
+.env
+.env.*
+!.env.example
 
 # Logs
-**/*.log
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
 # OS & Editor
 .DS_Store
 Thumbs.db
-**/.idea/
-**/.vscode/*
-!**/.vscode/settings.json
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Tests & Coverage
+/coverage
+/.nyc_output
+
+# Temp & Cache
+.temp
+.tmp
+pids
+*.pid
+*.seed
+*.pid.lock
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # Runtime Data & Local State (LUPSI)
-**/historial.txt
-**/sesiones.json
-**/standup_hoy.json
-**/standup_state.json
-**/decisiones_pendientes.json
-**/equipo.json
-**/relevant_context.txt
+historial.txt
+sesiones.json
+standup_hoy.json
+standup_state.json
+decisiones_pendientes.json
+equipo.json
+relevant_context.txt
 
 # LaTeX / Documentación académica temporal
-**/*.aux
-**/*.log
-**/*.out
-**/*.toc
-**/*.synctex*
-**/*.fls
-**/*.fdb_latexmk
-**/*.tex
-**/*.mpp
+*.aux
+*.log
+*.out
+*.toc
+*.synctex*
+*.fls
+*.fdb_latexmk
+*.tex
+*.mpp
 
 # Scripts de prueba y basura local
-**/test_*.js
-**/check_context.js
-**/read_sprint3.js
-**/scratch/
-**/conocimiento_extracted/
-**/*.zip
-**/*.tar
-**/*.gz
-**/*.rar
-
+test_*.js
+check_context.js
+read_sprint3.js
+scratch/
+conocimiento_extracted/
+*.zip
+*.tar
+*.gz
+*.rar
